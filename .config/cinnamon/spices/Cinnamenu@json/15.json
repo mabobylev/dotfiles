@@ -174,8 +174,11 @@
         "type": "generic",
         "default": [],
         "value": [
-            "cinnamon-settings.desktop",
             "Lesta Game Center.desktop",
+            "libreoffice-writer.desktop",
+            "github-desktop.desktop",
+            "libreoffice-startcenter.desktop",
+            "cinnamon-settings.desktop",
             "com.github.wwmm.easyeffects.desktop",
             "guvcview.desktop",
             "org.pulseaudio.pavucontrol.desktop",
@@ -189,11 +192,8 @@
             "virt-manager.desktop",
             "org.gnome.Terminal.desktop",
             "brave-browser.desktop",
-            "libreoffice-writer.desktop",
             "libreoffice-math.desktop",
-            "org.gnome.GHex.desktop",
-            "libreoffice-draw.desktop",
-            "gimp.desktop"
+            "org.gnome.GHex.desktop"
         ]
     },
     "search-start-folder": {
