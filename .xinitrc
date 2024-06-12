@@ -69,8 +69,7 @@ fi
 xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
 
 # Set wallpaper
-# feh --bg-scale "$(find /home/xaoc/wallpapers/|shuf -n1)" &
-eval "$(source ~/.fehbg)"
+xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.png &
 
 # Initialize ALSA
 # alsactl init
