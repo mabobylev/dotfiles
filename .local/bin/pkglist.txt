@@ -235,6 +235,7 @@ xorg-xsetroot
 xorg-xwininfo
 xsel
 xss-lock
+xwallpaper
 yt-dlp
 zip
 zoxide
