@@ -22,7 +22,7 @@ shopt -s checkwinsize
 # Expand the history size
 #######################################################
 export HISTFILESIZE=10000
-export HISTSIZE=500
+export HISTSIZE=1000
 # Don't put duplicate lines in the history and do not add lines that start with a space
 export HISTCONTROL=erasedups:ignoredups:ignorespace
 # Causes bash to append to history instead of overwriting it so if you start a new terminal, you have old session history
@@ -144,9 +144,9 @@ export FZF_DEFAULT_OPTS='
   --info=inline
   --border
   --pointer 
-  --color=fg:#d0d0d0,fg+:#d0d0d0,bg+:#262626
-  --color=hl:#5f87af,hl+:#487caf,info:#afaf87,marker:#274a37
-  --color=pointer:#a62b2b,spinner:#af5fff,prompt:#876253,header:#87afaf'
+  --color=fg:#ECEFF4,fg+:#EBCB8B,bg+:#3B4252
+  --color=hl:#81A1C1,hl+:#5E81AC,info:#A3BE8C,marker:#3B4252
+  --color=pointer:#BF616A,spinner:#af5fff,prompt:#876253,header:#87afaf'
 # Preview file content using bat
 export FZF_CTRL_T_OPTS="
   --walker-skip .git,node_modules,target,PortProton
