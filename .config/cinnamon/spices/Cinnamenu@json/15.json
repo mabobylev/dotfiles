@@ -148,7 +148,6 @@
             "Graphics",
             "Games",
             "Internet",
-            "Education",
             "Office",
             "Development",
             "Other",
@@ -157,7 +156,8 @@
             "Preferences",
             "places",
             "recents",
-            "/home/bma"
+            "/home/bma",
+            "Science"
         ]
     },
     "custom-menu-width": {
@@ -174,8 +174,10 @@
         "type": "generic",
         "default": [],
         "value": [
-            "org.inkscape.Inkscape.desktop",
+            "firefox.desktop",
             "Lesta Game Center.desktop",
+            "org.inkscape.Inkscape.desktop",
+            "stm32cubemx.desktop",
             "cinnamon-settings.desktop",
             "virt-manager.desktop",
             "libreoffice-writer.desktop",
@@ -191,9 +193,7 @@
             "rofi.desktop",
             "gearlever_cutter_abd92a.desktop",
             "org.gnome.Terminal.desktop",
-            "brave-browser.desktop",
-            "libreoffice-math.desktop",
-            "org.gnome.GHex.desktop"
+            "brave-browser.desktop"
         ]
     },
     "search-start-folder": {
