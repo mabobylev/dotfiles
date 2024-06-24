@@ -1,0 +1,1 @@
+[ -z "$xinitrc" ] && source "$HOME/.xinitrc"
