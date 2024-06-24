@@ -175,8 +175,8 @@
         "default": [],
         "value": [
             "virt-manager.desktop",
-            "firefox.desktop",
             "Lesta Game Center.desktop",
+            "firefox.desktop",
             "org.inkscape.Inkscape.desktop",
             "stm32cubemx.desktop",
             "cinnamon-settings.desktop",

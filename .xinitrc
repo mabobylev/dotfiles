@@ -1,11 +1,13 @@
 #!/bin/sh
 
+export xinitrc=1
+
 # Color scheme for dircolors and Xresources
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
 # export usermodmap=$HOME/.Xmodmap
-export userresources=$HOME/.Xresources
-export usercolors=$HOME/.dir_colors
+export userresources="$HOME/.Xresources"
+export usercolors="$HOME/.dir_colors"
 
 # merge in defaults and keymaps
 [ -f $sysresources ] && xrdb -merge $sysresources
@@ -48,6 +50,7 @@ export AWT_TOOLKIT=XToolkit
 export _JAVA_AWT_WM_NONREPARENTING=1
 #This is needed for skinning KDE applications
 export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_QPA_PLATFORM=xcb
 export GTK_THEME=Nordic:dark
 
 # Dbus fix
@@ -66,18 +69,20 @@ if test -f /usr/lib/openssh/x11-ssh-askpass; then # Archlinux
 	SSH_ASKPASS=/usr/lib/openssh/x11-ssh-askpass ssh-add </dev/null
 fi
 
-xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
+# xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
 
 # Set wallpaper
-xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.png &
+# xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.png &
 
-# Initialize ALSA
-# alsactl init
-# alsactl restore -f $HOME/.asoundrc &
+# Restore sound settings
+# amixer set Master unmute
+# amixer set Speaker unmute
+# amixer set Headphone unmute
+eval $(alsactl restore -f "$HOME/.asoundrc")
 
 # Start dwm
 # exec dwmblocks &
-dex --autostart --environment dwm &
+# dex --autostart --environment dwm &
 exec dwm
 
 # Start i3
