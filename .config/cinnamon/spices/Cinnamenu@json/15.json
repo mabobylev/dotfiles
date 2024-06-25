@@ -174,12 +174,12 @@
         "type": "generic",
         "default": [],
         "value": [
+            "cinnamon-settings.desktop",
             "virt-manager.desktop",
             "Lesta Game Center.desktop",
             "firefox.desktop",
             "org.inkscape.Inkscape.desktop",
             "stm32cubemx.desktop",
-            "cinnamon-settings.desktop",
             "libreoffice-writer.desktop",
             "github-desktop.desktop",
             "libreoffice-startcenter.desktop",

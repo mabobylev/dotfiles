@@ -1,7 +1,5 @@
 #!/bin/sh
 
-export xinitrc=1
-
 # Color scheme for dircolors and Xresources
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
@@ -51,7 +49,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 #This is needed for skinning KDE applications
 export QT_QPA_PLATFORMTHEME=qt5ct
 export QT_QPA_PLATFORM=xcb
-export GTK_THEME=Nordic:dark
+export GTK_THEME="Nordic:dark"
 
 # Dbus fix
 # xlogin unsets the dbus address if it is the system bus, let's re-set it...
@@ -61,9 +59,9 @@ if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
 fi
 
 # `/usr/bin/ssh-agent`
-eval "$(/usr/bin/ssh-agent)"
+# eval "$(/usr/bin/ssh-agent)"
 #Open SSH keychain, load into systemd user environment
-eval $(keychain --systemd -q --eval)
+# eval $(keychain --systemd -q --eval)
 
 if test -f /usr/lib/openssh/x11-ssh-askpass; then # Archlinux
 	SSH_ASKPASS=/usr/lib/openssh/x11-ssh-askpass ssh-add </dev/null
@@ -72,7 +70,7 @@ fi
 # xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
 
 # Set wallpaper
-# xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.png &
+xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.png &
 
 # Restore sound settings
 # amixer set Master unmute

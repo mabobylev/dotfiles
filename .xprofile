@@ -1,1 +1,19 @@
-[ -z "$xinitrc" ] && source "$HOME/.xinitrc"
+[ -z $userresources ] && xrdb -merge "$HOME/.Xresources"
+[ -z $usercolors ] && eval $(dircolors "$HOME/.dir_colors")
+
+xset -b # disable bell
+# Disable DPMS turning off the screen
+xset dpms 0 0 0
+xset s off
+xset s noblank
+# xset -dpms
+
+# Use XToolkit in java applications
+[ -z "$AWT_TOOLKIT" ] && export AWT_TOOLKIT="XToolkit"
+[ -z "$_JAVA_AWT_WM_NONREPARENTING" ] && export _JAVA_AWT_WM_NONREPARENTING=1
+# This is needed for skinning KDE applications
+[ -z "$QT_QPA_PLATFORMTHEME" ] && export QT_QPA_PLATFORMTHEME="qt5ct"
+[ -z "$QT_QPA_PLATFORM" ] && export QT_QPA_PLATFORM="xcb"
+[ -z "$GTK_THEME" ] && export GTK_THEME="Nordic:dark"
+
+eval $(alsactl restore -f "$HOME/.asoundrc")
