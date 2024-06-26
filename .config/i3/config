@@ -117,6 +117,15 @@ bindsym $alt+d exec --no-startup-id dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb
 # bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 # bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
 
+# start web-browser
+bindsym $mod+b exec --no-startup-id pidof firefox || firefox
+
+# start file manager
+bindsym $mod+n exec --no-startup-id pidof nemo || nemo
+
+# start VSCode
+bindsym $mod+c exec --no-startup-id pidof code || code
+
 # change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
