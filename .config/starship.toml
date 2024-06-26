@@ -25,15 +25,15 @@ $docker_context\
 [](fg:#06969A bg:#33658A)\
 $time\
 [ ](fg:#33658A)\
-$character """
+$character"""
 
 command_timeout = 5000
 # Disable the blank line at the start of the prompt
 # add_newline = false
 
 [character]
-success_symbol = "[➜](bold green)"
-error_symbol = "[✗](bold red)"
+success_symbol = "[➜ ](bold green)"
+error_symbol = "[✗ ](bold red)"
 
 [package]
 disabled = true

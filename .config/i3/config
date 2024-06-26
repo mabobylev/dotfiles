@@ -254,7 +254,7 @@ mode "resize" {
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape or $mod+r
+
         bindsym Return mode "default"
         bindsym Escape mode "default"
         bindsym $mod+r mode "default"
@@ -336,19 +336,22 @@ for_window [window_role="task_dialog"] floating enable
 for_window [title="Preferences$"] floating enable
 
 
-# Bindings for scratchpad
+#####################################################################################################################
+#################                           BINDINGS FOR TAKE SCRATCHPAD                            #################
+#####################################################################################################################
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 # bindsym $mod+c [instance="(?i)ranger"] scratchpad show
 
-# Bindings for i3-gaps
+#####################################################################################################################
+#################                           BINDINGS FOR TAKE GAPPS                                 #################
+#####################################################################################################################
 # bindsym $mod+Shift+equal gaps inner all set 2
 # bindsym $mod+Shift+minus gaps inner all set 0
 
 #####################################################################################################################
 #################                           BINDINGS FOR TAKE SCREENSHOT                            #################
 #####################################################################################################################
-# Bindings for take screenshot
 bindsym --release $mod+Print exec --no-startup-id import -window root $HOME/Pictures/shot_$(date +%F-%H-%M).png
 # Screenshot the active window and save it to the clipboard for quick pasting
 # Requires maim and xclip
@@ -359,10 +362,12 @@ bindsym $mod+Shift+Print exec --no-startup-id maim -i $(xdotool getactivewindow)
 #####################################################################################################################
 #################                                EXECUTION ROFI                                     #################
 #####################################################################################################################
-# Execution ROFI
 bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+Tab exec --no-startup-id rofi -show window
 
+#####################################################################################################################
+#################                                EXECUTION PAVUCONTROL                              #################
+#####################################################################################################################
 # Execution Pavucontrol
 bindsym $alt+Control+p exec --no-startup-id pavucontrol;focus
 # kill all windows except for Firefox and Gnome Terminal.
@@ -371,7 +376,7 @@ bindsym $alt+Control+p exec --no-startup-id pavucontrol;focus
 bindsym $alt+Shift+Return exec --no-startup-id nemo
 
 #####################################################################################################################
-#################                          how to lock, exit, reboot, ...                           #################
+#################                          Menu to lock, exit, reboot, ...                          #################
 #####################################################################################################################
 # Mode exit menu
 # Press $mod+Shift+e followed by either e, r, s Escape or Return to exit i3,
