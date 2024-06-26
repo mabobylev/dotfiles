@@ -16,7 +16,8 @@ set $mod Mod4
 # is used in the bar {} block below.
 # font pango:monospace 8
 # font pango:Ubuntu 10
-font pango:JetBrainsMono Nerd Font, "Font Awesome 6 Free Regular" 10
+# font pango:JetBrainsMono Nerd Font, "Font Awesome 6 Free Regular" 10
+font pango:Iosevka Nerd Font, Symbols Nerd Font, "Font Awesome 6 Free Regular" 11
 
 
 # Custom window configuration
@@ -84,7 +85,7 @@ exec --no-startup-id xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-
 #################                              KEY BINDINGS & MOUSE                                 #################
 #####################################################################################################################
 ## KEY BINDINGS
-bindsym Mod1+Tab focus right
+bindsym $alt+Tab focus right
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -108,7 +109,7 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 #bindsym $mod+d exec --no-startup-id dmenu_run
-bindsym $alt+d exec --no-startup-id dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'JetBrainsMono Nerd Font:bold:pixelsize=14'
+bindsym $alt+d exec --no-startup-id dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'Iosevka Nerd Font:bold:pixelsize=18'
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
@@ -174,16 +175,7 @@ bindsym $mod+x [urgent=latest] focus
 #####################################################################################################################
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-# set $ws1 "1"
-# set $ws2 "2"
-# set $ws3 "3"
-# set $ws4 "4"
-# set $ws5 "5"
-# set $ws6 "6"
-# set $ws7 "7"
-# set $ws8 "8"
-# set $ws9 "9"
-# set $ws10 "10"
+
 # term
 set $ws1 1: 
 # web
@@ -202,16 +194,6 @@ set $ws7 7:
 set $ws8 8: 
 # science !
 set $ws9 9: 
-
-#set $ws1 1:➊
-#set $ws2 2:➋
-#set $ws3 3:➌
-#set $ws4 4:➍
-#set $ws5 5:➎
-#set $ws6 6:➏
-#set $ws7 7:➐
-#set $ws8 8:➑
-#set $ws9 9:➒
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -382,11 +364,11 @@ bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+Tab exec --no-startup-id rofi -show window
 
 # Execution Pavucontrol
-bindsym Mod1+Control+p exec --no-startup-id pavucontrol;focus
+bindsym $alt+Control+p exec --no-startup-id pavucontrol;focus
 # kill all windows except for Firefox and Gnome Terminal.
 # case-insensitive and uses negative lookaheads, supported by PCRE
 # bindsym $mod+x [class="^(?i)(?!firefox)(?!gnome-terminal).*"] kill
-bindsym Mod1+Shift+Return exec --no-startup-id nemo
+bindsym $alt+Shift+Return exec --no-startup-id nemo
 
 #####################################################################################################################
 #################                          how to lock, exit, reboot, ...                           #################

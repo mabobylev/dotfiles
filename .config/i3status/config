@@ -37,17 +37,17 @@ disk "/" {
         # %free, %percentage_free - свободное пространство
         # %avail, %percentage_avail - доступное пространство
         # %total - всего
-        format = " %avail"
+        format = "  %avail"
     
         # будет окрашен в "color_bad" (по умолчанию красный)
         # при достижении нижнего порога менее 10GB доступного пространства
         low_threshold = "10"
         threshold_type = "gbytes_avail"
-        format_below_threshold = " Warning: %avail"
+        format_below_threshold = "  Warning: %avail"
 }
 
 load {
-        format = " %1min"
+        format = "  %1min"
 }
 
 # миниторинг оперативной памяти
@@ -61,7 +61,7 @@ memory {
         # %free, percentage_free
         # %available, percentage_available
         # %shared, percentage_shared
-        format = " %used"
+        format = "  %used"
     
         # порог, при котором вывод окрасится в
         # желтый (degraded) или красный (critical)
@@ -75,7 +75,7 @@ memory {
 cpu_usage {
     # %usage - процентное использование ЦП
     # %cpu<N> - начиная с %cpu0 и далее показывает использование ядер
-    format = " %usage"
+    format = "  %usage"
 
     # доступны параметры:
     # degraded_threshold, окрас в желтый, по умолчанию 90
@@ -86,13 +86,13 @@ cpu_usage {
 
 # управление громкостью звука
 volume master {
-    format = " %volume" # шаблон громкости в активном состоянии
-    format_muted = " %volume" # шаблон громкости в состоянии muted (без звука)
+    format = "  %volume" # шаблон громкости в активном состоянии
+    format_muted = "  %volume" # шаблон громкости в состоянии muted (без звука)
     device = "default"
     mixer = "Master"
     mixer_idx = 0
 }
 
 tztime local {
-        format = " %d-%m %a  %H:%M"
+        format = "  %d-%m %a   %H:%M"
 }
