@@ -1,5 +1,24 @@
-[ -z $userresources ] && xrdb -merge "$HOME/.Xresources"
-[ -z $usercolors ] && eval $(dircolors "$HOME/.dir_colors")
+# Color scheme for dircolors and Xresources
+sysresources=/etc/X11/xinit/.Xresources
+sysmodmap=/etc/X11/xinit/.Xmodmap
+# export usermodmap=$HOME/.Xmodmap
+export userresources="$HOME/.Xresources"
+export usercolors="$HOME/.dir_colors"
+
+# merge in defaults and keymaps
+[ -f $sysresources ] && xrdb -merge $sysresources
+[ -f $sysmodmap ] && xmodmap $sysmodmap
+# [ -f $usermodmap ] && xmodmap $usermodmap
+[ -f $userresources ] && xrdb -merge $userresources
+[ -f $usercolors ] && eval "$(dircolors $usercolors)"
+
+# for terminus font in Archlinux :(
+# xset +fp "$HOME/.fonts"
+# #xset fp+ "$HOME/.fonts/artwiz"
+xset +fp /usr/share/fonts/local
+xset fp rehash
+#
+# setxkbmap -layout "us,ru" -option "grp:caps_toggle,grp_led:scroll,terminate:ctrl_alt_bksp,compose:ralt"
 
 xset -b # disable bell
 # Disable DPMS turning off the screen
@@ -8,12 +27,20 @@ xset s off
 xset s noblank
 # xset -dpms
 
+# Enforce correct locales from the beginning:
+# unset LC_ALL
+# export LANG=ru_RU.UTF-8
+# export LC_MESSAGES=C
+# export LC_TIME=ru_RU.UTF-8
+
 # Use XToolkit in java applications
 [ -z "$AWT_TOOLKIT" ] && export AWT_TOOLKIT="XToolkit"
 [ -z "$_JAVA_AWT_WM_NONREPARENTING" ] && export _JAVA_AWT_WM_NONREPARENTING=1
 # This is needed for skinning KDE applications
 [ -z "$QT_QPA_PLATFORMTHEME" ] && export QT_QPA_PLATFORMTHEME="qt5ct"
 [ -z "$QT_QPA_PLATFORM" ] && export QT_QPA_PLATFORM="xcb"
-[ -z "$GTK_THEME" ] && export GTK_THEME="Nordic:dark"
+# [ -z "$GTK_THEME" ] && export GTK_THEME="Nordic:dark"
+
+/usr/bin/xsettingsd &
 
 eval $(alsactl restore -f "$HOME/.asoundrc")

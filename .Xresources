@@ -3,9 +3,9 @@
 !----------------------------------------
 Xft.dpi: 96
 Xft.Hinting: 1
-Xft.RGBA: rgb
 Xft.HintStyle: hintslight
 Xft.Antialias: 1
+Xft.RGBA: none
 
 !----------------------------------------
 ! Nord color scheme

@@ -1,18 +1,7 @@
 #!/bin/sh
 
-# Color scheme for dircolors and Xresources
-sysresources=/etc/X11/xinit/.Xresources
-sysmodmap=/etc/X11/xinit/.Xmodmap
-# export usermodmap=$HOME/.Xmodmap
-export userresources="$HOME/.Xresources"
-export usercolors="$HOME/.dir_colors"
-
-# merge in defaults and keymaps
-[ -f $sysresources ] && xrdb -merge $sysresources
-[ -f $sysmodmap ] && xmodmap $sysmodmap
-# [ -f $usermodmap ] && xmodmap $usermodmap
-[ -f $userresources ] && xrdb -merge $userresources
-[ -f $usercolors ] && eval "$(dircolors $usercolors)"
+# Load settings from .xprofile
+[ -f ~/.xprofile ] && . ~/.xprofile
 
 # start some nice programs
 if [ -d /etc/X11/xinit/xinitrc.d ]; then
@@ -21,35 +10,6 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 	done
 	unset f
 fi
-
-# for terminus font in Archlinux :(
-# xset +fp "$HOME/.fonts"
-# #xset fp+ "$HOME/.fonts/artwiz"
-xset +fp /usr/share/fonts/local
-xset fp rehash
-#
-# setxkbmap -layout "us,ru" -option "grp:caps_toggle,grp_led:scroll,terminate:ctrl_alt_bksp,compose:ralt"
-
-xset -b # disable bell
-# Disable DPMS turning off the screen
-xset dpms 0 0 0
-xset s off
-xset s noblank
-# xset -dpms
-
-# Enforce correct locales from the beginning:
-# unset LC_ALL
-# export LANG=ru_RU.UTF-8
-# export LC_MESSAGES=C
-# export LC_TIME=ru_RU.UTF-8
-
-# Use XToolkit in java applications
-export AWT_TOOLKIT=XToolkit
-export _JAVA_AWT_WM_NONREPARENTING=1
-#This is needed for skinning KDE applications
-export QT_QPA_PLATFORMTHEME=qt5ct
-export QT_QPA_PLATFORM=xcb
-export GTK_THEME="Nordic:dark"
 
 # Dbus fix
 # xlogin unsets the dbus address if it is the system bus, let's re-set it...
@@ -71,12 +31,6 @@ fi
 
 # Set wallpaper
 xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.png &
-
-# Restore sound settings
-# amixer set Master unmute
-# amixer set Speaker unmute
-# amixer set Headphone unmute
-eval $(alsactl restore -f "$HOME/.asoundrc")
 
 # Start dwm
 # exec dwmblocks &
