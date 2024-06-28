@@ -329,7 +329,7 @@ assign [instance="^(?i)libreoffice|^(?i)soffice"] $ws9
 #assign [class="^libreoffice-startcenter$" instance="^VCLSalFrame.DocumentWindow$"] 9
 
 # Arbitrary commands for specific windows (for_window)
-for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port.*"] floating enable, focus
+for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port.*|^(?i)lgc.*"] floating enable, focus
 # for_window [class="URxvt" instance="^spaceterm$"] floating enable, border normal
 # for_window [class="firefox" instance="^mail.google.com$"] floating enable, focus
 for_window [class="(?i)firefox"] floating enable, focus

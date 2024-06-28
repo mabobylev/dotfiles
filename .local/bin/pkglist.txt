@@ -168,6 +168,7 @@ rofimoji
 rsync
 rz-ghidra
 smartmontools
+sof-firmware
 starship
 system-config-printer
 task
@@ -233,6 +234,7 @@ xorg-xkill
 xorg-xsetroot
 xorg-xwininfo
 xsel
+xsettingsd
 xss-lock
 xwallpaper
 yt-dlp
