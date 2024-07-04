@@ -15,7 +15,7 @@ export usercolors="$HOME/.dir_colors"
 # for terminus font in Archlinux :(
 # xset +fp "$HOME/.fonts"
 # #xset fp+ "$HOME/.fonts/artwiz"
-xset +fp /usr/share/fonts/local
+xset +fp "$HOME/.local/fonts"
 xset fp rehash
 #
 # setxkbmap -layout "us,ru" -option "grp:caps_toggle,grp_led:scroll,terminate:ctrl_alt_bksp,compose:ralt"

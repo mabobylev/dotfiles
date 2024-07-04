@@ -19,7 +19,7 @@ if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
 fi
 
 # `/usr/bin/ssh-agent`
-# eval "$(/usr/bin/ssh-agent)"
+eval "$(/usr/bin/ssh-agent)"
 #Open SSH keychain, load into systemd user environment
 # eval $(keychain --systemd -q --eval)
 
@@ -27,7 +27,7 @@ if test -f /usr/lib/openssh/x11-ssh-askpass; then # Archlinux
 	SSH_ASKPASS=/usr/lib/openssh/x11-ssh-askpass ssh-add </dev/null
 fi
 
-# xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
+xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
 
 # Set wallpaper
 xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.png &
@@ -35,10 +35,10 @@ xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.pn
 # Start dwm
 # exec dwmblocks &
 # dex --autostart --environment dwm &
-# exec dwm
+exec dwm
 
 # Start i3
-exec i3
+# exec i3
 
 #--------------------------------------------------------------------------------
 # ~/.local/bin/dwmbar &
