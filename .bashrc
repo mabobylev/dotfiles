@@ -33,53 +33,6 @@ shopt -s dirspell
 shopt -s cdspell
 
 #######################################################
-# Useful aliases
-#######################################################
-alias cpv='rsync -ah --info=progress2'
-# alias ls='eza --icons=always'
-alias ls='lsd --color=always'
-alias la='ls -a'
-alias ll='ls -l'
-alias lt='ls --tree --level=1 --no-time --no-user --no-permissions'
-alias grep='grep --color=auto'
-alias cat='bat -n'
-alias v='nvim'
-alias vi='nvim'
-alias svi='sudo vi'
-alias grep='rg'
-alias mkdir='mkdir -p'
-alias pbcopy='xsel --clipboard --input'
-alias pbpaste='xsel --clipboard --output'
-#alias pbcopy='xclip -selection clipboard'
-#alias pbpaste='xclip -selection clipboard -o'
-
-# Alias's for archives
-alias mktar='tar -cvf'
-alias mkbz2='tar -cvjf'
-alias mkgz='tar -cvzf'
-alias untar='tar -xvf'
-alias unbz2='tar -xvjf'
-alias ungz='tar -xvzf'
-
-# Alias's for git
-alias gu='git add . && git commit -a -m "Update" && git push'
-alias gc='git clone'
-alias gp='git push'
-alias gl='git pull'
-alias gs='git status'
-
-# Alias for my dotfiles repos
-alias dot='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-
-# Alias's for paru
-alias pkgm='paru'
-alias pkgi='paru --noconfirm --needed -S'
-alias pkgu='paru --noconfirm --needed -Syu'
-alias pkgs='paru -Ss'
-alias pkgc='paru --noconfirm -Scc'
-alias pkgr='paru --noconfirm -Rns'
-
-#######################################################
 # To have colors for ls and all grep commands such as grep, egrep and zgrep
 #######################################################
 export CLICOLOR=1
@@ -96,7 +49,7 @@ export LESS_TERMCAP_us=$'\e[1;4;34m'
 PS1='[\u@\h \W]\$ '
 
 #######################################################
-# SPECIAL FUNCTIONS
+# Useful aliases and functions
 #######################################################
 # Extracts any archive(s) (if "unp" or "atool" isn't installed)
 extract() {
@@ -133,6 +86,71 @@ gcp() {
 	git commit -a -m "$commit_msg"
 	git push
 }
+
+# function to check if a command exists
+command_exist() {
+	command -v "$1" >/dev/null 2>&1
+}
+
+alias cpv='rsync -ah --info=progress2'
+# check if lsd or eza is installed
+
+if command_exist lsd; then
+	# alias ls='eza --icons=always'
+	alias ls='lsd --color=always'
+else
+	alias ls='ls --color=always'
+fi
+alias la='ls -a'
+alias ll='ls -l'
+alias lt='ls --tree --level=1 --no-time --no-user --no-permissions'
+# check if ripgrep is installed
+if command_exist rg; then
+	alias grep='rg'
+else
+	alias grep='grep --color=auto'
+fi
+# check if bat is installed
+if command_exist bat; then
+	alias cat='bat -n'
+fi
+# check if nvim is installed
+if command_exist nvim; then
+	alias v='nvim'
+	alias vi='nvim'
+fi
+alias svi='sudo vi'
+alias mkdir='mkdir -p'
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
+#alias pbcopy='xclip -selection clipboard'
+#alias pbpaste='xclip -selection clipboard -o'
+
+# Alias's for archives
+alias mktar='tar -cvf'
+alias mkbz2='tar -cvjf'
+alias mkgz='tar -cvzf'
+alias untar='tar -xvf'
+alias unbz2='tar -xvjf'
+alias ungz='tar -xvzf'
+
+# Alias's for git
+alias gu='git add . && git commit -a -m "Update" && git push'
+alias gc='git clone'
+alias gp='git push'
+alias gl='git pull'
+alias gs='git status'
+
+# Alias for my dotfiles repos
+alias dot='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+# Alias's for paru
+alias pkgm='paru'
+alias pkgi='paru --noconfirm --needed -S'
+alias pkgu='paru --noconfirm --needed -Syu'
+alias pkgs='paru -Ss'
+alias pkgc='paru --noconfirm -Scc'
+alias pkgr='paru --noconfirm -Rns'
 
 #######################################################
 # FZF settings
