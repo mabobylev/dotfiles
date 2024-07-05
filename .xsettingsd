@@ -1,7 +1,10 @@
-
 Net/ThemeName "Nordic"
 Net/IconThemeName "Papirus-Dark"
-Gtk/CursorThemeName "Simp1e-Tokyo-Night"
+Gtk/CursorThemeName "Simp1e-Nord-Night"
+Gtk/FontName "Ubuntu Nerd Font Condensed 10"
+Gtk/MenuImages 1
+Gtk/EnableAnimations 1
+Gtk/ButtonImages 1
 Net/EnableEventSounds 0
 Net/EnableInputFeedbackSounds 0
 Xft/DPI 98304
@@ -9,9 +12,5 @@ Xft/DPI 98304
 Xft/Hinting 1
 Xft/HintStyle "hintslight"
 Xft/Antialias 1
-##Xft/RGBA "rgb"
-Xft/RGBA "none"
-Gtk/MenuImages 1
-Gtk/EnableAnimations 1
-Gtk/FontName "Ubuntu Nerd Font Condensed 10"
-Gtk/ButtonImages 1
+Xft/RGBA "rgb"
+## Xft/RGBA "none"

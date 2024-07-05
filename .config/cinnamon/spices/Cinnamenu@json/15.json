@@ -148,6 +148,7 @@
             "Graphics",
             "Games",
             "Internet",
+            "Science",
             "Office",
             "Development",
             "Other",
@@ -156,8 +157,8 @@
             "Preferences",
             "places",
             "recents",
-            "/home/bma",
-            "Science"
+            "emoji:",
+            "/home/bma"
         ]
     },
     "custom-menu-width": {
@@ -174,26 +175,7 @@
         "type": "generic",
         "default": [],
         "value": [
-            "cinnamon-settings.desktop",
-            "virt-manager.desktop",
-            "Lesta Game Center.desktop",
-            "firefox.desktop",
-            "org.inkscape.Inkscape.desktop",
-            "stm32cubemx.desktop",
-            "libreoffice-writer.desktop",
-            "github-desktop.desktop",
-            "libreoffice-startcenter.desktop",
-            "com.github.wwmm.easyeffects.desktop",
-            "guvcview.desktop",
-            "org.pulseaudio.pavucontrol.desktop",
-            "libreoffice-calc.desktop",
-            "org.gnome.Boxes.desktop",
-            "helix.desktop",
-            "it.mijorus.gearlever.desktop",
-            "rofi.desktop",
-            "gearlever_cutter_abd92a.desktop",
-            "org.gnome.Terminal.desktop",
-            "brave-browser.desktop"
+            "cinnamon-settings.desktop"
         ]
     },
     "search-start-folder": {
@@ -316,7 +298,7 @@
         "default": true,
         "description": "Show emoji category",
         "tooltip": "Show emoji category in the menu",
-        "value": false
+        "value": true
     },
     "menu-editor-button": {
         "type": "button",
@@ -397,7 +379,7 @@
         "default": true,
         "description": "Emoji search",
         "tooltip": "Show emojis in search results",
-        "value": false
+        "value": true
     },
     "web-search-option": {
         "type": "combobox",
@@ -419,7 +401,7 @@
             "Qwant": 12
         },
         "tooltip": "Show an internet search option in search results",
-        "value": 5
+        "value": 1
     },
     "web-suggestions": {
         "type": "checkbox",
@@ -602,7 +584,7 @@
         "default_category": "Linux",
         "default_icon": "cinnamon-symbolic",
         "tooltip": "Panel icon",
-        "value": "start-here"
+        "value": "start-here-symbolic"
     },
     "menu-icon-size-custom": {
         "type": "checkbox",
@@ -621,7 +603,7 @@
         "description": "Panel icon size (pixels)",
         "dependency": "menu-icon-size-custom",
         "tooltip": "Choose a custom size for the panel icon",
-        "value": 28
+        "value": 24
     },
     "menu-label": {
         "type": "entry",

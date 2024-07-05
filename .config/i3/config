@@ -281,10 +281,10 @@ bar {
         # padding 2px
         strip_workspace_numbers yes
         separator_symbol "  "
-        i3bar_command i3bar --transparency
+        # i3bar_command i3bar --transparency
         # status_command i3blocks
         status_command i3status
-        tray_padding 1
+        # tray_padding 1
         colors {
             separator  #81A1C1
             statusline #81A1C1

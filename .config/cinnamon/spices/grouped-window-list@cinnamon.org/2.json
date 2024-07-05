@@ -165,9 +165,7 @@
         "value": [
             "nemo.desktop",
             "firefox.desktop",
-            "Alacritty.desktop",
-            "code.desktop",
-            "org.telegram.desktop._724d0d8764da6e8a7952ba1f37659f88.desktop"
+            "org.gnome.Terminal.desktop"
         ]
     },
     "group-apps": {
