@@ -165,7 +165,7 @@
         "value": [
             "nemo.desktop",
             "firefox.desktop",
-            "org.gnome.Terminal.desktop"
+            "Alacritty.desktop"
         ]
     },
     "group-apps": {
@@ -247,7 +247,7 @@
             "Large": 9,
             "Largest": 12
         },
-        "value": 6
+        "value": 9
     },
     "thumbnail-scroll-behavior": {
         "type": "checkbox",
@@ -265,13 +265,13 @@
         "type": "checkbox",
         "default": false,
         "description": "Animate thumbnails",
-        "value": false
+        "value": true
     },
     "vertical-thumbnails": {
         "type": "checkbox",
         "default": false,
         "description": "Enable vertical thumbnails",
-        "value": false
+        "value": true
     },
     "sort-thumbnails": {
         "type": "checkbox",
@@ -301,7 +301,7 @@
         "type": "checkbox",
         "default": false,
         "description": "Show autostart option",
-        "value": false
+        "value": true
     },
     "monitor-move-all-windows": {
         "type": "checkbox",
