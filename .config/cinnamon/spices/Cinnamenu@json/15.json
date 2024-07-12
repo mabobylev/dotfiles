@@ -175,9 +175,12 @@
         "type": "generic",
         "default": [],
         "value": [
+            "Lesta Game Center.desktop",
+            "ranger.desktop",
+            "lstopo.desktop",
+            "xplr.desktop",
             "stm32cubeide.desktop",
             "stlink-gui.desktop",
-            "Lesta Game Center.desktop",
             "firefox.desktop",
             "cinnamon-settings.desktop",
             "org.gnome.Terminal.desktop",
