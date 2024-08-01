@@ -176,6 +176,7 @@
         "default": [],
         "value": [
             "Lesta Game Center.desktop",
+            "system-config-printer.desktop",
             "ranger.desktop",
             "lstopo.desktop",
             "xplr.desktop",
