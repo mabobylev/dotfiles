@@ -164,7 +164,7 @@
     "custom-menu-width": {
         "type": "generic",
         "default": 800,
-        "value": 800
+        "value": 799.1483306884766
     },
     "custom-menu-height": {
         "type": "generic",
@@ -175,19 +175,26 @@
         "type": "generic",
         "default": [],
         "value": [
-            "Lesta Game Center.desktop",
-            "system-config-printer.desktop",
-            "ranger.desktop",
             "lstopo.desktop",
-            "xplr.desktop",
-            "stm32cubeide.desktop",
-            "stlink-gui.desktop",
-            "firefox.desktop",
+            "virt-manager.desktop",
+            "Lesta Game Center.desktop",
+            "v2raya.desktop",
+            "system-config-printer.desktop",
+            "cups.desktop",
+            "libreoffice-writer.desktop",
+            "alacarte-made-903c0c62-907f-11ef-9d76-84e058b173b9.desktop",
             "cinnamon-settings.desktop",
-            "org.gnome.Terminal.desktop",
-            "thorium-browser.desktop",
-            "thorium-shell.desktop",
-            "gearlever_cutter_abd92a.desktop"
+            "ru.linux_gaming.PortProton.desktop",
+            "xed.desktop",
+            "stm32cubeide.desktop",
+            "org.gnome.Rhythmbox3.desktop",
+            "stm32cubemx.desktop",
+            "audacity.desktop",
+            "guvcview.desktop",
+            "cinnamon-onscreen-keyboard.desktop",
+            "it.mijorus.gearlever.desktop",
+            "gimp.desktop",
+            "blueberry.desktop"
         ]
     },
     "search-start-folder": {

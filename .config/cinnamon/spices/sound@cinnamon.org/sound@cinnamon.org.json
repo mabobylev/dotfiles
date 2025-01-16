@@ -41,7 +41,8 @@
             "banshee",
             "vlc",
             "rhythmbox",
-            "firefox"
+            "firefox",
+            "org.gnome.Rhythmbox3"
         ]
     },
     "section2": {
