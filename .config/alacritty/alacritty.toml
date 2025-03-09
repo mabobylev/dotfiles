@@ -1,8 +1,9 @@
-general.import= [
-  # "~/.config/alacritty/tokyo-night.toml"
-  # "~/.config/alacritty/catppuccin-macchiato.toml"
-  # "~/.config/alacritty/catppuccin-mocha.toml"
-  "~/.config/alacritty/nord.toml",
+general.import = [
+  "~/.config/alacritty/theme/nord.toml",
+  # "~/.config/alacritty/theme/tokyo-night.toml"
+  # "~/.config/alacritty/theme/catppuccin-macchiato.toml"
+  # "~/.config/alacritty/theme/catppuccin-mocha.toml",
+  # "~/Git/alacritty-theme/theme/flexoki.toml",
 ]
 
 [colors]

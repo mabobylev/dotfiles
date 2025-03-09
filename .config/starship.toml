@@ -1,4 +1,40 @@
 "$schema" = "https://starship.rs/config-schema.json"
+# format = """\
+# $nix_shell\
+# $directory\
+# $git_branch\
+# \n$time\
+# $character\
+# """
+# add_newline = false
+# 
+# [directory]
+# style = "fg:white"
+# format = " [󰉋 ](fg:yellow)[$path]($style)"
+# truncation_length = 5
+# truncate_to_repo = true
+# repo_root_format = "[ 󰉒 ](fg:yellow)$repo_root$path"
+# before_repo_root_style = ""
+# repo_root_style = ""
+# 
+# [time]
+# disabled = false
+# time_format = " [%R]"
+# style = "fg:white"
+# format = '[$time](fg:bright-black)($style)'
+# 
+# [character]
+# success_symbol = '[ ](bold cyan)'
+# error_symbol = '[ ](bold red)'
+# 
+# [git_branch]
+# symbol = " "
+# style = "bg:green"
+# format = '[[$symbol $branch](fg:green)]($style)'
+# 
+# [nix_shell]
+# symbol = '  '
+# format = '[$symbol]($style)'
 
 format = """
 [](#3B4252)\
