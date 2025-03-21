@@ -34,8 +34,8 @@ style = "Bold Italic"
 style = "Italic"
 
 [font.normal]
-# family = "JetBrainsMono Nerd Font"
-family = "Iosevka Nerd Font"
+family = "JetBrainsMono Nerd Font"
+# family = "Iosevka Nerd Font"
 style = "Regular"
 
 # [[keyboard.bindings]]

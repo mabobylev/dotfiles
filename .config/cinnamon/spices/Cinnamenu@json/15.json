@@ -175,13 +175,16 @@
         "type": "generic",
         "default": [],
         "value": [
+            "org.sigrok.PulseView.desktop",
+            "it.mijorus.gearlever.desktop",
+            "yad-icon-browser.desktop",
+            "Lesta Game Center.desktop",
             "cinnamon-settings.desktop",
             "stm32cubeide.desktop",
             "stm32cubemx.desktop",
             "guvcview.desktop",
             "stlink-gui.desktop",
             "code.desktop",
-            "Lesta Game Center.desktop",
             "system-config-printer.desktop",
             "alacarte-made-903c0c62-907f-11ef-9d76-84e058b173b9.desktop",
             "audacity.desktop",
@@ -191,10 +194,7 @@
             "v2raya.desktop",
             "org.x.editor.desktop",
             "cutter.desktop",
-            "org.gnome.Rhythmbox3.desktop",
-            "gimp.desktop",
-            "yandex-browser.desktop",
-            "ru.linux_gaming.PortProton.desktop"
+            "org.gnome.Rhythmbox3.desktop"
         ]
     },
     "search-start-folder": {
