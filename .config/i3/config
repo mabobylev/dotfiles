@@ -321,6 +321,7 @@ assign [class="^(?i)alacritty$"] $ws1
 # assign [class="^URxvt$" instance="^spaceterm$"] $ws3
 assign [class="(?i)chromium|(?i)firefox"] $ws2
 assign [class="(?i)nemo|(?i)nautilus|(?i)thunar"] $ws3
+assign [class="(?i)virt-manager"] $ws3
 assign [class="(?i)code"] $ws4
 assign [class="(?i)telegram"] $ws5
 assign [class="(?i)gimp"] $ws6
@@ -339,6 +340,7 @@ for_window [class="(?i)gpicview|(?i)lxappearance|(?i)dunst"] floating enable
 for_window [class="(?i)gimp|(?i)mpv|(?i)nautilus|(?i)nemo|(?i)thunar"] floating enable, focus
 for_window [instance="^(?i)soffice"] floating enable, focus
 for_window [class="(?i)pavucontrol|(?i)pavumeter|(?i)paman"] floating enable, focus
+for_window [class="^(?i)virt-manager"] floating enable, focus
 # for_window [instance="(?i)ranger"] move scratchpad
 
 for_window [window_role="pop-up"] floating enable,move absolute center

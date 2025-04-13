@@ -18,7 +18,7 @@ set -gx TERMINAL alacritty
 set -gx BROWSER firefox
 
 # Fzf options
-set fzf_preview_dir_cmd eza --all --color=always
+set fzf_preview_dir_cmd lsd --all --color=always
 set fzf_preview_file_cmd bat -n --color=always
 set fzf_fd_opts --hidden --max-depth 5
 

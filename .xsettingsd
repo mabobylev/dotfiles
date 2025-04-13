@@ -1,6 +1,7 @@
 Net/ThemeName "Nordic"
 Net/IconThemeName "Papirus-Dark"
-Gtk/CursorThemeName "Simp1e-Nord-Night"
+Gtk/CursorThemeName "Nordzy-cursors"
+# Gtk/CursorThemeName "Simp1e-Nord-Night"
 Gtk/FontName "Ubuntu Nerd Font Condensed 10"
 Gtk/MenuImages 1
 Gtk/EnableAnimations 1
