@@ -34,11 +34,11 @@ xwallpaper --zoom /usr/share/backgrounds/nordic-wallpapers-git/ign_unsplash34.pn
 
 # Start dwm
 # exec dwmblocks &
-# dex --autostart --environment dwm &
-# exec dwm
+dex --autostart --environment dwm &
+exec dwm
 
 # Start i3
-exec i3
+# exec i3
 
 #--------------------------------------------------------------------------------
 # ~/.local/bin/dwmbar &
