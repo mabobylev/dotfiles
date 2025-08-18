@@ -1,6 +1,0 @@
-/**
- * template
- */
-public class template {
-
-}
