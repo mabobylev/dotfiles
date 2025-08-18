@@ -1,0 +1,127 @@
+!----------------------------------------
+! Font settings
+!----------------------------------------
+Xft.dpi: 96
+Xft.Hinting: 1
+Xft.HintStyle: hintslight
+Xft.Antialias: 1
+Xft.RGBA: none
+
+!----------------------------------------
+! Nord color scheme
+!----------------------------------------
+
+#define nord0 #2E3440
+#define nord1 #3B4252
+#define nord2 #434C5E
+#define nord3 #4C566A
+#define nord4 #D8DEE9
+#define nord5 #E5E9F0
+#define nord6 #ECEFF4
+#define nord7 #8FBCBB
+#define nord8 #88C0D0
+#define nord9 #81A1C1
+#define nord10 #5E81AC
+#define nord11 #BF616A
+#define nord12 #D08770
+#define nord13 #EBCB8B
+#define nord14 #A3BE8C
+#define nord15 #B48EAD
+
+*.foreground: nord4
+*.background: nord0
+*.cursorColor: nord4
+*fading: 35
+*fadeColor: nord3
+
+*.color0: nord1
+*.color1: nord11
+*.color2: nord14
+*.color3: nord13
+*.color4: nord9
+*.color5: nord15
+*.color6: nord8
+*.color7: nord5
+*.color8: nord3
+*.color9: nord11
+*.color10: nord14
+*.color11: nord13
+*.color12: nord9
+*.color13: nord15
+*.color14: nord7
+*.color15: nord6
+
+! DWM settings NORD theme
+dwm.normbgcolor: nord0
+dwm.normbordercolor: nord0
+dwm.normfgcolor: nord7
+dwm.selfgcolor: nord4
+dwm.selfbordercolor: nord9
+dwm.selbgcolor: nord1
+
+!! https://stephango.com/flexoki
+!! xrdb -merge $PWD/Xresources/flexoki-dark
+!
+!! Dark Tones 
+! #define yellow       #AD8301
+! #define orange       #BC5215
+! #define red          #AF3029
+! #define magenta      #A02F6F
+! #define violet       #5E409D
+! #define blue         #205EA6
+! #define cyan         #24837B
+! #define green        #66800B
+! #define white        #FFFCF0
+! #define black        #100F0F
+! 
+! #define bryellow     #D0A215
+! #define brorange     #DA702C
+! #define brred        #D14D41
+! #define brmagenta    #CE5D97
+! #define brviolet     #8B7EC8
+! #define brblue       #4385BE
+! #define brcyan       #3AA99F
+! #define brgreen      #879A39
+! #define brwhite      #F2F0E5 
+! #define brblack      #1C1B1A 
+! 
+! *background:              black
+! *foreground:              brwhite
+! *fading:                  40
+! *fadeColor:               black
+! *cursorColor:             brwhite
+! *pointerColorBackground:  brblack
+! *pointerColorForeground:  black
+! 
+! !black
+! *color0:     black
+! *color8:     brblack
+! !red
+! *color1:     red
+! *color9:     brred
+! !green
+! *color2:     green
+! *color10:    brgreen
+! !yellow
+! *color3:     yellow
+! *color11:    bryellow
+! !blue
+! *color4:     blue
+! *color12:    brblue
+! !magenta
+! *color5:     magenta
+! *color13:    brmagenta
+! !cyan
+! *color6:     cyan
+! *color14:    brcyan
+! !white
+! *color7:     white
+! *color15:    brwhite
+! 
+! ! DWM settings
+! dwm.normbgcolor: black
+! dwm.normbordercolor: black
+! dwm.normfgcolor: white
+! dwm.selfgcolor: brwhite
+! dwm.selfbordercolor: brcyan
+! dwm.selbgcolor: brblack
