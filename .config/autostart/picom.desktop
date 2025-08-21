@@ -11,6 +11,7 @@ TryExec=picom
 Exec=picom
 StartupNotify=false
 Terminal=false
-# Thanks to quequotion for providing this file!
 Icon=compton
 NotShowIn=Sway
+Hidden=true
+

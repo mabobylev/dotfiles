@@ -1,0 +1,6 @@
+/**
+ * template
+ */
+public class template {
+
+}
