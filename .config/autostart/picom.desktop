@@ -12,6 +12,5 @@ Exec=picom
 StartupNotify=false
 Terminal=false
 Icon=compton
-NotShowIn=Sway
-Hidden=true
+NotShowIn=Sway;Xfce
 

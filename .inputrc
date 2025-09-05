@@ -35,4 +35,5 @@ set completion-query-items 1000
 # Execute zi (from zoxide pkg) command by pressing CTRL-f
 # bind '"\C-f":"zi\n"' - it for .bashrc
 "\C-f":"zi\n"
+# Prefixes the line with sudo, if Alt+s is pressed
 "\es":"\C-asudo \C-e"

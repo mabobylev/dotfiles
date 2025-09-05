@@ -70,11 +70,11 @@ xset s noblank
 # fi
 
 xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
-exec startxfce4
+# exec startxfce4
 
-# # Set wallpaper
-# xwallpaper --zoom "$(find /home/bma/Pictures/Wallpapers | shuf -n1)" &
+# Set wallpaper
+xwallpaper --zoom "$(find /home/bma/Pictures/Wallpapers | shuf -n1)" &
 #
-# # Start dwm
-# # dex --autostart --environment dwm &
-# exec dwm
+# Start dwm
+# dex --autostart --environment dwm &
+exec dwm
