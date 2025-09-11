@@ -72,9 +72,12 @@ xset s noblank
 xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
 # exec startxfce4
 
+# Authentication dialog (polkit-gnome)
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # Set wallpaper
 xwallpaper --zoom "$(find /home/bma/Pictures/Wallpapers | shuf -n1)" &
 #
 # Start dwm
 # dex --autostart --environment dwm &
-exec dwm
+# exec dwm
+exec i3

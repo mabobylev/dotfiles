@@ -1,0 +1,98 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+        colors = true
+        interval = 1
+        output_format = "i3bar" # формат вывода, устанавливаем i3bar (JSON)
+}
+
+# order += "wireless _first_"
+order += "ethernet _first_"
+order += "disk /"
+order += "load"
+order += "memory"
+order += "cpu_usage"
+order += "volume master"
+order += "tztime local"
+
+wireless _first_ {
+        format_up = "󰖩 (%quality at %essid) %ip"
+        format_down = "󰖪: down"
+}
+
+ethernet _first_ {
+        format_up = "󰌘 %ip"
+        format_down = "󰌙 down"
+}
+
+disk "/" {
+        # доступные переменные:
+        # %used, %percentage_used - занятое пространство
+        # %free, %percentage_free - свободное пространство
+        # %avail, %percentage_avail - доступное пространство
+        # %total - всего
+        format = "  %avail"
+    
+        # будет окрашен в "color_bad" (по умолчанию красный)
+        # при достижении нижнего порога менее 10GB доступного пространства
+        low_threshold = "10"
+        threshold_type = "gbytes_avail"
+        format_below_threshold = "  Warning: %avail"
+}
+
+load {
+        format = "  %1min"
+}
+
+# миниторинг оперативной памяти
+memory {
+        format = "%used | %available"
+        threshold_degraded = "1G"
+        format_degraded = "MEMORY < %available"
+        # доступные переменные:
+        # %total, percentage_total
+        # %used, percentage_used
+        # %free, percentage_free
+        # %available, percentage_available
+        # %shared, percentage_shared
+        format = "󰍛  %used"
+    
+        # порог, при котором вывод окрасится в
+        # желтый (degraded) или красный (critical)
+        # а формат вывода изменится на format_degraded
+        threshold_degraded = "1G"
+        threshold_critical = "200M"
+        format_degraded = "MEMORY < %available"
+}
+
+# использование центрального процессора
+cpu_usage {
+    # %usage - процентное использование ЦП
+    # %cpu<N> - начиная с %cpu0 и далее показывает использование ядер
+    format = "  %usage"
+
+    # доступны параметры:
+    # degraded_threshold, окрас в желтый, по умолчанию 90
+    # max_threshold, окрас в красный, по умолчанию 95
+    # и кастомные форматы для них
+    # format_above_degraded_threshold и format_above_threshold
+}
+
+# управление громкостью звука
+volume master {
+    format = "  %volume" # шаблон громкости в активном состоянии
+    format_muted = "  %volume" # шаблон громкости в состоянии muted (без звука)
+    device = "default"
+    mixer = "Master"
+    mixer_idx = 0
+}
+
+tztime local {
+        format = "  %d-%m %a   %H:%M"
+}
