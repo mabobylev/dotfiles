@@ -79,5 +79,5 @@ xwallpaper --zoom "$(find /home/bma/Pictures/Wallpapers | shuf -n1)" &
 #
 # Start dwm
 # dex --autostart --environment dwm &
-exec dwm
-# exec i3
+# exec dwm
+exec i3

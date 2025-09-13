@@ -107,18 +107,13 @@ bindsym $mod+Return exec i3-sensible-terminal
 # kill focused window
 bindsym $mod+Shift+q kill
 
-# start dmenu (a program launcher)
-#bindsym $mod+d exec --no-startup-id dmenu_run
-bindsym $alt+d exec --no-startup-id dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'Ubuntu Nerd Font:bold:pixelsize=18'
-# A more modern dmenu replacement is rofi:
-# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
-# There also is i3-dmenu-desktop which only displays applications shipping a
-# .desktop file. It is a wrapper around dmenu, so you need that installed.
-# bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
-# bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
+
+bindsym $alt+q exec --no-startup-id $HOME/.local/bin/dmenuctl
+bindsym $alt+a exec --no-startup-id $HOME/.local/bin/dmenuctl audio
+bindsym $alt+n exec --no-startup-id $HOME/.local/bin/dmenuctl notes
 
 # start web-browser
-bindsym $mod+b exec --no-startup-id pidof firefox || firefox
+bindsym $mod+b exec --no-startup-id pidof yandex-browser-stable || yandex-browser-stable
 
 # start file manager
 bindsym $mod+n exec --no-startup-id pidof thunar || thunar
@@ -317,9 +312,9 @@ client.background       #2E344090
 #################                        Assigning and options applications                         #################
 #####################################################################################################################
 # Automatically putting clients on specific workspaces
-assign [class="^(?i)alacritty$"] $ws1
+assign [class="^(?i)kitty$"] $ws1
 # assign [class="^URxvt$" instance="^spaceterm$"] $ws3
-assign [class="(?i)chromium|(?i)firefox"] $ws2
+assign [class="(?i)waterfox*|(?i)firefox"] $ws2
 assign [class="(?i)yandex.*"] $ws2
 assign [class="(?i)nemo|(?i)nautilus|(?i)thunar"] $ws3
 assign [class="(?i)virt-manager"] $ws3
@@ -335,7 +330,7 @@ assign [instance="^(?i)libreoffice|^(?i)soffice"] $ws9
 for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port.*|^(?i)lgc.*"] floating enable, focus
 # for_window [class="URxvt" instance="^spaceterm$"] floating enable, border normal
 # for_window [class="firefox" instance="^mail.google.com$"] floating enable, focus
-for_window [class="(?i)firefox"] floating enable, focus, move absolute center
+for_window [class="(?i)waterfox*"] floating enable, focus, move absolute center
 for_window [class="(?i)yandex.*"] floating enable, focus, move absolute center
 for_window [class="(?i)telegram"] floating enable
 for_window [class="(?i)gpicview|(?i)lxappearance|(?i)dunst"] floating enable
@@ -374,10 +369,20 @@ bindsym $mod+Print exec maim --select | tee ~/Pictures/$(date +%s).png | xclip -
 bindsym $mod+Shift+Print exec --no-startup-id maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
 
 #####################################################################################################################
-#################                                EXECUTION ROFI                                     #################
+#################                          EXECUTION DMENU / ROFI                                   #################
 #####################################################################################################################
-bindsym $mod+d exec --no-startup-id rofi -show drun
-bindsym $mod+Tab exec --no-startup-id rofi -show window
+# start dmenu (a program launcher)
+#bindsym $mod+d exec --no-startup-id dmenu_run
+# bindsym $alt+d exec --no-startup-id dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'Ubuntu Nerd Font:bold:pixelsize=18'
+bindcode $alt+40 exec --no-startup-id dmenu_run -i -l 10 -fn 'Ubuntu Nerd Font:bold:pixelsize=18'
+# A more modern dmenu replacement is rofi:
+# bindsym $mod+d exec --no-startup-id rofi -show drun
+bindcode $mod+40 exec "rofi -modi drun,run -show drun"
+# There also is i3-dmenu-desktop which only displays applications shipping a
+# .desktop file. It is a wrapper around dmenu, so you need that installed.
+bindcode $mod+Shift+40 exec --no-startup-id i3-dmenu-desktop
+# bindsym $mod+Shift+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+Tab exec "rofi -show window"
 
 #####################################################################################################################
 #################                                EXECUTION PAVUCONTROL                              #################
@@ -386,7 +391,7 @@ bindsym $mod+Tab exec --no-startup-id rofi -show window
 bindsym $alt+Control+p exec --no-startup-id pavucontrol;focus
 # kill all windows except for Firefox and Gnome Terminal.
 # case-insensitive and uses negative lookaheads, supported by PCRE
-# bindsym $mod+x [class="^(?i)(?!firefox)(?!gnome-terminal).*"] kill
+# bindsym $mod+x [class="^(?i)(?!waterfox*)(?!gnome-terminal).*"] kill
 bindsym $alt+Shift+Return exec --no-startup-id thunar
 
 #####################################################################################################################
@@ -404,4 +409,5 @@ mode "$mode_exit" {
     bindsym Escape mode "default"
     bindsym Return mode "default"
 }
-bindsym $mod+Shift+e mode "$mode_exit"
+bindcode $alt+Shift+26 mode "$mode_exit"
+bindcode $mod+Shift+26 exec --no-startup-id rofi -show power-menu -modi power-menu:"rofi-power-menu --choices=logout/shutdown/reboot"
