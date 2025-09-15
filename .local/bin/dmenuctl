@@ -4,10 +4,11 @@ font="Ubuntu Nerd Font:bold:pixelsize=18"
 
 # Функция системных событий (завершение процессов, блокировка экрана, перезагрузка, выключение)
 sys_menu() {
-	case "$(printf "kill\nlock\nreboot\nshutdown" | dmenu -i -fn "$font" -c -l 4)" in
+	case "$(printf "kill\nlock\nlogout\nreboot\nshutdown" | dmenu -i -fn "$font" -c -l 5)" in
 	kill) ps -u $USER -o pid,comm,%cpu,%mem | dmenu -i -fn "$font" -c -l 10 -p Kill: | awk '{print $1}' | xargs -r kill ;;
 		#	lock) slock systemctl suspend -i ;;
 	lock) i3lock -i /usr/share/backgrounds/nordic-wallpapers-git/windows-panic.png ;;
+	logout) i3-msg exit ;;
 	reboot) systemctl reboot -i ;;
 	shutdown) shutdown now ;;
 	*) exit 1 ;;

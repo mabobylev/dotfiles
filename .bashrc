@@ -133,6 +133,7 @@ fi
 if command_exist nvim; then
 	alias v='nvim'
 	alias vi='nvim'
+	n() { if [ "$#" -eq 0 ]; then nvim .; else nvim "$@"; fi; }
 fi
 alias svi='sudo vi'
 alias mkdir='mkdir -p'
