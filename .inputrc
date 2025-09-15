@@ -1,28 +1,40 @@
 $include /etc/inputrc
 
-set show-all-if-ambiguous On
+set meta-flag on
+set input-meta on
+set output-meta on
+set convert-meta off
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
 # Цвет файла в зависимости от типа
 # Может вызвать мерцание текста в некоторых терминалах (например, xterm)
-set colored-stats On
+set colored-stats on
 # Добавление символа для обозначения типа
-set visible-stats On
+set visible-stats on
 # Пометить каталоги-ссылки
-set mark-symlinked-directories On
+set mark-symlinked-directories on
 # Цветовое выделение общего префикса
-set colored-completion-prefix On
+set colored-completion-prefix on
 # Цветовое выделение общего префикса и завершение с помощью меню
-set menu-complete-display-prefix On
+set menu-complete-display-prefix on
 # Отключение в терминале строку ^C при нажании Ctrl+C
 set echo-control-characters off
 # Игнорировать регистр
-set completion-ignore-case On
-#
+set completion-ignore-case on
+set completion-prefix-display-length 2
 # set completion-display-width 0
 set completion-query-items 1000
+# Show all autocomplete results at once
+set page-completions off
+# Be more intelligent when autocompleting by also looking at the text after
+# the cursor. For example, when the current line is "cd ~/src/mozil", and
+# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
+# ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
+# Readline used by Bash 4.)
+set skip-completed-text on
 
 "\e[A": history-search-backward
 "\e[B": history-search-forward
-
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
 
