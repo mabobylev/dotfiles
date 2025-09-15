@@ -5,7 +5,7 @@
 alias cpv='rsync -ah --info=progress2'
 # check if lsd or eza is installed
 
-if command_exist lsd; then
+if command -v lsd &>/dev/null; then
 	# alias ls='eza --icons=always'
 	alias ls='lsd --color=always'
 else
@@ -14,18 +14,19 @@ fi
 alias la='ls -a'
 alias ll='ls -l'
 alias lt='ls --tree --level=1 --no-time --no-user --no-permissions'
+#
 # check if ripgrep is installed
-if command_exist rg; then
+if command -v rg &>/dev/null; then
 	alias grep='rg'
 else
 	alias grep='grep --color=auto'
 fi
 # check if bat is installed
-if command_exist bat; then
+if command -v bat &>/dev/null; then
 	alias cat='bat -n'
 fi
 # check if nvim is installed
-if command_exist nvim; then
+if command -v nvim &>/dev/null; then
 	alias v='nvim'
 	alias vi='nvim'
 	n() { if [ "$#" -eq 0 ]; then nvim .; else nvim "$@"; fi; }
@@ -63,7 +64,7 @@ alias cris='curl -fsSL christitus.com/linux | sh'
 
 # Alias's for package manager
 # check if yay is installed
-if command_exist yay; then
+if command -v yay &>/dev/null; then
 	alias pkgm='yay'
 	# yay -Fy >/dev/null 2>&1
 	alias yayf="yay -Slq | fzf --multi --preview 'yay -Sii {1}' --preview-window right:70% | xargs -ro yay -S"

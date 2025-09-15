@@ -7,6 +7,15 @@
 # [[ -f "$HOME"/.bash.d/alacritty.bash ]] && source $HOME/.bash.d/alacritty.bash
 # [[ -f "$HOME""/.local/share/blesh/ble.sh ]] && source $HOME/.local/share/blesh/ble.sh
 
+if command -v fzf &>/dev/null; then
+	if [[ -f /usr/share/fzf/completion.bash ]]; then
+		source /usr/share/fzf/completion.bash
+	fi
+	if [[ -f /usr/share/fzf/key-bindings.bash ]]; then
+		source /usr/share/fzf/key-bindings.bash
+	fi
+fi
+
 #######################################################
 # Useful settings to make the terminal better
 #######################################################

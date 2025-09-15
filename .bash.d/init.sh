@@ -39,4 +39,11 @@ export LESS_TERMCAP_ue=$'\e[0m'
 export LESS_TERMCAP_us=$'\e[1;4;34m'
 
 #######################################################
-PS1='[\u@\h \W]\$ '
+# Technicolor dreams
+force_color_prompt=yes
+color_prompt=yes
+
+# Simple prompt with path in the window/pane title and caret for typing line
+PS1=$'\uf0a9 '
+PS1="\[\e]0;\w\a\]$PS1"
+# PS1='[\u@\h \W]\$ '
