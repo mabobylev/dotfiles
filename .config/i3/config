@@ -52,7 +52,10 @@ popup_during_fullscreen ignore
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
 
-# Execute pilybar
+# Execute xxkb - keyboard switcher/indicator
+exec_always --no-startup-id pidof xxkb || xxkb
+# 
+# Execute polybar
 # exec_always --no-startup-id pidof polybar || polybar
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
@@ -107,7 +110,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 # kill focused window
 bindsym $mod+Shift+q kill
 
-
+# start dmenuctl - kill/reboot/shutdown; audio output switcher; add/show notes
 bindsym $alt+q exec --no-startup-id $HOME/.local/bin/dmenuctl
 bindsym $alt+a exec --no-startup-id $HOME/.local/bin/dmenuctl audio
 bindsym $alt+n exec --no-startup-id $HOME/.local/bin/dmenuctl notes
@@ -315,7 +318,7 @@ client.background       #2E344090
 assign [class="^(?i)kitty$"] $ws1
 # assign [class="^URxvt$" instance="^spaceterm$"] $ws3
 assign [class="(?i)waterfox*|(?i)firefox"] $ws2
-assign [class="(?i)yandex.*"] $ws2
+assign [class="(?i)yandex*|(?i)luakit"] $ws2
 assign [class="(?i)nemo|(?i)nautilus|(?i)thunar"] $ws3
 assign [class="(?i)virt-manager"] $ws3
 assign [class="(?i)code"] $ws4
@@ -331,7 +334,8 @@ for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port.*|^(?i)lgc.*"] floating enab
 # for_window [class="URxvt" instance="^spaceterm$"] floating enable, border normal
 # for_window [class="firefox" instance="^mail.google.com$"] floating enable, focus
 for_window [class="(?i)waterfox*"] floating enable, focus, move absolute center
-for_window [class="(?i)yandex.*"] floating enable, focus, move absolute center
+for_window [class="(?i)yandex*"] floating enable, focus, move absolute center
+for_window [class="(?i)luakit"] border none, floating enable
 for_window [class="(?i)telegram"] floating enable
 for_window [class="(?i)gpicview|(?i)lxappearance|(?i)dunst"] floating enable
 for_window [class="(?i)gimp|(?i)mpv|(?i)nautilus|(?i)nemo|(?i)thunar"] floating enable, focus
