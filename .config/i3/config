@@ -19,7 +19,6 @@ set $mod Mod4
 # font pango:JetBrainsMono Nerd Font, "Font Awesome 6 Free Regular" 10
 font pango:Ubuntu Nerd Font, Symbols Nerd Font, Font Awesome 7 Free 11
 
-
 # Custom window configuration
 for_window [class="^.*"] border pixel 3
 # new_window pixel 2
