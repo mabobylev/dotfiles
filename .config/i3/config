@@ -13,8 +13,8 @@ set $mod Mod4
 font pango:Ubuntu Nerd Font, Symbols Nerd Font, Font Awesome 7 Free 11
 
 # Custom window configuration
-for_window [class="^.*"] border pixel 3
-# new_window pixel 2
+# for_window [class="^.*"] border pixel 3
+new_window pixel 3
 new_float none
 force_focus_wrapping yes
 # focus_follows_mouse yes
