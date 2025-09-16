@@ -22,13 +22,13 @@ font pango:Ubuntu Nerd Font, Symbols Nerd Font, Font Awesome 7 Free 11
 
 # Custom window configuration
 for_window [class="^.*"] border pixel 3
-# new_window pixel 3
-# new_float none
-# force_focus_wrapping yes
+# new_window pixel 2
+new_float none
+force_focus_wrapping yes
 # focus_follows_mouse yes
 
 # Gapps configuration
-smart_gaps on
+smart_gaps off
 gaps inner 4
 gaps outer 4
 
@@ -116,7 +116,7 @@ bindsym $alt+a exec --no-startup-id $HOME/.local/bin/dmenuctl audio
 bindsym $alt+n exec --no-startup-id $HOME/.local/bin/dmenuctl notes
 
 # start web-browser
-bindsym $mod+b exec --no-startup-id pidof yandex-browser-stable || yandex-browser-stable
+bindsym $mod+b exec --no-startup-id pidof zen || zen
 
 # start file manager
 bindsym $mod+n exec --no-startup-id pidof thunar || thunar
@@ -317,7 +317,7 @@ client.background       #2E344090
 # Automatically putting clients on specific workspaces
 assign [class="^(?i)kitty$"] $ws1
 # assign [class="^URxvt$" instance="^spaceterm$"] $ws3
-assign [class="(?i)waterfox*|(?i)firefox"] $ws2
+assign [class="(?i)zen|(?i)firefox"] $ws2
 assign [class="(?i)yandex*|(?i)luakit"] $ws2
 assign [class="(?i)nemo|(?i)nautilus|(?i)thunar"] $ws3
 assign [class="(?i)virt-manager"] $ws3
@@ -333,7 +333,7 @@ assign [instance="^(?i)libreoffice|^(?i)soffice"] $ws9
 for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port.*|^(?i)lgc.*"] floating enable, focus
 # for_window [class="URxvt" instance="^spaceterm$"] floating enable, border normal
 # for_window [class="firefox" instance="^mail.google.com$"] floating enable, focus
-for_window [class="(?i)waterfox*"] border none, floating enable, focus, move absolute center
+for_window [class="(?i)zen"] border none, floating enable, focus, move absolute center
 for_window [class="(?i)yandex*"] floating enable, focus, move absolute center
 for_window [class="(?i)luakit"] border none, floating enable
 for_window [class="(?i)telegram"] floating enable

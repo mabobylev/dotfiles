@@ -5,7 +5,7 @@ font="Ubuntu Nerd Font:bold:pixelsize=18"
 # Функция системных событий (завершение процессов, блокировка экрана, перезагрузка, выключение)
 sys_menu() {
 	case "$(printf "kill\nlock\nlogout\nreboot\nshutdown" | dmenu -i -fn "$font" -c -l 5)" in
-	kill) ps -u $USER -o pid,comm,%cpu,%mem | dmenu -i -fn "$font" -c -l 10 -p Kill: | awk '{print $1}' | xargs -r kill ;;
+	kill) ps -u "$USER" -o pid,comm,%cpu,%mem | dmenu -i -fn "$font" -c -l 10 -p Kill: | awk '{print $1}' | xargs -r kill ;;
 		#	lock) slock systemctl suspend -i ;;
 	lock) i3lock -i /usr/share/backgrounds/nordic-wallpapers-git/windows-panic.png ;;
 	logout) i3-msg exit ;;
@@ -37,14 +37,14 @@ folder=$HOME/.notes/
 newnote() {
 	name="$(echo "" | dmenu -fn "$font" -c -p "Enter a name: " <&-)" || exit 0
 	: "${name:=$(date +%F_%T | tr ':' '-')}"
-	setsid -f "$TERMINAL" -e nvim $folder$name".md" >/dev/null 2>&1
+	setsid -f "$TERMINAL" -e nvim "$folder$name.md" >/dev/null 2>&1
 }
 
 shownotes() {
 	if [ ! -d "$folder" ]; then
 		mkdir "$folder"
 	fi
-	choice=$(echo -e "New\n$(command ls -t1 $folder)" | dmenu -c -l 5 -i -fn "$font" -p "Choose note or create new: ")
+	choice=$(echo -e "New\n$(command ls -t1 "$folder")" | dmenu -c -l 5 -i -fn "$font" -p "Choose note or create new: ")
 	case $choice in
 	New) newnote ;;
 	*.md) setsid -f "$TERMINAL" -e nvim "$folder$choice" >/dev/null 2>&1 ;;
