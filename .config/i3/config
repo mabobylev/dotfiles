@@ -44,6 +44,9 @@ popup_during_fullscreen ignore
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex --autostart --environment i3
 
+# Execute autotiling
+exec --no-startup-id pidof autotiling || autotiling
+
 # Execute xxkb - keyboard switcher/indicator
 exec_always --no-startup-id pidof xxkb || xxkb
 # 
@@ -108,7 +111,7 @@ bindsym $alt+a exec --no-startup-id $HOME/.local/bin/dmenuctl audio
 bindsym $alt+n exec --no-startup-id $HOME/.local/bin/dmenuctl notes
 
 # start web-browser
-bindsym $mod+b exec --no-startup-id pidof zen || zen
+bindsym $mod+b exec --no-startup-id pidof luakit || luakit
 
 # start file manager
 bindsym $mod+n exec --no-startup-id pidof thunar || thunar
