@@ -240,4 +240,152 @@ bar {
     # }
 }
 
+#--- ДЕКОРАЦИИ ОКОН -------------------------------------------------------------------
+
+# Скругления
+corner_radius 10
+smart_corner_radius enable
+
+# Блюр
+blur on
+blur_xray on
+blur_passes 5
+blur_radius 5
+
+#Тени
+shadows on
+shadows_on_csd on
+shadow_blur_radius 10
+shadow_color #0000007F
+
+# Затемнение неактивных окон
+default_dim_inactive 0.4
+dim_inactive_colors.unfocused #000000FF
+dim_inactive_colors.urgent #900000FF
+
+# Гапсы
+gaps inner 5
+gaps outer 5
+smart_gaps off
+
+# Толщина рамок для обычных и плавающих окон
+default_border pixel 2
+default_floating_border pixel 2
+
+# Размер рамок окон
+for_window [tiling] border pixel 2
+for_window [floating] border pixel 2
+
+# Отключение рамки если открыто одно окно
+smart_borders off
+
+# layer_effects "waybar" {
+#     blur enable;
+#     blur_xray enable;
+#     blur_ignore_transparent enable;
+#     shadows enable;
+# }
+
+#--- УКРАШАТЕЛЬСТВА -------------------------------------------------------------------
+# Обои
+output * bg ~/.config/sway/wall.jpg fill
+
+# Шрифт (по ходу для заголовков)
+font pango:JetBrainsMono Nerd Font 10
+
+# Курсор
+seat seat0 xcursor_theme "Nordzy-cursors"
+
+# Курсоры, темы, иконки...
+# exec_always gsettings set org.gnome.desktop.interface cursor-theme "Nordzy-cursors"
+# set $gnome-schema org.gnome.desktop.interface
+# exec_always {
+#     	gsettings set $gnome-schema gtk-theme 'Nordic'
+#     	gsettings set $gnome-schema icon-theme 'Papirus-Dark'
+#     	gsettings set $gnome-schema cursor-theme 'Norzy-cursors'
+#     	gsettings set $gnome-schema font-name 'Ubuntu Nerd Font Condensed 10'
+# 		# Отключение кнопок управления окном
+# 	gsettings set org.gnome.desktop.wm.preferences button-layout ''
+# }
+
+# Цвета рамок
+# class                 border  backgr. text    indicator
+client.focused          #81A1C1 #81A1C1 #D8DEE9 #D8DEE9
+client.focused_inactive #3B4252 #5F676A #D8DEE9 #5F676A
+client.unfocused        #2E3440 #2E3440 #8FBCBB #2E3440
+client.urgent           #900000 #900000 #D8DEE9 #900000
+client.placeholder      #81A1C1 #2E3440 #D8DEE9 #81A1C1
+
+#--- РАСПРЕДЕЛЕНИЕ ОКОН -------------------------------------------------------------------
+# Запуск на определенном воркспейсе
+assign [app_id="foot"] workspace 1
+assign [app_id="(?i)zen*"] workspace 2
+assign [app_id="luakit"] workspace 2
+assign [app_id="(?i)yandex*"] workspace 2
+assign [app_id="thunar"] workspace 3
+assign [app_id="org.telegram.desktop"] workspace 4
+assign [app_id="org.inkscape.Inkscape"] workspace 5
+assign [app_id="portproton"] workspace 6
+assign [app_id="it.mijorus.gearlever"] 8
+assign [app_id="rhythmbox"] 9
+# assign [title="cmus"] workspace 7
+# assign [title="cava"] workspace 7
+
+# Запуск в фокусе
+for_window [app_id="org.inkscape.Inkscape"] focus
+for_window [app_id="reaper"] focus
+for_window [app_id="rhythmbox"] focus
+for_window [app_id="(?i)zen*"] focus
+for_window [app_id="luakit"] focus
+for_window [app_id="(?i)yandex*"] focus
+for_window [app_id="it.mijorus.gearlever"] focus
+
+# Запуск в плавающем режиме
+for_window [app_id="thunar"] floating enable
+for_window [app_id="galculator"] floating enable
+for_window [app_id="(?i)zen*"] floating enable, move position center
+for_window [app_id="luakit"] floating enable, move position center
+for_window [app_id="(?i)yandex"] floating enable, move position center
+for_window [app_id="org.telegram.desktop"] floating enable, border none, resize set 400 850, move left 410px, move up 0px
+# for_window [title="cmus"] floating enable, resize set 700px 400px, move right 210px, move up 115px
+# for_window [title="cava"] floating enable, resize set 700px 200px, move right 210px, move down 205px
+for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px
+for_window [app_id="nm-connection-editor"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px
+for_window [app_id="mpv"] floating enable, border none, move position center
+for_window [app_id="org.gnome.FileRoller"] floating enable, border none, move position center
+for_window [app_id="swayimg"] floating enable, border none, resize set 800px 500px, move position center
+for_window [app_id="virt-manager"] floating enable, border none
+for_window [app_id="it.mijorus.gearlever"] floating enable, border none
+
+# set floating for window roles
+for_window [window_type="dialog"] floating enable
+for_window [window_role="dialog"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [window_role="About"] floating enable
+for_window [title="File Operation Progress"] floating enable, border pixel 1, sticky enable, resize set width 40 ppt height 30 ppt
+
+# Сатурация
+# for_window [app_id="foot"] saturation 2.0
+# Mark xwayland apps with an [X]:
+for_window [shell="xwayland"] title_format "<span>[X] %title</span>"
+
+#--- АВТОЗАПУСК ПРИЛОЖЕНИЙ -------------------------------------------------------------------
+exec_always /usr/lib/xdg-desktop-portal -r & /usr/lib/xdg-desktop-portal-wlr -r
+exec_always ~/.local/bin/import_gsettings.sh
+exec dex -ae Sway
+# exec waybar
+# exec nm-applet
+# exec blueman-applet
+exec autotiling
+exec foot
+# exec {
+#   swaymsg 'workspace 1; exec foot'
+#   swaymsg 'workspace 2; exec firefox'
+# }
+# exec XDG_CURRENT_DESKTOP=gnome telegram-desktop
+
 include /home/bma/.config/sway/config.d/*

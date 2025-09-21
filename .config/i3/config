@@ -401,7 +401,7 @@ bindsym $alt+Shift+Return exec --no-startup-id thunar
 # reboot system, shutdown system or return to the default mode, respectively.
 set $mode_exit Launch: [l]ock [e]xit [r]reboot [s]hutdown
 mode "$mode_exit" {
-    bindsym l exec i3lock -i /usr/share/backgrounds/nordic-wallpapers-git/windows-panic.png, mode "default"
+    bindsym l exec i3lock -i "$HOME/.local/backgrounds/wm-lock.png", mode "default"
     bindsym e exec i3-msg exit
     bindsym r exec systemctl reboot
     bindsym s exec systemctl poweroff
