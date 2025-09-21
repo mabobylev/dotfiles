@@ -15,4 +15,4 @@ configuration{
     sidebar-mode: true;
 }
 
-@theme "rounded-nord-dark"
+@theme "squared-nord"
