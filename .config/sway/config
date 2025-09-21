@@ -10,10 +10,10 @@ set $right l
 # Your preferred terminal emulator
 set $term foot
 # Your preferred application launcher
-# set $menu wmenu-run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'JetBrainsMono Nerd Font:bold:pixelsize=9'
-set $menu wmenu-run 
+set $menu dmenu-run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'JetBrainsMono Nerd Font:bold:pixelsize=16'
+# set $menu wmenu-run 
 set $browser firefox
-set $runner wofi --show drun
+set $runner rofi -show drun
 set $fmanager thunar
 
 ### Output configuration
@@ -27,6 +27,9 @@ set $fmanager thunar
 #
 # You can get the names of your outputs by running: swaymsg -t get_outputs
 output DP-2 resolution 1920x1080 position 1920,0
+
+# Обои
+output * bg "$(find $HOME/.local/backgrounds/wallpapers/|shuf -n1)" fill
 
 ### Idle configuration
 #
@@ -79,6 +82,7 @@ output DP-2 resolution 1920x1080 position 1920,0
     bindsym $mod+d exec $runner
     bindsym $mod+b exec $browser
     bindsym $mod+n exec $fmanager
+    bindsym --to-code $alt+Control+p exec pavucontrol
 
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -210,13 +214,26 @@ bindsym $mod+r mode "resize"
 # Utilities:
 #
     # Special keys to adjust volume via PulseAudio
-    bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
-    bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
-    bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+    # bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+    bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+    # bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+    # bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
     bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
     # Special keys to adjust brightness via brightnessctl
-    bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+    bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
+    # bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+    # bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    bindsym XF86AudioPlay exec playerctl play-pause
+    bindsym XF86AudioPause exec playerctl play-pause
+    bindsym XF86AudioNext exec playerctl next
+    bindsym XF86AudioPrev exec playerctl previous
+    bindsym XF86AudioStop exec playerctl stop
+    bindsym XF86Search exec dmenu-run
+
     # Special key to take a screenshot with grim
     bindsym Print exec grim
 
@@ -249,23 +266,23 @@ smart_corner_radius enable
 # Блюр
 blur on
 blur_xray on
-blur_passes 5
-blur_radius 5
+blur_passes 2
+blur_radius 2
 
-#Тени
-shadows on
-shadows_on_csd on
-shadow_blur_radius 10
-shadow_color #0000007F
+# Тени
+# shadows on
+# shadows_on_csd on
+# shadow_blur_radius 10
+# shadow_color #0000007F
 
 # Затемнение неактивных окон
-default_dim_inactive 0.4
+default_dim_inactive 0.5
 dim_inactive_colors.unfocused #000000FF
 dim_inactive_colors.urgent #900000FF
 
 # Гапсы
-gaps inner 5
-gaps outer 5
+gaps inner 3
+gaps outer 3
 smart_gaps off
 
 # Толщина рамок для обычных и плавающих окон
@@ -277,7 +294,7 @@ for_window [tiling] border pixel 2
 for_window [floating] border pixel 2
 
 # Отключение рамки если открыто одно окно
-smart_borders off
+smart_borders on
 
 # layer_effects "waybar" {
 #     blur enable;
@@ -287,8 +304,6 @@ smart_borders off
 # }
 
 #--- УКРАШАТЕЛЬСТВА -------------------------------------------------------------------
-# Обои
-output * bg ~/.config/sway/wall.jpg fill
 
 # Шрифт (по ходу для заголовков)
 font pango:JetBrainsMono Nerd Font 10
