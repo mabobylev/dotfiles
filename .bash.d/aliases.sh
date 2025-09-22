@@ -23,6 +23,7 @@ else
 fi
 # check if bat is installed
 if command -v bat &>/dev/null; then
+	# use bat to colorize help text
 	alias cat='bat -n'
 fi
 # check if nvim is installed

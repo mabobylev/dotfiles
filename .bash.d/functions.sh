@@ -47,6 +47,10 @@ mvr() {
 	rsync --archive -hh --partial --info=stats1,progress2 --modify-window=1 --remove-source-files "$@"
 }
 
+help() {
+	"$@" --help 2>&1 | bat --plain --language=help
+}
+
 # function to check if a command exists
 # command_exist() {
 # 	command -v "$1" >/dev/null 2>&1

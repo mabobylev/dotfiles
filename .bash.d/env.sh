@@ -1,6 +1,9 @@
+export EDITOR=nvim
 export VISUAL=nvim
 export SUDO_EDITOR=nvim
 export GIT_EDITOR=nvim
+export MANPAGER="less -R --use-color -Dd+r -Du+b"
+export MANROFFOPT="-P -c"
 export PATH="$PATH:$HOME/.local/bin"
 
 # Use XToolkit in java applications
