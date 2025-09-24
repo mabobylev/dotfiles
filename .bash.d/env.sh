@@ -1,3 +1,4 @@
+# Default value
 export EDITOR=nvim
 export VISUAL=nvim
 export SUDO_EDITOR=nvim
@@ -5,6 +6,9 @@ export GIT_EDITOR=nvim
 export MANPAGER="less -R --use-color -Dd+r -Du+b"
 export MANROFFOPT="-P -c"
 export PATH="$PATH:$HOME/.local/bin"
+export DOTBARE_DIR="$HOME/.cfg"
+export DOTBARE_TREE="$HOME"
+export DOTBARE_BACKUP="${XDG_DATA_HOME:-$HOME/.local/share}/dotbare"
 
 # Use XToolkit in java applications
 [ -z "$AWT_TOOLKIT" ] && export AWT_TOOLKIT="XToolkit"

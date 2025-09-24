@@ -14,11 +14,10 @@ font pango:Ubuntu Nerd Font, Symbols Nerd Font, Font Awesome 7 Free 11
 
 # Custom window configuration
 # for_window [class="^.*"] border pixel 3
-new_window pixel 3
-new_float none
-force_focus_wrapping yes
+default_border pixel 2
+default_floating_border none
+focus_wrapping force
 # smart_borders yes
-# focus_follows_mouse yes
 
 # Gapps configuration
 smart_gaps off
@@ -32,11 +31,11 @@ hide_edge_borders smart
 # Automatic back-and-forth when switching to the current workspace
 workspace_auto_back_and_forth yes
 
-popup_during_fullscreen ignore
+# Display the popup if it belongs to the fullscreen application only
+popup_during_fullscreen smart
 
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
+# Tell i3 to delay resetting the urgency state
+force_display_urgency_hint 500 ms
 
 #####################################################################################################################
 #################                         Execute applications on startup                           #################
@@ -314,7 +313,7 @@ client.background       #2E344090
 assign [class="^(?i)kitty$"] $ws1
 # assign [class="^URxvt$" instance="^spaceterm$"] $ws3
 assign [class="(?i)zen|(?i)firefox"] $ws2
-assign [class="(?i)yandex*|(?i)luakit"] $ws2
+assign [class="(?i)yandex.*|(?i)luakit"] $ws2
 assign [class="(?i)nemo|(?i)nautilus|(?i)thunar"] $ws3
 assign [class="(?i)virt-manager"] $ws3
 assign [class="(?i)code"] $ws4
@@ -329,9 +328,9 @@ assign [instance="^(?i)libreoffice|^(?i)soffice"] $ws9
 for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port.*|^(?i)lgc.*"] floating enable, focus
 # for_window [class="URxvt" instance="^spaceterm$"] floating enable, border normal
 # for_window [class="firefox" instance="^mail.google.com$"] floating enable, focus
-for_window [class="(?i)zen"] border none, floating enable, focus, move absolute center
-for_window [class="(?i)yandex*"] floating enable, focus, move absolute center
-for_window [class="(?i)luakit"] border none, floating enable
+for_window [class="(?i)zen"] border none, floating enable, focus, move position center
+for_window [class="(?i)yandex.*"] floating enable, focus, move position center
+for_window [class="(?i)luakit"] border none, floating enable, move position center
 for_window [class="(?i)telegram"] floating enable
 for_window [class="(?i)gpicview|(?i)lxappearance|(?i)dunst"] floating enable
 for_window [class="(?i)gimp|(?i)mpv|(?i)nautilus|(?i)nemo|(?i)thunar"] floating enable, focus
@@ -340,10 +339,12 @@ for_window [class="(?i)pavucontrol|(?i)pavumeter|(?i)paman"] floating enable, fo
 for_window [class="^(?i)virt-manager"] floating enable, focus
 # for_window [instance="(?i)ranger"] move scratchpad
 
-for_window [window_role="pop-up"] floating enable,move absolute center
+for_window [window_role="pop-up"] floating enable,move position center
 for_window [window_role="task_dialog"] floating enable
 for_window [title="Preferences$"] floating enable
 
+# enable window icons for all windows with extra horizontal padding of 1px
+for_window [all] title_window_icon padding 1px
 
 #####################################################################################################################
 #################                           BINDINGS FOR TAKE SCRATCHPAD                            #################
