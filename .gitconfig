@@ -24,7 +24,7 @@ new = green bold
     whitespace = red reverse
 [color "status"]
     added = green bold
-changed = yellow bold
+    changed = yellow bold
     untracked = red bold
 [credential]
     helper = "cache --timeout=3600"
@@ -55,4 +55,7 @@ changed = yellow bold
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
-	required = true
+  required = true
+[log]
+  decorate = short
+  abbrevCommit = true
