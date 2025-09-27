@@ -59,3 +59,5 @@ new = green bold
 [log]
   decorate = short
   abbrevCommit = true
+[coderabbit]
+	machineId = cli/0b36c018eea54f51b0d624d26952ae96
