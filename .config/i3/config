@@ -198,28 +198,28 @@ set $ws8 8:
 set $ws9 9:
 
 # switch to workspace
-bindsym $mod+1 workspace number $ws1
-bindsym $mod+2 workspace number $ws2
-bindsym $mod+3 workspace number $ws3
-bindsym $mod+4 workspace number $ws4
-bindsym $mod+5 workspace number $ws5
-bindsym $mod+6 workspace number $ws6
-bindsym $mod+7 workspace number $ws7
-bindsym $mod+8 workspace number $ws8
-bindsym $mod+9 workspace number $ws9
-bindsym $mod+0 workspace number $ws10
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace number $ws1
-bindsym $mod+Shift+2 move container to workspace number $ws2
-bindsym $mod+Shift+3 move container to workspace number $ws3
-bindsym $mod+Shift+4 move container to workspace number $ws4
-bindsym $mod+Shift+5 move container to workspace number $ws5
-bindsym $mod+Shift+6 move container to workspace number $ws6
-bindsym $mod+Shift+7 move container to workspace number $ws7
-bindsym $mod+Shift+8 move container to workspace number $ws8
-bindsym $mod+Shift+9 move container to workspace number $ws9
-bindsym $mod+Shift+0 move container to workspace number $ws10
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
 
 bindsym $mod+Control+Left workspace prev
 bindsym $mod+Control+Right workspace next
@@ -272,8 +272,10 @@ bindsym $mod+r mode "resize"
 bar {
         # height 25
         position top
-        # padding 2px
+        padding 2px 0
+        workspace_min_width 40
         strip_workspace_numbers yes
+        binding_mode_indicator yes
         separator_symbol "  "
         # i3bar_command i3bar --transparency
         # status_command i3blocks
@@ -316,27 +318,29 @@ assign [class="(?i)zen|(?i)firefox"] $ws2
 assign [class="(?i)yandex.*|(?i)luakit"] $ws2
 assign [class="(?i)nemo|(?i)nautilus|(?i)thunar"] $ws3
 assign [class="(?i)virt-manager"] $ws3
-assign [class="(?i)code"] $ws4
+assign [class="(?i)code|(?i)ghidra.*"] $ws4
 assign [class="(?i)telegram"] $ws5
 assign [class="(?i)gimp"] $ws6
 assign [class="(?i)vlc|(?i)mpv"] $ws7
-assign [class="(?i)yad.*|^(?i)steam.*|(?i)port.*"] $ws8
+assign [class="(?i)yad.*|^(?i)steam.*|(?i)port-.*"] $ws8
 assign [instance="^(?i)libreoffice|^(?i)soffice"] $ws9
 #assign [class="^libreoffice-startcenter$" instance="^VCLSalFrame.DocumentWindow$"] 9
 
 # Arbitrary commands for specific windows (for_window)
-for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port.*|^(?i)lgc.*"] floating enable, focus
+for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port-.*|^(?i)lgc.*"] floating enable, focus
 # for_window [class="URxvt" instance="^spaceterm$"] floating enable, border normal
 # for_window [class="firefox" instance="^mail.google.com$"] floating enable, focus
 for_window [class="(?i)zen"] border none, floating enable, focus, move position center
 for_window [class="(?i)yandex.*"] floating enable, focus, move position center
 for_window [class="(?i)luakit"] border none, floating enable, move position center
 for_window [class="(?i)telegram"] floating enable
+for_window [class="(?i)galculator"] floating enable, resize set 680 280, move position center
 for_window [class="(?i)gpicview|(?i)lxappearance|(?i)dunst"] floating enable
 for_window [class="(?i)gimp|(?i)mpv|(?i)nautilus|(?i)nemo|(?i)thunar"] floating enable, focus
 for_window [instance="^(?i)soffice"] floating enable, focus
 for_window [class="(?i)pavucontrol|(?i)pavumeter|(?i)paman"] floating enable, focus
 for_window [class="^(?i)virt-manager"] floating enable, focus
+for_window [class="^(?i)ghidra.*"] floating enable, focus
 # for_window [instance="(?i)ranger"] move scratchpad
 
 for_window [window_role="pop-up"] floating enable,move position center

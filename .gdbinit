@@ -1,15 +1,15 @@
-# Saving history by default
-set history filename ~/.gdb_history
-# No need to set the window size as scrolling should be enabled
-set height 0
-set width 0
-# Pretty printing of structures
-set print pretty
-# Allow setting pending breakpoints
-set breakpoint pending on
-# Tell GDB you know what you are doing
-set confirm off
-
-set debuginfod enabled on
-set disassembly-flavor intel
-source /home/bma/Git/pwndbg/gdbinit.py
+# # Saving history by default
+# set history filename ~/.gdb_history
+# # No need to set the window size as scrolling should be enabled
+# set height 0
+# set width 0
+# # Pretty printing of structures
+# set print pretty
+# # Allow setting pending breakpoints
+# set breakpoint pending on
+# # Tell GDB you know what you are doing
+# set confirm off
+#
+# set debuginfod enabled on
+# set disassembly-flavor intel
+# # source /home/bma/Git/pwndbg/gdbinit.py
