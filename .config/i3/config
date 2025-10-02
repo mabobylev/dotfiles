@@ -272,8 +272,8 @@ bindsym $mod+r mode "resize"
 bar {
         # height 25
         position top
-        padding 2px 0
-        workspace_min_width 40
+        # padding 2px 0
+        # workspace_min_width 40
         strip_workspace_numbers yes
         binding_mode_indicator yes
         separator_symbol "  "
@@ -322,12 +322,14 @@ assign [class="(?i)code|(?i)ghidra.*"] $ws4
 assign [class="(?i)telegram"] $ws5
 assign [class="(?i)gimp"] $ws6
 assign [class="(?i)vlc|(?i)mpv"] $ws7
-assign [class="(?i)yad.*|^(?i)steam.*|(?i)port-.*"] $ws8
+assign [class="^(?i)steam.*|(?i).*proton"] $ws8
+# assign [instance="^(?i)yad.*"] $ws8
 assign [instance="^(?i)libreoffice|^(?i)soffice"] $ws9
 #assign [class="^libreoffice-startcenter$" instance="^VCLSalFrame.DocumentWindow$"] 9
 
 # Arbitrary commands for specific windows (for_window)
-for_window [class="(?i)yad.*|^(?i)steam.*|^(?i)port-.*|^(?i)lgc.*"] floating enable, focus
+for_window [class="^(?i)steam.*|(?i).*proton|^(?i)lgc.*"] floating enable, focus
+# for_window [instance="^(?i)yad.*"] floating enable, focus
 # for_window [class="URxvt" instance="^spaceterm$"] floating enable, border normal
 # for_window [class="firefox" instance="^mail.google.com$"] floating enable, focus
 for_window [class="(?i)zen"] border none, floating enable, focus, move position center
