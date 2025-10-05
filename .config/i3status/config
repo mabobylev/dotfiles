@@ -8,16 +8,16 @@
 
 general {
         colors = true
-        interval = 1
+        interval = 3
         output_format = "i3bar" # формат вывода, устанавливаем i3bar (JSON)
 }
 
 order += "wireless _first_"
 order += "ethernet _first_"
 order += "disk /"
-order += "load"
-order += "memory"
+# order += "load"
 order += "cpu_usage"
+order += "memory"
 order += "volume master"
 order += "tztime local"
 
@@ -61,14 +61,14 @@ memory {
         # %free, percentage_free
         # %available, percentage_available
         # %shared, percentage_shared
-        format = "󰍛  %used"
+        format = "  %used"
     
         # порог, при котором вывод окрасится в
         # желтый (degraded) или красный (critical)
         # а формат вывода изменится на format_degraded
         threshold_degraded = "1G"
         threshold_critical = "200M"
-        format_degraded = "MEMORY < %available"
+        format_degraded = "MEM < %available"
 }
 
 # использование центрального процессора

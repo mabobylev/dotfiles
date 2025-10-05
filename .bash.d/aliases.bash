@@ -81,8 +81,8 @@ alias gpl='git pull'
 alias gst='git status'
 alias gcl='git clone'
 alias gcm='git commit'
-alias glf='git log --graph --pretty=format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-alias glo='got log --oneline --graph --decorate'
+alias glf='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset"'
+alias glo='git log --oneline --graph --decorate'
 
 #######################################################
 # Alias for my dotfiles repos

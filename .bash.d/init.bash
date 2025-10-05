@@ -57,7 +57,7 @@ export LESS_TERMCAP_us=$'\e[1;4;31m'
 # Locale
 #######################################################
 export LANG=ru_RU.UTF-8
-export LC_ALL=en_US.UTF-8
+export LC_ALL=ru_RU.UTF-8
 
 #######################################################
 # Technicolor dreams
@@ -66,10 +66,11 @@ export force_color_prompt=yes
 export color_prompt=yes
 
 # Simple prompt with path in the window/pane title and caret for typing line
+# if [ -n "$PS1" ]; then
+# 	echo -e "\033]1,34m=== Welcome back, $USER ===\033[0m"
+# 	echo -e "Date: $(date)\nShell: $SHELL\nTerminal: $TERM\nOS: $OSTYPE\nHostname: $HOSTNAME\nUptime: $(uptime)\n"
+# 	echo ""
+# fi
 PS1=$'\uf0a9 '
-PS1="\[\e]0;\w\a\]$PS1"
+PS1="\[[\e]0;\w\a\W\]] $PS1 "
 # PS1='[\u@\h \W]\$ '
-if [ -n "$PS1" ]; then
-	echo -e "\033]1,34m=== Welcome back, $USER ===\033[0m"
-	echo -e "Date: $(date)\nShell: $SHELL\nTerminal: $TERM\nOS: $OSTYPE\nHostname: $HOSTNAME\nUptime: $(uptime)\n"
-fi
