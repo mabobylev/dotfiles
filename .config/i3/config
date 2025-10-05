@@ -337,6 +337,7 @@ for_window [class="(?i)yandex.*"] floating enable, focus, move position center
 for_window [class="(?i)luakit"] border none, floating enable, move position center
 for_window [class="(?i)telegram"] floating enable
 for_window [class="(?i)galculator"] floating enable, resize set 680 280, move position center
+for_window [class="(?i).*FileRoller"] floating enable, resize set 390 455, move position 100 100
 for_window [class="(?i)gpicview|(?i)lxappearance|(?i)dunst"] floating enable
 for_window [class="(?i)gimp|(?i)mpv|(?i)nautilus|(?i)nemo|(?i)thunar"] floating enable, focus
 for_window [instance="^(?i)soffice"] floating enable, focus
@@ -350,7 +351,7 @@ for_window [window_role="task_dialog"] floating enable
 for_window [title="Preferences$"] floating enable
 
 # enable window icons for all windows with extra horizontal padding of 1px
-for_window [all] title_window_icon padding 1px
+# for_window [all] title_window_icon padding 1px
 
 #####################################################################################################################
 #################                           BINDINGS FOR TAKE SCRATCHPAD                            #################

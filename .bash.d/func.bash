@@ -55,3 +55,13 @@ help() {
 # command_exist() {
 # 	command -v "$1" >/dev/null 2>&1
 # }
+
+__need_install() {
+	pkgs=("fzf" "bat" "lsd" "tmux" "yazi" "mc")
+	for pkg in "${pkgs[@]}"; do
+		if [ ! "$(command -v "$pkg")" ]; then
+			echo "$pkg - не установлен. Советую установить!"
+		fi
+	done
+}
+__need_install

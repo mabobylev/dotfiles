@@ -1,8 +1,8 @@
 # Default value
-export EDITOR=nvim
-export VISUAL=nvim
-export SUDO_EDITOR=nvim
-export GIT_EDITOR=nvim
+export EDITOR=$(command -v nvim || command -v vim || command -v micro || echo nano)
+export VISUAL="$EDITOR"
+export SUDO_EDITOR="$EDITOR"
+export GIT_EDITOR="$EDITOR"
 export MANPAGER="less -R --use-color -Dd+r -Du+b"
 export MANROFFOPT="-P -c"
 export PATH="$PATH:$HOME/.local/bin"
