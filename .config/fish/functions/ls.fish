@@ -8,7 +8,7 @@ function ls --description 'List contents of directory'
     # OpenBSD requires the separate colorls program for color support.
     # Also test -F because we'll want to define this function even with an ls that can't do colors (like NetBSD).
     if not set -q __fish_ls_command
-        set -g __fish_ls_command eza --icons=always
+        set -g __fish_ls_command lsd
         set -g __fish_ls_color_opt
         set -g __fish_ls_indicators_opt
         # OpenBSD ships a command called "colorls" that takes "-G" and "-F",
