@@ -70,15 +70,15 @@ if test -f /usr/lib/openssh/x11-ssh-askpass; then # Archlinux
 fi
 
 xrandr --output DisplayPort-1 --mode 1920x1080 --rate 144 &
-exec startxfce4
+# exec startxfce4
 
 # Authentication dialog (polkit-gnome)
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 # Set wallpaper
-# xwallpaper --zoom "$(find /home/bma/.local/backgrounds/wallpapers/ | shuf -n1)"
+xwallpaper --zoom "$(find /home/bma/.local/backgrounds/wallpapers/ | shuf -n1)"
 # xxkb &
 #
 # Start dwm
 # dex --autostart --environment dwm &
 # exec dwm
-# exec i3
+exec i3
