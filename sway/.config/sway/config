@@ -1,0 +1,415 @@
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+set $alt Mod1
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+# Your preferred terminal emulator
+set $term foot
+# Your preferred application launcher
+set $menu dmenu-run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'JetBrainsMono Nerd Font:bold:pixelsize=16'
+# set $menu wmenu-run 
+set $browser firefox
+set $runner rofi -show drun
+set $fmanager pcmanfm
+
+### Output configuration
+#
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+# output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1366x768.png fill
+#
+# Example configuration:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# You can get the names of your outputs by running: swaymsg -t get_outputs
+output DP-2 resolution 1920x1080 position 1920,0
+
+# Обои
+output * bg "$(find $HOME/.local/backgrounds/wallpapers/|shuf -n1)" fill
+
+### Idle configuration
+#
+# Example configuration:
+#
+#    exec swayidle -w \
+#             timeout 300 'swaylock -f -c 000000' \
+#             timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+#             before-sleep 'swaylock -f -c 000000'
+#
+# This will lock your screen after 300 seconds of inactivity, then turn off
+# your displays after another 300 seconds, and turn your screens back on when
+# resumed. It will also lock your screen before your computer goes to sleep.
+#    exec swayidle -w timeout 1800 'swaylock -f -c 000000'
+
+### Input configuration
+#
+# Example configuration:
+#
+#    input type:pointer {
+#        natural_scroll enabled
+#        middle_emulation enabled
+#    }
+#
+# You can get the names of your inputs by running: swaymsg -t get_inputs
+# Read `man 5 sway-input` for more information about this section.
+
+#--- РАСКЛАДКА КЛАВИАТУРЫ -------------------------------------------------------------
+    input * {
+    	xkb_layout us,ru
+    	xkb_options grp:caps_toggle,grp_led:caps
+    }
+    #NumLock при старте системы
+    # input * xkb_numlock enabled
+
+### Key bindings
+#
+# Basics:
+#
+    # Start a terminal
+    bindsym $mod+Return exec $term
+
+    # Kill focused window
+    bindsym $mod+Shift+q kill
+
+    # Start your launcher
+    bindsym $mod+Shift+d exec $menu
+    bindsym $mod+d exec $runner
+    bindsym $mod+b exec $browser
+    bindsym $mod+n exec $fmanager
+    bindsym --to-code $alt+Control+p exec pavucontrol
+
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+r reload
+
+    # Exit sway (logs you out of your Wayland session)
+    # bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+e exec nwg-bar
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Workspaces:
+#
+    # Switch to workspace
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+c or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+c splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+minus scratchpad show
+#
+# Resizing containers:
+#
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+#
+# Utilities:
+#
+    # Special keys to adjust volume via PulseAudio
+    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+    # bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+    bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+    # bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+    # bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+    bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+    # Special keys to adjust brightness via brightnessctl
+    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+    bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
+    # bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+    # bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    bindsym XF86AudioPlay exec playerctl play-pause
+    bindsym XF86AudioPause exec playerctl play-pause
+    bindsym XF86AudioNext exec playerctl next
+    bindsym XF86AudioPrev exec playerctl previous
+    bindsym XF86AudioStop exec playerctl stop
+    bindsym XF86Search exec dmenu-run
+
+    # Special key to take a screenshot with grim
+    bindsym Print exec grim
+
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
+bar {
+    position top
+
+    strip_workspace_numbers yes
+    binding_mode_indicator yes
+    separator_symbol "  "
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    # status_command while date +'%H:%M %Y-%m-%d'; do sleep 1; done
+    status_command i3status
+    # swaybar_command waybar
+    #
+    colors {
+        separator  #81A1C1
+        statusline #81A1C1
+        background #1F222D
+        binding_mode        #5E81AC  #5E81AC  #2E3440
+        focused_workspace   #2E3440  #2E3440  #81A1C1
+        active_workspace    #2E3440  #2E3440  #D8DEE9
+        urgent_workspace    #1f222d  #1f222d  #EE829f
+        inactive_workspace  #1f222d  #1f222d  #4C566A
+        # inactive_workspace #32323200 #32323200 #4C566A
+    }
+}
+
+#--- ДЕКОРАЦИИ ОКОН -------------------------------------------------------------------
+
+# Скругления
+corner_radius 10
+smart_corner_radius enable
+
+# Блюр
+blur on
+blur_xray on
+blur_passes 2
+blur_radius 2
+
+# Тени
+# shadows on
+# shadows_on_csd on
+# shadow_blur_radius 10
+# shadow_color #0000007F
+
+# Затемнение неактивных окон
+default_dim_inactive 0.5
+dim_inactive_colors.unfocused #000000FF
+dim_inactive_colors.urgent #900000FF
+
+# Гапсы
+gaps inner 3
+gaps outer 3
+smart_gaps off
+
+# Толщина рамок для обычных и плавающих окон
+default_border pixel 2
+default_floating_border pixel 2
+
+# Размер рамок окон
+for_window [tiling] border pixel 2
+for_window [floating] border pixel 2
+
+# Отключение рамки если открыто одно окно
+smart_borders on
+
+# layer_effects "waybar" {
+#     blur enable;
+#     blur_xray enable;
+#     blur_ignore_transparent enable;
+#     shadows enable;
+# }
+
+#--- УКРАШАТЕЛЬСТВА -------------------------------------------------------------------
+
+# Шрифт (по ходу для заголовков)
+font pango:JetBrainsMono Nerd Font 10
+
+# Курсор
+seat seat0 xcursor_theme "Nordzy-cursors"
+
+# Курсоры, темы, иконки...
+# exec_always gsettings set org.gnome.desktop.interface cursor-theme "Nordzy-cursors"
+# set $gnome-schema org.gnome.desktop.interface
+# exec_always {
+#     	gsettings set $gnome-schema gtk-theme 'Nordic'
+#     	gsettings set $gnome-schema icon-theme 'Papirus-Dark'
+#     	gsettings set $gnome-schema cursor-theme 'Norzy-cursors'
+#     	gsettings set $gnome-schema font-name 'Ubuntu Nerd Font Condensed 10'
+# 		# Отключение кнопок управления окном
+# 	gsettings set org.gnome.desktop.wm.preferences button-layout ''
+# }
+
+# Цвета рамок
+# class                 border  backgr. text    indicator
+client.focused          #81A1C1 #81A1C1 #D8DEE9 #D8DEE9
+client.focused_inactive #3B4252 #5F676A #D8DEE9 #5F676A
+client.unfocused        #2E3440 #2E3440 #8FBCBB #2E3440
+client.urgent           #900000 #900000 #D8DEE9 #900000
+client.placeholder      #81A1C1 #2E3440 #D8DEE9 #81A1C1
+
+#--- РАСПРЕДЕЛЕНИЕ ОКОН -------------------------------------------------------------------
+# Запуск на определенном воркспейсе
+assign [app_id="foot"] workspace 1
+assign [app_id="(?i)zen*"] workspace 2
+assign [app_id="luakit"] workspace 2
+assign [app_id="(?i)yandex*"] workspace 2
+assign [app_id="(?i)thunar|(?i)pcmanfm"] workspace 3
+assign [app_id="org.telegram.desktop"] workspace 4
+assign [app_id="org.inkscape.Inkscape"] workspace 5
+assign [app_id="it.mijorus.gearlever"] 8
+assign [app_id="rhythmbox"] 9
+assign [class="(?i)steam_proton|(?i)portproton"] workspace 6
+# assign [title="cmus"] workspace 7
+# assign [title="cava"] workspace 7
+
+# Запуск в фокусе
+for_window [app_id="org.inkscape.Inkscape"] focus
+for_window [app_id="reaper"] focus
+for_window [app_id="rhythmbox"] focus
+for_window [app_id="(?i)zen*"] focus
+for_window [app_id="luakit"] focus
+for_window [app_id="(?i)yandex*"] focus
+for_window [app_id="it.mijorus.gearlever"] focus
+
+# Запуск в плавающем режиме
+for_window [app_id="(?i)thunar|(?i)pcmanfm"] floating enable
+for_window [app_id="galculator"] floating enable
+for_window [app_id="(?i)zen*"] floating enable, move position center
+for_window [app_id="luakit"] floating enable, move position center
+for_window [app_id="(?i)yandex"] floating enable, move position center
+for_window [app_id="org.telegram.desktop"] floating enable, border none, resize set 400 850, move left 410px, move up 0px
+# for_window [title="cmus"] floating enable, resize set 700px 400px, move right 210px, move up 115px
+# for_window [title="cava"] floating enable, resize set 700px 200px, move right 210px, move down 205px
+for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px
+for_window [app_id="nm-connection-editor"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px
+for_window [app_id="mpv"] floating enable, border none, move position center
+for_window [app_id="org.gnome.FileRoller"] floating enable, border none, move position center
+for_window [app_id="swayimg"] floating enable, border none, resize set 800px 500px, move position center
+for_window [app_id="virt-manager"] floating enable, border none
+for_window [app_id="it.mijorus.gearlever"] floating enable, border none
+for_window [class="(?i)steam_proton|(?i)portproton"] floating enable, border none
+
+# set floating for window roles
+for_window [window_type="dialog"] floating enable
+for_window [window_role="dialog"] floating enable
+for_window [window_role="pop-up"] floating enable
+for_window [window_role="bubble"] floating enable
+for_window [window_role="task_dialog"] floating enable
+for_window [window_role="Preferences"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [window_role="About"] floating enable
+for_window [title="File Operation Progress"] floating enable, border pixel 1, sticky enable, resize set width 40 ppt height 30 ppt
+
+# Сатурация
+# for_window [app_id="foot"] saturation 2.0
+# Mark xwayland apps with an [X]:
+for_window [shell="xwayland"] title_format "<span>[X] %title</span>"
+
+#--- АВТОЗАПУСК ПРИЛОЖЕНИЙ -------------------------------------------------------------------
+exec_always /usr/lib/xdg-desktop-portal -r & /usr/lib/xdg-desktop-portal-wlr -r
+exec_always ~/.local/bin/import_gsettings.sh
+exec dex -ae Sway
+# exec waybar
+# exec nm-applet
+# exec blueman-applet
+# exec autotiling
+exec foot
+# exec {
+#   swaymsg 'workspace 1; exec foot'
+#   swaymsg 'workspace 2; exec firefox'
+# }
+# exec XDG_CURRENT_DESKTOP=gnome telegram-desktop
+
+include /home/bma/.config/sway/config.d/*
