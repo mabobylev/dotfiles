@@ -1,0 +1,113 @@
+[input-def]
+0=*
+
+[cmdline]
+0=OA
+1=
+
+[inpmc.fm.mkdir]
+0=SoundReality
+
+[input2]
+0=/mnt/data/Files/backup/
+1=/mnt/data/Sounds/EDM/Euphoric Trance Melodies
+2=/mnt/data/Sounds/EDM/MIDI
+3=/home/bma/Bitwig Studio/Extensions
+4=/home/bma/Bitwig Studio/Extensions/
+5=/mnt/data/Sounds/
+6=/mnt/data/Sounds/FX
+7=/mnt/data/Sounds/Drums/SoundReality
+8=/mnt/data/Sounds/FX/
+
+[Dir Hist New Right Panel]
+0=/mnt/data/Files/Mods/Music
+1=/mnt/data/Files/Mods
+2=/mnt/data/Files/Projects
+3=/mnt/data/Files/backup
+4=/mnt/data/Files
+5=/mnt/data/Sounds/+Sample+
+6=/home
+7=/
+8=/mnt
+9=/mnt/data/Schemes
+10=/mnt/data
+11=/mnt/data/Sounds
+12=/mnt/data/Sounds/EDM/MIDI
+13=/mnt/data/Sounds/EDM/Euphoric Trance Melodies
+14=/mnt/data/Sounds/EDM
+15=/home/bma/.BitwigStudio
+16=/home/bma/Bitwig Studio/Controller Scripts
+17=/home/bma/Bitwig Studio/Library/Templates
+18=/home/bma/Bitwig Studio/Library
+19=/home/bma/Bitwig Studio/Extensions/BitWig/SM-37Pro
+20=/home/bma/Bitwig Studio/Extensions/BitWig/SMC-PAD
+21=/home/bma/Bitwig Studio/Extensions/BitWig/docs
+22=/home/bma/Bitwig Studio/Extensions/BitWig
+23=/home/bma/Bitwig Studio/Extensions
+24=/home/bma/Bitwig Studio
+25=/home/bma
+26=/home/bma/Downloads/Yamaha-DX7-Drum-Sounds-Coffeeshopped.zip/uzip://Individual
+27=/home/bma/Downloads/Yamaha-DX7-Drum-Sounds-Coffeeshopped.zip/uzip://
+28=/home/bma/Downloads
+
+[Dir Hist New Left Panel]
+0=/mnt/data/Sounds/EDM/track stems
+1=/mnt/data/Sounds/EDM/MIDI/27_1
+2=/mnt/data/Sounds/Drums/Kick
+3=/mnt/data/Sounds/Drums/DRUM REAPER 1.0
+4=/mnt/data/Sounds/Drums/Cymbals
+5=/mnt/data/Sounds/Drums/AngelicVibes - Free Trap Drum Kit 2020
+6=/mnt/data/Sounds/Drums/Bass
+7=/mnt/data/Sounds/Drums/Percus
+8=/mnt/data/Sounds/Drums/RIDE
+9=/mnt/data/Sounds/Drums/Snare
+10=/mnt/data/Sounds/Drums/sample pack
+11=/mnt/data/Sounds/Drums/track stems
+12=/mnt/data/Sounds/Bass Synthesis/Basslines
+13=/mnt/data/Sounds/Bass Synthesis
+14=/mnt/data/Sounds/DECAP - Drums That Knock Vol. 9
+15=/mnt/data/Sounds/MIDI/curated002 chord progressions midi pack
+16=/mnt/data/Sounds/MIDI
+17=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/1
+18=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/14
+19=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/17
+20=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/2
+21=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/27
+22=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/27_1
+23=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/28
+24=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/3
+25=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/37
+26=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/4
+27=/mnt/data/Sounds/EDM/Euphoric Trance Melodies/42
+28=/mnt/data/Sounds/EDM/Euphoric Trance Melodies
+29=/mnt/data/Sounds/EDM/MIDI/14
+30=/mnt/data/Sounds/EDM/MIDI/37
+31=/mnt/data/Sounds/EDM/MIDI
+32=/mnt/data/Sounds/EDM
+33=/home/bma/Downloads/Git
+34=/home/bma/Downloads/M-UPGRADE
+35=/home/bma/Downloads
+36=/home/bma/Downloads/M-Vave/BitWig/SM-37Pro/css
+37=/home/bma/Downloads/M-Vave/BitWig/.idea/dictionaries
+38=/home/bma/Downloads/M-Vave/BitWig/.idea
+39=/home/bma/Downloads/M-Vave/BitWig/SM-37Pro
+40=/home/bma/Downloads/M-Vave/BitWig/node_modules/typed-bitwig-api
+41=/home/bma/Downloads/M-Vave/BitWig/SMC-PAD
+42=/home/bma/Downloads/M-Vave/Reaper/Reaper_smk37pro.zip/uzip://
+43=/home/bma/Downloads/M-Vave/Reaper/mvave
+44=/home/bma/Downloads/M-Vave/Reaper/SMK-37Pro.not_working
+45=/home/bma/Downloads/M-Vave/Reaper/doc
+46=/home/bma/Downloads/M-Vave/Reaper
+47=/home/bma/Downloads/M-Vave/.idea
+48=/home/bma/Downloads/M-Vave/BitWig/node_modules
+49=/home/bma/Downloads/M-Vave/BitWig
+50=/home/bma/Downloads/M-Vave
+51=/mnt/data/Sounds/Drums/SoundReality
+52=/mnt/data/Sounds/Drums
+53=/mnt/data/Sounds/FX
+54=/mnt/data/Sounds
+55=/mnt/data
+56=/mnt
+57=/
+58=/home
+59=/home/bma

@@ -1,0 +1,95 @@
+* {
+    border-radius: 5px;
+    font-family: Ubuntu Nerd Font, Symbols Nerd Font;
+    font-size: 14px;
+}
+
+@define-color bg #272a34;
+@define-color fg #f9f9f9;
+@define-color gr #545d70;
+@define-color bg2 #2e313d;
+@define-color blue #51a2da;
+
+
+window#waybar {
+	background-color: @bg;
+	color: @fg;
+  /* background: transparent; */
+}
+
+#workspaces button {
+    padding: 0px 5px;
+    margin: 3px 5px;
+    background-color: @bg2;
+    color: @gr;
+    border-bottom: 2px solid @gr;
+}
+#workspaces button:hover {
+    background-color: @bg;
+    color: @blue;
+}
+#workspaces button.focused {
+    background-color: @bg2;
+    color: @fg;
+    border-bottom: 2px solid @fg;
+}
+#workspaces button.urgent {
+    background-color: #eb4d4b;
+}
+
+#scratchpad button {
+    background-color: #d8dee9;
+}
+
+#custom-menu {
+    color: @blue;
+    background-color: @fg;
+    padding: 0px 7px;
+    margin: 5px 20px;
+    border-bottom: 2px solid @gr;
+}
+
+#custom-menu:hover {
+    color: @blue;
+    background-color: @gr;
+    border-bottom: 2px solid @blue;
+}
+
+#cpu {
+    padding: 0 10px;
+    margin: 5px 6px 5px 5px;
+    color: @fg;
+    background-color: @bg2;
+    border-bottom: 2px solid @gr;
+}
+
+#memory,
+#window,
+#custom-weather,
+#custom-cmus,
+#tray,
+#language,
+#pulseaudio,
+#battery,
+#backlight,
+#clock {
+    padding: 0 10px;
+    margin: 5px 6px;
+    color: @fg;
+    background-color: @bg2;
+    border-bottom: 2px solid @gr;
+}
+
+#custom-power {
+    color: @bg;
+    background-color: @fg;
+    padding: 0px 7px;
+    margin: 5px 20px;
+    border-bottom: 2px solid @gr;
+}
+
+#custom-power:hover {
+    color: @blue;
+    background-color: @gr;
+    border-bottom: 2px solid @blue;
+}
