@@ -5,11 +5,11 @@
 # [[ -f /usr/share/bash-completion/completions/zellij ]] && source /usr/share/bash-completion/completions/zellij
 [[ -f "$HOME"/.bash.d/bash_cht.bash ]] && source "$HOME"/.bash.d/bash_cht.bash
 # [[ -f "$HOME"/.bash.d/alacritty.bash ]] && source $HOME/.bash.d/alacritty.bash
-# [[ -f "$HOME""/.local/share/blesh/ble.sh ]] && source $HOME/.local/share/blesh/ble.sh
+# [[ -f "$HOME/.local/share/blesh/ble.sh" ]] && source "$HOME/.local/share/blesh/ble.sh"
 if [ -f /usr/share/bash-completion/completions/git ]; then
   . /usr/share/bash-completion/completions/git
 fi
-[[ -f "$HOME"./local/share/bash-completion/completions/git-forgit.bash ]] && source "$HOME"./local/share/bash-completion/completions/git-forgit.bash
+[[ -f "$HOME/.local/share/bash-completion/completions/git-forgit.bash" ]] && source "$HOME/.local/share/bash-completion/completions/git-forgit.bash"
 
 # if command -v fzf &>/dev/null; then
 # 	if [[ -f /usr/share/fzf/completion.bash ]]; then
@@ -26,6 +26,6 @@ fi
 eval "$(fzf --bash)"
 eval "$(zoxide init bash)"
 eval "$(thefuck --alias)"
-eval "$(thefuck --alias fk)"
+alias fk='fuck'
 eval "$(starship init bash)"
 # eval "$(atuin init bash)"

@@ -2,17 +2,23 @@
 # ~/.bash_profile
 #
 
+# Session variables must be set before ~/.bashrc so conditional
+# configuration (Qt toolkit, Java, prompt, etc.) sees the right session.
+if [[ -z "$WAYLAND_DISPLAY" && "${XDG_VTNR:-}" -eq 1 ]]; then
+    export GTK_THEME="Nord_BMA:dark" \
+           XDG_SESSION_TYPE=wayland \
+           XDG_SESSION_DESKTOP=sway \
+           XDG_CURRENT_DESKTOP=sway
+fi
+
 [[ -f "$HOME/.bashrc" ]] && . "$HOME/.bashrc"
 
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx -- vt1 &>/dev/null
-# [[ -z "$DISPLAY" && "$XDG_VTNR" -eq 1 ]] && exec startx
-# [[ -z "$WAYLAND_DISPLAY" && "$XDG_VTNR" -eq 1 ]] && export GTK_THEME="Nordic:dark" && exec sway
-
-if [ "$XDG_SESSION_DESKTOP" = "sway" ] ; then
-    # https://github.com/swaywm/sway/issues/595
-    export _JAVA_AWT_WM_NONREPARENTING=1
+# Start Sway on tty1. Validate the config first and fall back to a login
+# shell instead of letting getty's Restart=always loop forever.
+if [[ -z "$WAYLAND_DISPLAY" && "${XDG_VTNR:-}" -eq 1 && -z "${SWAY_SKIP_AUTOSTART:-}" ]]; then
+    if sway -C; then
+        exec sway
+    fi
+    echo "Sway config validation failed; dropping to shell" >&2
+    exec env SWAY_SKIP_AUTOSTART=1 bash -l
 fi
-# if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
-#   exec sway
-#   # dbus-run-session sway
-# fi

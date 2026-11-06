@@ -16,7 +16,7 @@ note() {
 				if [[ "$line" =~ ^\[([0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}:[0-9]{2})\] ]]; then
 					# If we were already in a note, print it
 					if [ "$in_note" = true ] && [ -n "$note_content" ]; then
-						echo -e "  \033[1;33m[$count]\033[0m $note_content"
+						printf '  \033[1;33m[%s]\033[0m %s\n' "$count" "$note_content"
 						((count++))
 					fi
 					# Start new note
@@ -25,14 +25,14 @@ note() {
 				elif [ "$in_note" = true ]; then
 					# Continue current note (multi-line)
 					if [ -n "$line" ]; then
-						note_content="$note_content\n    $line"
+						note_content+=$'\n'"    $line"
 					fi
 				fi
 			done <"$note_file"
 
 			# Print last note if exists
 			if [ "$in_note" = true ] && [ -n "$note_content" ]; then
-				echo -e "  \033[1;33m[$count]\033[0m $note_content"
+				printf '  \033[1;33m[%s]\033[0m %s\n' "$count" "$note_content"
 			fi
 		else
 			echo "📝 No notes yet. Use 'note <text>' to add your first note."
@@ -40,17 +40,19 @@ note() {
 	elif [ "$1" = "clip" ] || [ "$1" = "clipboard" ]; then
 		# Get clipboard content
 		local clip_content=""
-		if command -v xclip >/dev/null 2>&1; then
+		if [[ -n "${WAYLAND_DISPLAY:-}" ]] && command -v wl-paste >/dev/null 2>&1; then
+			# Prefer the native Wayland clipboard in a Wayland session.
+			clip_content=$(wl-paste -t text 2>/dev/null || wl-paste -n 2>/dev/null)
+		elif command -v xclip >/dev/null 2>&1; then
 			clip_content=$(xclip -selection clipboard -o 2>/dev/null)
 		elif command -v xsel >/dev/null 2>&1; then
 			clip_content=$(xsel --clipboard --output 2>/dev/null)
 		elif command -v wl-paste >/dev/null 2>&1; then
-			# Force text output for Wayland
 			clip_content=$(wl-paste -t text 2>/dev/null || wl-paste -n 2>/dev/null)
 		elif command -v pbpaste >/dev/null 2>&1; then
 			clip_content=$(pbpaste 2>/dev/null)
 		else
-			echo "❌ No clipboard tool found. Install xclip, xsel, or wl-clipboard"
+			echo "❌ No clipboard tool found. Install wl-clipboard, xclip, or xsel"
 			return 1
 		fi
 
@@ -68,9 +70,9 @@ note() {
 			fi
 
 			# Handle multi-line content by indenting continuation lines
-			echo "[$(date '+%Y-%m-%d %H:%M:%S')] [CLIPBOARD]" >>"$note_file"
-			echo "$clip_content" | sed 's/^/  /' >>"$note_file"
-			echo "" >>"$note_file"
+			printf '[%s] [CLIPBOARD]\n' "$(date '+%Y-%m-%d %H:%M:%S')" >>"$note_file"
+			printf '%s\n' "$clip_content" | sed 's/^/  /' >>"$note_file"
+			printf '\n' >>"$note_file"
 			echo "📋 Clipboard content added to notes"
 		else
 			echo "⚠️  Clipboard is empty"
@@ -124,7 +126,7 @@ note() {
 					# If we were in a note, decide whether to save it
 					if [ "$in_note" = true ] && [ -n "$note_content" ]; then
 						if [ "$should_skip" = false ]; then
-							echo -e "$note_content" >>"$temp_file"
+							printf '%s\n' "$note_content" >>"$temp_file"
 						else
 							echo "❌ Removed note #$count: ${note_start_line:0:50}..."
 						fi
@@ -146,14 +148,14 @@ note() {
 					in_note=true
 				elif [ "$in_note" = true ]; then
 					# Continue current note
-					note_content="$note_content\n$line"
+					note_content+=$'\n'"$line"
 				fi
 			done <"$note_file"
 
 			# Handle last note
 			if [ "$in_note" = true ] && [ -n "$note_content" ]; then
 				if [ "$should_skip" = false ]; then
-					echo -e "$note_content" >>"$temp_file"
+					printf '%s\n' "$note_content" >>"$temp_file"
 				else
 					echo "❌ Removed note #$count: ${note_start_line:0:50}..."
 				fi
@@ -191,7 +193,7 @@ note() {
 		echo "  note edit         - Open notes file in editor"
 		echo "  note help         - Show this help"
 	else
-		echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >>"$note_file"
+		printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >>"$note_file"
 		echo "✅ Note added to $note_file"
 	fi
 }

@@ -6,17 +6,19 @@ extract() {
   for archive in "$@"; do
     if [ -f "$archive" ]; then
       case $archive in
-      *.tar.bz2) tar xvjf "$archive" ;;
-      *.tar.gz) tar xvzf "$archive" ;;
-      *.bz2) bunzip2 "$archive" ;;
-      *.rar) rar x "$archive" ;;
-      *.gz) gunzip "$archive" ;;
+      *.tar.bz2 | *.tbz2) tar xvjf "$archive" ;;
+      *.tar.gz | *.tgz) tar xvzf "$archive" ;;
+      *.tar.xz | *.txz) tar xvJf "$archive" ;;
+      *.tar.zst | *.tzst) tar --zstd -xvf "$archive" ;;
       *.tar) tar xvf "$archive" ;;
-      *.tbz2) tar xvjf "$archive" ;;
-      *.tgz) tar xvzf "$archive" ;;
+      *.bz2) bunzip2 "$archive" ;;
+      *.gz) gunzip "$archive" ;;
+      *.xz) unxz "$archive" ;;
+      *.zst) unzstd "$archive" ;;
       *.zip) unzip "$archive" ;;
-      *.Z) uncompress "$archive" ;;
       *.7z) 7z x "$archive" ;;
+      *.rar) 7z x "$archive" ;;
+      *.Z) uncompress "$archive" ;;
       *) echo "don't know how to extract '$archive'..." ;;
       esac
     else
@@ -25,9 +27,9 @@ extract() {
   done
 }
 
-# Function for creating a new directory and entering it
+# Function for creating new directories and entering the first one
 mcd() {
-  mkdir -p "$@" && cd "$@"
+  mkdir -p "$@" && cd "$1"
 }
 
 # Function for git auto commit and push
@@ -47,8 +49,14 @@ mvr() {
   rsync --archive -hh --partial --info=stats1,progress2 --modify-window=1 --remove-source-files "$@"
 }
 
-help() {
-  "$@" --help 2>&1 | bat --plain --language=help
+# Show command help through bat without a pager. `help` itself stays the
+# bash builtin (e.g. `help cd`).
+cheat() {
+  if (($# == 0)); then
+    command help
+    return
+  fi
+  "$@" --help 2>&1 | bat --plain --language=help --paging=never
 }
 
 # function to check if a command exists
@@ -57,9 +65,10 @@ help() {
 # }
 
 __need_install() {
-  pkgs=("fzf" "bat" "lsd" "tmux" "yazi" "mc")
+  local pkgs=("fzf" "bat" "lsd" "tmux" "yazi" "mc")
+  local pkg
   for pkg in "${pkgs[@]}"; do
-    if [ ! "$(command -v "$pkg")" ]; then
+    if ! command -v "$pkg" >/dev/null 2>&1; then
       echo "$pkg - не установлен. Советую установить!"
     fi
   done

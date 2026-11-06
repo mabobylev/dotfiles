@@ -44,8 +44,9 @@ set skip-completed-text on
 # "\C-h":"cd\n"
 # "\C-w":"webserver\n"
 #
-# Execute zi (from zoxide pkg) command by pressing CTRL-f
-# bind '"\C-f":"zi\n"' - it for .bashrc
-"\C-f":"zi\n"
+# Execute zi (from zoxide pkg) with Alt-z instead of Ctrl-f, so that
+# Ctrl-f keeps its default forward-char binding.
+# bind '"\ez":"zi\n"' - it for .bashrc
+"\ez":"zi\n"
 # Prefixes the line with sudo, if Alt+s is pressed
 "\es":"\C-asudo \C-e"

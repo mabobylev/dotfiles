@@ -5,7 +5,7 @@
 # SHELL OPTIONS
 #######################################################
 # Disable ctrk-s and ctrl-q in shell
-stty -ixon
+stty -ixon 2>/dev/null
 
 #######################################################
 # Check the window size after each command and, if necessary, update the values of LINES and COLUMNS
@@ -24,6 +24,8 @@ shopt -s extglob      # Extended pattern matching
 #   echo -e "Date: $(date)\nShell: $SHELL\nTerminal: $TERM\nOS: $OSTYPE\nHostname: $HOSTNAME\nUptime: $(uptime)\n"
 #   echo ""
 # fi
-PS1=$'\uf0a9 '
-PS1="\[[\e]0;\w\a\W\]] $PS1 "
+# Fallback prompt. starship (loaded from tools.bash) replaces it when
+# installed; the escape sequence is wrapped in \[ \] so readline knows it
+# is non-printing.
+PS1=$'\[\e]0;\w\a\][\W] \uf0a9 '
 # PS1='[\u@\h \W]\$ '

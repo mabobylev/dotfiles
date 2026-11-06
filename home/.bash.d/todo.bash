@@ -25,9 +25,9 @@ todo() {
 				fi
 			done <"$todo_file"
 
-			# Count summary
-			local active=$(grep -c "^\[ \]" "$todo_file" 2>/dev/null || echo 0)
-			local done=$(grep -c "^\[x\]" "$todo_file" 2>/dev/null || echo 0)
+			# Count summary (`grep -c` prints 0 but exits 1 on no match)
+			local active=$(command grep -c "^\[ \]" "$todo_file" 2>/dev/null || true)
+			local done=$(command grep -c "^\[x\]" "$todo_file" 2>/dev/null || true)
 			echo -e "\n  \033[90m$active active, $done completed\033[0m"
 		else
 			echo "No tasks yet. Use 'todo <task>' to add your first task."
@@ -81,8 +81,8 @@ todo() {
 	clear | clean)
 		# Remove completed (struck-through) tasks
 		local temp_file="$todo_file.tmp"
-		grep "^\[ \]" "$todo_file" >"$temp_file" 2>/dev/null || true
-		local removed_count=$(grep -c "^\[x\]" "$todo_file" 2>/dev/null || echo 0)
+		command grep "^\[ \]" "$todo_file" >"$temp_file" 2>/dev/null || true
+		local removed_count=$(command grep -c "^\[x\]" "$todo_file" 2>/dev/null || true)
 		mv "$temp_file" "$todo_file"
 		echo "🗑️ Cleared $removed_count completed tasks"
 		;;

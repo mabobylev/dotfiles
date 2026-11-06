@@ -1,0 +1,14 @@
+#!/bin/sh
+# Write clipboard contents to stdout.
+# Prefer the native Wayland clipboard, fall back to X11 (XWayland).
+if [ -n "${WAYLAND_DISPLAY:-}" ] && command -v wl-paste >/dev/null 2>&1; then
+    exec wl-paste "$@"
+fi
+if [ -n "${DISPLAY:-}" ] && command -v xsel >/dev/null 2>&1; then
+    exec xsel --clipboard --output
+fi
+if [ -n "${DISPLAY:-}" ] && command -v xclip >/dev/null 2>&1; then
+    exec xclip -selection clipboard -o
+fi
+echo "pbpaste: no Wayland (wl-paste) or X11 (xsel/xclip) clipboard tool found" >&2
+exit 1

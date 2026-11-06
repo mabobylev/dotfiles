@@ -12,38 +12,29 @@ alias mc='mc -u'
 alias cpv='rsync -ah --info=progress2'
 
 # Disk usage
-alias biggest='du -h --max-depth=1 | sort -h'
+biggest() {
+  du -h --max-depth=1 "$@" | sort -h
+}
 
 #######################################################
 # LS variant
 #######################################################
 if command -v lsd &>/dev/null; then
-  alias ls='lsd --color=always --group-directories-first'
+  alias ls='lsd --color=auto --group-directories-first'
   alias lt='ls --tree --depth 1'
 elif command -v eza &>/dev/null; then
-  alias ls='eza --header --icons --group-directories-first'
+  alias ls='eza --header --icons --group-directories-first --color=auto'
 else
-  alias ls='ls --color=always'
+  alias ls='ls --color=auto'
   alias lt='ls --tree --level=1 --no-time --no-user --no-permissions'
 fi
 alias la='ls -a'
 alias ll='ls -l'
 #######################################################
-# check if ripgrep is installed
+# grep/cat intentionally not aliased.
+# `rg` and `bat` differ from the GNU tools in flags, ignore-file handling
+# and pager behaviour; call them explicitly when you want them.
 #######################################################
-if command -v rg &>/dev/null; then
-  alias grep='rg'
-else
-  alias grep='grep --color=auto'
-fi
-
-#######################################################
-# check if BAT is installed (cat replacement)
-#######################################################
-if command -v bat &>/dev/null; then
-  # use bat to colorize help text
-  alias cat='bat -n'
-fi
 
 #######################################################
 # check if NEOVIM is installed
@@ -53,15 +44,17 @@ if command -v nvim &>/dev/null; then
   alias vi='nvim'
   n() { if [ "$#" -eq 0 ]; then nvim .; else nvim "$@"; fi; }
 fi
-alias svi='sudo vi'
+alias svi='sudo -e'
 
 #######################################################
 # Clipboard management
+# ~/.local/bin/pbcopy and pbpaste auto-detect Wayland/X11 and are real
+# executables, so they also work in non-interactive shells (fzf, scripts).
 #######################################################
-alias pbcopy='xsel --clipboard --input'
-alias pbpaste='xsel --clipboard --output'
-#alias pbcopy='xclip -selection clipboard'
-#alias pbpaste='xclip -selection clipboard -o'
+# alias pbcopy='xsel --clipboard --input'
+# alias pbpaste='xsel --clipboard --output'
+# alias pbcopy='xclip -selection clipboard'
+# alias pbpaste='xclip -selection clipboard -o'
 
 #######################################################
 # Alias's for archives
@@ -77,7 +70,15 @@ alias ungz='tar -xvzf'
 # GIT aliases
 #######################################################
 alias gad='git add'
-alias gcu='git add . && git commit -a -m "Update" && git push'
+# Show what is staged and ask for a message instead of committing everything
+# with an automatic "Update" message.
+gcu() {
+  git add -A || return
+  git status --short
+  read -r -p "Commit message: " commit_msg
+  [[ -n "$commit_msg" ]] || { echo "Empty message, aborted."; return 1; }
+  git commit -m "$commit_msg" && git push
+}
 alias gps='git push'
 alias gpl='git pull'
 alias gst='git status'
@@ -87,24 +88,34 @@ alias glf='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset 
 alias glo='git log --oneline --graph --decorate'
 
 #######################################################
-# Alias for my dotfiles repos
+# Dotfiles repo (the old ~/.cfg bare repo does not exist)
 #######################################################
-alias dtf='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias dtf='git -C "$HOME/.dotfiles"'
 
 #######################################################
 # Alias for read logfiles
 #######################################################
-alias logs="sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
+alias logs="sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | sudo xargs -r tail -f"
 
 #######################################################
-# Alias for Cris Titus Linutils
+# Alias for Chris Titus Linutils
 #######################################################
-alias cris='curl -fsSL christitus.com/linux | sh'
+# Download over HTTPS, review the script, then run it explicitly:
+#   bash ~/.cache/christitus.sh
+cris() {
+  local script="${XDG_CACHE_HOME:-$HOME/.cache}/christitus.sh"
+  mkdir -p "$(dirname "$script")"
+  curl -fsSL --max-time 30 https://christitus.com/linux -o "$script" || return 1
+  echo "Downloaded to: $script"
+  less "$script"
+  echo "Review complete. Run it explicitly with: bash $script"
+}
 
 #######################################################
 # Package management
 #######################################################
-alias pacman='sudo pacman'
+# pacman is intentionally not aliased: read-only queries (-Q, -Qi) do not
+# need root, so use `sudo pacman ...` explicitly for installs/upgrades.
 
 if command -v yay &>/dev/null; then
   alias pkgm='yay'
@@ -125,16 +136,36 @@ alias pkgr='pkgm --noconfirm -Rns'
 alias df='df -h'
 alias du='du -h'
 alias free='free -h'
-alias ps='ps auxf'
-alias psg='ps aux | grep -v grep | grep -i -e VSZ -e'
-alias top='btop || htop || top'
-alias mem='free -h && echo && ps aux | head -1 && ps aux | sort -rnk 4 | head -5'
-alias cpu='ps aux | head -1 && ps aux | sort -rnk 3 | head -5'
+ps() {
+  if (($#)); then
+    command ps "$@"
+  else
+    command ps auxf
+  fi
+}
+psg() {
+  if (($#)); then
+    command ps aux | command grep -v grep | command grep -i -e VSZ -e "$*"
+  else
+    command ps aux | command grep -v grep | command grep -i -e VSZ
+  fi
+}
+top() {
+  if command -v btop >/dev/null 2>&1; then
+    btop "$@"
+  elif command -v htop >/dev/null 2>&1; then
+    htop "$@"
+  else
+    command top "$@"
+  fi
+}
+alias mem='free -h && echo && command ps aux | head -1 && command ps aux | sort -rnk 4 | head -5'
+alias cpu='command ps aux | head -1 && command ps aux | sort -rnk 3 | head -5'
 
 #######################################################
 # NETWORK
 #######################################################
-alias myip="hostname -i | awk '{print \$1}' && echo -n 'External: ' && curl -s ifconfig.me && echo"
+alias myip="hostname -i | awk '{print \$1}' && echo -n 'External: ' && curl -fsS --max-time 5 https://ifconfig.me && echo"
 alias ports='netstat -tulanp'
 alias listening='lsof -P -i -n'
 
@@ -142,8 +173,13 @@ alias listening='lsof -P -i -n'
 # UTIITIES
 #######################################################
 # alias weather='curl wttr.in/ulyanovsk?u'
-alias wallp='xwallpaper --zoom "$(find /home/bma/.local/backgrounds/wallpapers/ | shuf -n1)"'
-alias scr2vid='ffmpeg -f alsa -i hw:0 -ac 2 -acodec vorbis -f x11grab -r 25 -s 1920x1080 -i :0.0 -vcodec libx264 output.mp4'
-# alias scr2vid='ffmpeg -f pulse -i alsa_output.pci-0000_00_14.2.pro-output-0.monitor -ac 2 -acodec vorbis -f x11grab -r 25 -s 1920x1080 -i :0.0 -vcodec libx264 output.mp4'
-# alias scr2vid='ffmpeg -f x11grab -video_size $(xdpyinfo | grep "dimensions:" | awk "{print $2;}") -i :0.0 -f alsa -i hw:0 -c:v libx264 -preset ultrafast -c:a aac -b:a 128k output.mp4'
+wallp() {
+  local img
+  img=$(find "$HOME/.local/backgrounds/wallpapers" -type f | shuf -n1) || return 1
+  [[ -n "$img" ]] || { echo "No wallpapers found"; return 1; }
+  swaymsg output "*" bg "$img" fill
+}
+# scr2vid: X11/ALSA capture does not work in a Sway session.
+# Install wf-recorder (or wl-screenrec) and use it explicitly, e.g.:
+#   wf-recorder -f "output-$(date +%Y%m%d-%H%M%S).mp4"
 alias vidscale='ffmpeg -i output1.mp4 -filter:v scale=720:-1 -c:a copy output.mkv'

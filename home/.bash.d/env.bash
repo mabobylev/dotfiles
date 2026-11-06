@@ -1,7 +1,7 @@
 #######################################################
 # Определим переменные по-умолчанию
 #######################################################
-export TERMINAL="kitty"
+export TERMINAL="foot"
 export EDITOR=$(command -v nvim || command -v vim || command -v micro || echo nano)
 export VISUAL="$EDITOR"
 export SUDO_EDITOR="$EDITOR"
@@ -9,7 +9,12 @@ export GIT_EDITOR="$EDITOR"
 export MANPAGER="less -R --use-color -Dd+r -Du+b"
 # export MANPAGER="nvim +Man!"
 export MANROFFOPT="-P -c"
-export PATH="$PATH:$HOME/.local/bin"
+# Add ~/.local/bin once, without duplicating it on every nested shell.
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) PATH="$HOME/.local/bin:$PATH" ;;
+esac
+export PATH
 export BAT_THEME="Nord"
 # export DOTBARE_DIR="$HOME/.cfg"
 # export DOTBARE_TREE="$HOME"
@@ -25,8 +30,8 @@ export XDG_CACHE_HOME="$HOME/.cache"
 #######################################################
 # Expand the history size
 #######################################################
-export HISTSIZE=1000
-export HISTFILESIZE=10000
+export HISTSIZE=10000
+export HISTFILESIZE=100000
 # Don't put duplicate lines in the history and do not add lines that start with a space
 export HISTCONTROL=erasedups:ignoredups:ignorespace
 # Causes bash to append to history instead of overwriting it so if you start a new terminal, you have old session history
@@ -73,8 +78,8 @@ export color_prompt=yes
 [ -z "$_JAVA_AWT_WM_NONREPARENTING" ] && export _JAVA_AWT_WM_NONREPARENTING=1
 # This is needed for skinning KDE applications
 # [ -z "$QT_QPA_PLATFORMTHEME" ] && export QT_QPA_PLATFORMTHEME="qt5ct"
-[ -z "$QT_QPA_PLATFORM" ] && export QT_QPA_PLATFORM="xcb"
+# Don't force Qt through XWayland; let Qt auto-detect the platform.
+# [ -z "$QT_QPA_PLATFORM" ] && export QT_QPA_PLATFORM="xcb"
 export QT_QPA_PLATFORMTHEME=gtk3
 
 # [ -z "$GTK_THEME" ] && export GTK_THEME="Nordic:dark"
-set +h

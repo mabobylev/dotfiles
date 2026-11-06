@@ -6,7 +6,6 @@ export FZF_DEFAULT_OPTS='
   --layout=reverse
   --exact
   --info=inline
-  --border=bold
   --border=rounded
   --margin=3%
   --height=90%
@@ -21,7 +20,8 @@ export FZF_CTRL_T_OPTS="
   --preview 'bat -n --color=always {}'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 # CTRL-/ to toggle small preview window to see the full command
-# CTRL-Y to copy the command into clipboard using pbcopy
+# CTRL-Y copies the command via ~/.local/bin/pbcopy, which auto-detects
+# Wayland/X11 and works in fzf's non-interactive shell.
 export FZF_CTRL_R_OPTS="
   --preview 'echo {}' --preview-window up:3:hidden:wrap
   --bind 'ctrl-/:toggle-preview'
