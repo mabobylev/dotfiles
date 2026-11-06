@@ -5,7 +5,6 @@
   // "output": ["eDP-1"],
   "reload_style_on_change": true,
   "height": 30,
-  "width": 1920,
   // "margin-top": 15,
   // "margin-bottom": 5,
   // "spacing": 4,
@@ -50,7 +49,7 @@
         ""
       ]
     },
-    "on-click": "pkill wofi || wofi --show drun --hide-scroll",
+    "on-click": "pkill rofi || rofi -show drun --hide-scroll",
     "escape": true,
     "tooltip": false
   },
