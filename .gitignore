@@ -1,6 +1,7 @@
 reaper/
 mc/.local/share/mc/history
 
-# Local/private helper scripts (not part of dotfiles)
+# Local/private helper scripts and binaries (not part of dotfiles)
 /scripts/.local/bin/dsh-*
 /scripts/.local/bin/morningdaw*
+/scripts/.local/bin/xembsni
