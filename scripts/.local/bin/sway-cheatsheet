@@ -1,0 +1,756 @@
+#!/usr/bin/env python3
+"""Шпаргалка по горячим клавишам Sway.
+
+Скрипт читает активный конфиг Sway (через `swaymsg -t get_config`),
+разворачивает include-файлы и переменные, после чего показывает
+плавающее окно с поиском по клавишам и действиям.
+
+Использование:
+    sway-cheatsheet              # показать окно
+    sway-cheatsheet --toggle     # показать или закрыть, если уже открыто
+    sway-cheatsheet --print      # вывести шпаргалку в stdout
+
+Зависимости: python3 + PyGObject (GTK 3). Окно работает через Wayland.
+"""
+
+from __future__ import annotations
+
+import argparse
+import glob
+import json
+import os
+import re
+import shlex
+import subprocess
+import sys
+from dataclasses import dataclass
+
+APP_ID = "sway-cheatsheet"
+WINDOW_TITLE = "Горячие клавиши Sway"
+
+
+# =============================================================================
+#  Чтение и разбор конфигурации Sway
+# =============================================================================
+
+SET_RE = re.compile(r"^\s*set\s+(\$[\w-]+)\s+(.*)$")
+VAR_RE = re.compile(r"\$[\w-]+")
+SECTION_RE = re.compile(r"^[-=]{2,}\s*(.*?)\s*[-=]{2,}$")
+BIND_RE = re.compile(r"^\s*(bindsym|bindcode|bindswitch)\b(.*)$")
+COMMENTED_CODE_RE = re.compile(
+    r"^(bindsym|bindcode|bindswitch|exec|exec_always|set|include|"
+    r"for_window|assign|bar|mode|input|output)\b"
+)
+GENERIC_COMMENT_RE = re.compile(
+    r"^(Запуск|Переключение|Перемещение|Навигация|Раскладка|Утилиты|"
+    r"Мультимедиа|Воркспейсы|Специальные|Базовые|Режим|Фокус|"
+    r"Правила|Оформление|Мониторы|Клавиатура)\b",
+    re.IGNORECASE,
+)
+
+DIR_RU = {
+    "left": "влево",
+    "right": "вправо",
+    "up": "вверх",
+    "down": "вниз",
+}
+
+
+@dataclass
+class Binding:
+    section: str
+    keys: str
+    action: str
+    command: str
+
+
+def read_sway_config(explicit_path: str | None = None) -> tuple[str, str]:
+    """Вернуть (текст конфига, каталог для относительных include)."""
+    if explicit_path:
+        path = os.path.expanduser(explicit_path)
+        with open(path, encoding="utf-8") as f:
+            return f.read(), os.path.dirname(path)
+
+    try:
+        proc = subprocess.run(
+            ["swaymsg", "-t", "get_config"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=True,
+        )
+        config = json.loads(proc.stdout).get("config", "")
+        if config:
+            return config, os.path.expanduser("~/.config/sway")
+    except Exception:
+        pass
+
+    path = os.path.expanduser(
+        os.environ.get("SWAY_CONFIG", "~/.config/sway/config")
+    )
+    with open(path, encoding="utf-8") as f:
+        return f.read(), os.path.dirname(path)
+
+
+def expand_includes(
+    text: str, base_dir: str, seen: set[str] | None = None
+) -> list[str]:
+    """Развернуть директивы include, чтобы показать и подключённые файлы."""
+    if seen is None:
+        seen = set()
+
+    result: list[str] = []
+    for line in text.splitlines():
+        match = re.match(r"^\s*include\s+(.+)$", line)
+        if not match:
+            result.append(line)
+            continue
+
+        try:
+            patterns = shlex.split(match.group(1))
+        except ValueError:
+            patterns = match.group(1).split()
+
+        for pattern in patterns:
+            pattern = os.path.expanduser(os.path.expandvars(pattern))
+            if not os.path.isabs(pattern):
+                pattern = os.path.join(base_dir, pattern)
+
+            for path in sorted(glob.glob(pattern)):
+                if not os.path.isfile(path):
+                    continue
+                real_path = os.path.realpath(path)
+                if real_path in seen:
+                    continue
+                seen.add(real_path)
+
+                try:
+                    with open(path, encoding="utf-8") as f:
+                        included = f.read()
+                except OSError:
+                    continue
+
+                result.append(f"# --- Дополнительно: {os.path.basename(path)} ---")
+                result.extend(
+                    expand_includes(included, os.path.dirname(path), seen)
+                )
+
+    return result
+
+
+def collect_variables(lines: list[str]) -> dict[str, str]:
+    variables: dict[str, str] = {}
+    for line in lines:
+        match = SET_RE.match(line)
+        if match:
+            variables[match.group(1)] = match.group(2).strip()
+    return variables
+
+
+def expand_vars(value: str, variables: dict[str, str], depth: int = 0) -> str:
+    """Рекурсивно подставить переменные Sway вида $mod, $term и т.п."""
+    if depth > 20:
+        return value
+
+    changed = False
+
+    def replace(match: re.Match[str]) -> str:
+        nonlocal changed
+        name = match.group(0)
+        if name in variables:
+            changed = True
+            return variables[name]
+        return name
+
+    expanded = VAR_RE.sub(replace, value)
+    if changed and expanded != value:
+        return expand_vars(expanded, variables, depth + 1)
+    return expanded
+
+
+def split_binding(rest: str) -> tuple[list[str], str | None, str]:
+    """Разделить строку после bindsym на флаги, комбинацию и команду."""
+    tokens = rest.split()
+    if not tokens:
+        return [], None, ""
+
+    index = 0
+    flags: list[str] = []
+    while index < len(tokens):
+        token = tokens[index]
+        if token.startswith("--") or re.match(r"^Group[1-4]\+", token):
+            flags.append(token)
+            index += 1
+            continue
+        break
+
+    if index >= len(tokens):
+        return flags, None, ""
+
+    keycombo = tokens[index]
+    position = rest.find(keycombo)
+    command = (
+        rest[position + len(keycombo):].strip() if position != -1 else ""
+    )
+    return flags, keycombo, command
+
+
+# =============================================================================
+#  Человекочитаемые подписи
+# =============================================================================
+
+MODIFIER_NAMES = {
+    "Mod4": "Super",
+    "Mod1": "Alt",
+    "Control": "Ctrl",
+    "Ctrl": "Ctrl",
+    "Shift": "Shift",
+    "Lock": "CapsLock",
+    "Mod2": "NumLock",
+    "Mod5": "AltGr",
+}
+
+KEY_NAMES = {
+    "Return": "Enter",
+    "Enter": "Enter",
+    "space": "Space",
+    "Space": "Space",
+    "minus": "-",
+    "equal": "=",
+    "comma": ",",
+    "period": ".",
+    "slash": "/",
+    "backslash": "\\",
+    "apostrophe": "'",
+    "grave": "`",
+    "bracketleft": "[",
+    "bracketright": "]",
+    "semicolon": ";",
+    "Tab": "Tab",
+    "Escape": "Esc",
+    "Esc": "Esc",
+    "Left": "←",
+    "Right": "→",
+    "Up": "↑",
+    "Down": "↓",
+    "Print": "Print Screen",
+    "XF86AudioMute": "Volume Mute",
+    "XF86AudioMicMute": "Mic Mute",
+    "XF86AudioRaiseVolume": "Volume Up",
+    "XF86AudioLowerVolume": "Volume Down",
+    "XF86MonBrightnessUp": "Brightness Up",
+    "XF86MonBrightnessDown": "Brightness Down",
+    "XF86AudioPlay": "Play/Pause",
+    "XF86AudioPause": "Pause",
+    "XF86AudioNext": "Next Track",
+    "XF86AudioPrev": "Previous Track",
+    "XF86AudioStop": "Stop",
+    "XF86Search": "Search",
+}
+
+KEY_ACTION_MAP = {
+    "XF86AudioMute": "Звук: выключить/включить",
+    "XF86AudioMicMute": "Микрофон: выключить/включить",
+    "XF86AudioRaiseVolume": "Громкость +",
+    "XF86AudioLowerVolume": "Громкость −",
+    "XF86MonBrightnessUp": "Яркость +",
+    "XF86MonBrightnessDown": "Яркость −",
+    "XF86AudioPlay": "Играть/пауза",
+    "XF86AudioPause": "Пауза",
+    "XF86AudioNext": "Следующий трек",
+    "XF86AudioPrev": "Предыдущий трек",
+    "XF86AudioStop": "Стоп",
+    "XF86Search": "Поиск / лаунчер",
+    "Print": "Скриншот",
+}
+
+
+def display_keys(combo: str) -> str:
+    """Сделать комбинацию клавиш читаемой: Mod4+Shift+q -> Super+Shift+Q."""
+    parts = combo.split("+")
+    result: list[str] = []
+
+    for part in parts:
+        if part in MODIFIER_NAMES:
+            result.append(MODIFIER_NAMES[part])
+        elif part in KEY_NAMES:
+            result.append(KEY_NAMES[part])
+        elif len(part) == 1 and part.isalpha():
+            result.append(part.upper())
+        else:
+            result.append(part)
+
+    return "+".join(result)
+
+
+def action_from_key(combo: str) -> str | None:
+    key = combo.rsplit("+", 1)[-1]
+    return KEY_ACTION_MAP.get(key)
+
+
+def friendly_exec(raw_command: str) -> str:
+    """Подпись для exec-команд."""
+    raw = raw_command.strip()
+    if raw.startswith("exec "):
+        raw = raw[5:].strip()
+    if raw.startswith("--no-startup-id "):
+        raw = raw[len("--no-startup-id "):].strip()
+
+    first = raw.split()[0] if raw.split() else ""
+    variable_actions = {
+        "$term": "Терминал",
+        "$menu": "Меню dmenu",
+        "$runner": "Лаунчер (rofi)",
+        "$browser": "Браузер (firefox)",
+        "$fmanager": "Файловый менеджер (pcmanfm)",
+    }
+    if first in variable_actions:
+        return variable_actions[first]
+
+    command_actions = [
+        ("pactl set-sink-mute", "Звук: выключить/включить"),
+        ("pactl set-source-mute", "Микрофон: выключить/включить"),
+        ("pactl set-sink-volume", "Громкость"),
+        ("brightnessctl", "Яркость"),
+        ("playerctl play-pause", "Играть/пауза"),
+        ("playerctl next", "Следующий трек"),
+        ("playerctl previous", "Предыдущий трек"),
+        ("playerctl stop", "Стоп"),
+        ("pavucontrol", "Громкость (pavucontrol)"),
+        ("nwg-bar", "Меню выхода (nwg-bar)"),
+        ("dmenu_run", "Меню dmenu"),
+        ("rofi", "Лаунчер (rofi)"),
+        ("grim", "Скриншот"),
+        ("sway-cheatsheet", "Шпаргалка по горячим клавишам"),
+    ]
+    for needle, label in command_actions:
+        if needle in raw:
+            if needle == "pactl set-sink-volume":
+                if "+" in raw:
+                    return "Громкость +"
+                if "-" in raw:
+                    return "Громкость −"
+            if needle == "brightnessctl":
+                if "+" in raw:
+                    return "Яркость +"
+                if "-" in raw:
+                    return "Яркость −"
+            return label
+
+    try:
+        parts = shlex.split(raw)
+    except ValueError:
+        parts = raw.split()
+    if not parts:
+        return "Выполнить команду"
+
+    executable = os.path.basename(parts[0])
+    return f"Запустить: {executable}"
+
+
+def describe(
+    kind: str,
+    keys: str,
+    raw_command: str,
+    command: str,
+    comment: str | None,
+) -> str:
+    """Построить понятное описание действия."""
+    key_action = action_from_key(keys)
+    if key_action:
+        return key_action
+
+    cmd = re.sub(r"\s+", " ", command).strip()
+
+    match = re.match(r"^workspace\s+(?:number\s+)?(\S+)", cmd)
+    if match:
+        return f"Воркспейс {match.group(1)}"
+
+    match = re.match(
+        r"^move container to workspace\s+(?:number\s+)?(\S+)", cmd
+    )
+    if match:
+        return f"Переместить окно на воркспейс {match.group(1)}"
+
+    if cmd == "kill":
+        return "Закрыть активное окно"
+    if cmd == "reload":
+        return "Перезагрузить конфигурацию"
+    if cmd == "fullscreen":
+        return "Полноэкранный режим"
+    if cmd == "floating toggle":
+        return "Плавающее окно: вкл/выкл"
+    if cmd == "focus mode_toggle":
+        return "Фокус: тайлинг ↔ плавающие"
+    if cmd == "focus parent":
+        return "Фокус на родительский контейнер"
+
+    match = re.match(r"^focus (left|right|up|down)$", cmd)
+    if match:
+        return f"Фокус {DIR_RU[match.group(1)]}"
+
+    match = re.match(r"^move (left|right|up|down)$", cmd)
+    if match:
+        return f"Переместить окно {DIR_RU[match.group(1)]}"
+
+    if cmd == "splith":
+        return "Разделить горизонтально"
+    if cmd == "splitv":
+        return "Разделить вертикально"
+    if cmd == "layout stacking":
+        return "Раскладка: стопка"
+    if cmd == "layout tabbed":
+        return "Раскладка: вкладки"
+    if cmd == "layout toggle split":
+        return "Переключить направление разделения"
+    if cmd == "move scratchpad":
+        return "Отправить в scratchpad"
+    if cmd == "scratchpad show":
+        return "Показать scratchpad"
+
+    if cmd.startswith("resize shrink width"):
+        return "Уменьшить ширину"
+    if cmd.startswith("resize grow width"):
+        return "Увеличить ширину"
+    if cmd.startswith("resize shrink height"):
+        return "Уменьшить высоту"
+    if cmd.startswith("resize grow height"):
+        return "Увеличить высоту"
+
+    if cmd in ('mode "default"', "mode default"):
+        return "Вернуться в обычный режим"
+    if re.match(r'^mode\s+"?resize"?$', cmd):
+        return "Режим изменения размера"
+
+    if cmd.startswith("exec "):
+        if comment and not GENERIC_COMMENT_RE.match(comment):
+            return comment
+        return friendly_exec(raw_command)
+
+    if kind == "bindswitch":
+        return f"Переключатель: {keys}"
+
+    if comment:
+        return comment
+    return cmd
+
+
+def parse_bindings(lines: list[str]) -> list[Binding]:
+    variables = collect_variables(lines)
+    section = "Общее"
+    pending_comment: str | None = None
+    bindings: list[Binding] = []
+
+    for raw_line in lines:
+        stripped = raw_line.strip()
+
+        if not stripped:
+            pending_comment = None
+            continue
+
+        if stripped.startswith("#"):
+            text = stripped[1:].strip()
+
+            section_match = SECTION_RE.match(text)
+            if section_match:
+                section = expand_vars(section_match.group(1).strip(), variables)
+                section = re.sub(r"\bMod4\b", "Super", section)
+                section = re.sub(r"\bMod1\b", "Alt", section)
+                pending_comment = None
+                continue
+
+            if COMMENTED_CODE_RE.match(text):
+                continue
+
+            if text:
+                pending_comment = text
+            continue
+
+        match = BIND_RE.match(raw_line)
+        if not match:
+            pending_comment = None
+            continue
+
+        kind, rest = match.group(1), match.group(2).strip()
+        _flags, keycombo, command = split_binding(rest)
+        if keycombo is None:
+            pending_comment = None
+            continue
+
+        expanded_keys = expand_vars(keycombo, variables)
+        expanded_command = expand_vars(command, variables)
+        action = describe(
+            kind,
+            expanded_keys,
+            command,
+            expanded_command,
+            pending_comment,
+        )
+
+        bindings.append(
+            Binding(
+                section=section,
+                keys=expanded_keys,
+                action=action,
+                command=expanded_command,
+            )
+        )
+        pending_comment = None
+
+    return bindings
+
+
+def render_text(bindings: list[Binding]) -> str:
+    lines = ["Sway — горячие клавиши", ""]
+    current_section = None
+
+    for binding in bindings:
+        if binding.section != current_section:
+            if current_section is not None:
+                lines.append("")
+            lines.append(f"[{binding.section}]")
+            current_section = binding.section
+
+        keys = display_keys(binding.keys)
+        lines.append(f"  {keys:<28} {binding.action}")
+
+    return "\n".join(lines)
+
+
+# =============================================================================
+#  Окно GTK 3 (native Wayland)
+# =============================================================================
+
+def show_gui(bindings: list[Binding]) -> int:
+    os.environ.setdefault("GDK_BACKEND", "wayland")
+
+    try:
+        import gi
+
+        gi.require_version("Gdk", "3.0")
+        gi.require_version("Gtk", "3.0")
+        from gi.repository import Gdk, GLib, Gtk, Pango
+    except (ImportError, ValueError) as error:
+        print(
+            "Не удалось загрузить GTK 3 / PyGObject: "
+            f"{error}\nУстановите python-gobject и gtk3.",
+            file=sys.stderr,
+        )
+        return 1
+
+    GLib.set_prgname(APP_ID)
+    GLib.set_application_name(WINDOW_TITLE)
+
+    window = Gtk.Window(title=WINDOW_TITLE)
+    window.set_default_size(920, 700)
+    window.set_position(Gtk.WindowPosition.CENTER)
+    window.connect("destroy", Gtk.main_quit)
+
+    header = Gtk.HeaderBar()
+    header.set_show_close_button(True)
+    header.set_title(WINDOW_TITLE)
+    header.set_subtitle("Esc — закрыть · начните вводить для поиска")
+    window.set_titlebar(header)
+
+    search = Gtk.SearchEntry()
+    search.set_placeholder_text("Поиск по клавишам и действиям…")
+    search.set_width_chars(38)
+    header.pack_start(search)
+
+    store = Gtk.ListStore(str, str, int)
+    tree = Gtk.TreeView(model=store)
+    tree.set_headers_visible(True)
+    tree.set_enable_search(False)
+    tree.set_grid_lines(Gtk.TreeViewGridLines.HORIZONTAL)
+    tree.get_selection().set_mode(Gtk.SelectionMode.NONE)
+
+    keys_renderer = Gtk.CellRendererText()
+    keys_renderer.set_property("family", "JetBrainsMono Nerd Font Mono")
+    keys_column = Gtk.TreeViewColumn(
+        "Клавиши", keys_renderer, text=0, weight=2
+    )
+    keys_column.set_min_width(250)
+    keys_column.set_resizable(True)
+    tree.append_column(keys_column)
+
+    action_renderer = Gtk.CellRendererText()
+    action_renderer.set_property("ellipsize", Pango.EllipsizeMode.END)
+    action_column = Gtk.TreeViewColumn(
+        "Действие", action_renderer, text=1, weight=2
+    )
+    action_column.set_expand(True)
+    action_column.set_resizable(True)
+    tree.append_column(action_column)
+
+    scrolled = Gtk.ScrolledWindow()
+    scrolled.set_policy(
+        Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
+    )
+    scrolled.add(tree)
+
+    box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    box.pack_start(scrolled, True, True, 0)
+    window.add(box)
+
+    def populate(needle: str = "") -> None:
+        store.clear()
+        needle = needle.casefold()
+        current_section: str | None = None
+        matches = 0
+
+        for binding in bindings:
+            keys = display_keys(binding.keys)
+            haystack = (
+                f"{binding.section} {keys} {binding.action} "
+                f"{binding.command}"
+            ).casefold()
+
+            if needle and needle not in haystack:
+                continue
+
+            if binding.section != current_section:
+                store.append(
+                    [binding.section, "", int(Pango.Weight.BOLD)]
+                )
+                current_section = binding.section
+
+            store.append(
+                [keys, binding.action, int(Pango.Weight.NORMAL)]
+            )
+            matches += 1
+
+        if matches == 0:
+            store.append(
+                [
+                    "Ничего не найдено",
+                    "Попробуйте другой запрос",
+                    int(Pango.Weight.NORMAL),
+                ]
+            )
+
+    def on_key_press(_widget, event) -> bool:
+        if event.keyval == Gdk.KEY_Escape:
+            window.destroy()
+            return True
+        return False
+
+    def on_search_changed(entry: Gtk.SearchEntry) -> None:
+        populate(entry.get_text())
+
+    search.connect("search-changed", on_search_changed)
+    window.connect("key-press-event", on_key_press)
+
+    css = b"""
+    window { background-color: #2E3440; color: #D8DEE9; }
+    headerbar { background-color: #3B4252; color: #D8DEE9; }
+    treeview { background-color: #2E3440; color: #D8DEE9; font-size: 11pt; }
+    treeview:selected { background-color: #81A1C1; color: #2E3440; }
+    entry { background-color: #434C5E; color: #D8DEE9; }
+    """
+    provider = Gtk.CssProvider()
+    provider.load_from_data(css)
+    Gtk.StyleContext.add_provider_for_screen(
+        Gdk.Screen.get_default(),
+        provider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
+    )
+
+    populate()
+    window.show_all()
+    search.grab_focus()
+    Gtk.main()
+    return 0
+
+
+# =============================================================================
+#  Режим --toggle: F1 открывает и закрывает окно
+# =============================================================================
+
+def sway_tree_has_cheatsheet() -> bool:
+    try:
+        proc = subprocess.run(
+            ["swaymsg", "-t", "get_tree"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=True,
+        )
+        tree = json.loads(proc.stdout)
+    except Exception:
+        return False
+
+    def walk(node: dict) -> bool:
+        if node.get("app_id") == APP_ID or node.get("name") == WINDOW_TITLE:
+            return True
+        children = node.get("nodes", []) + node.get("floating_nodes", [])
+        return any(walk(child) for child in children)
+
+    return walk(tree)
+
+
+def kill_cheatsheet_window() -> None:
+    for criteria in (
+        f'[app_id="{APP_ID}"]',
+        f'[title="{WINDOW_TITLE}"]',
+    ):
+        try:
+            subprocess.run(
+                ["swaymsg", f"{criteria} kill"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+        except Exception:
+            pass
+
+
+# =============================================================================
+#  main
+# =============================================================================
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Шпаргалка по горячим клавишам Sway"
+    )
+    parser.add_argument(
+        "--config",
+        help="путь к конфигу Sway (по умолчанию активный конфиг из swaymsg)",
+    )
+    parser.add_argument(
+        "--print",
+        action="store_true",
+        help="вывести шпаргалку в stdout вместо окна",
+    )
+    parser.add_argument(
+        "--toggle",
+        action="store_true",
+        help="закрыть уже открытую шпаргалку или открыть новую",
+    )
+    args = parser.parse_args()
+
+    if args.toggle and sway_tree_has_cheatsheet():
+        kill_cheatsheet_window()
+        return 0
+
+    try:
+        config_text, base_dir = read_sway_config(args.config)
+    except OSError as error:
+        print(f"Не удалось прочитать конфиг Sway: {error}", file=sys.stderr)
+        return 1
+
+    lines = expand_includes(config_text, base_dir)
+    bindings = parse_bindings(lines)
+
+    if not bindings:
+        print("В конфиге не найдено привязок клавиш.", file=sys.stderr)
+        return 1
+
+    if args.print:
+        print(render_text(bindings))
+        return 0
+
+    return show_gui(bindings)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,310 +1,114 @@
-### Variables
-#
-# Logo key. Use Mod1 for Alt.
+# =============================================================================
+#  Sway / SwayFX — конфигурация
+# -----------------------------------------------------------------------------
+#  Проверка синтаксиса:  sway -C
+#  Перезагрузка:         $mod+Shift+r
+#  Все горячие клавиши используют --to-code, поэтому работают одинаково
+#  в раскладках ENG и RUS.
+# =============================================================================
+
+
+# =============================================================================
+#  1. ПЕРЕМЕННЫЕ
+# =============================================================================
+
+# Основной модификатор (Logo/Super) и дополнительный (Alt)
 set $mod Mod4
 set $alt Mod1
-# Home row direction keys, like vim
+
+# Клавиши направления (vim-стиль)
 set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
+
+# Приложения по умолчанию
 set $term foot
-# Your preferred application launcher
-set $menu dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'JetBrainsMono Nerd Font:bold:pixelsize=16'
-# set $menu wmenu-run
 set $browser firefox
 set $runner rofi -show drun
 set $fmanager pcmanfm
+set $menu dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'JetBrainsMono Nerd Font:bold:pixelsize=16'
+# set $menu wmenu-run
 
-### Output configuration
-#
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-# output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1366x768.png fill
-#
-# Example configuration:
-#
-#   output HDMI-A-1 resolution 1920x1080 position 1920,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
+
+# =============================================================================
+#  2. КЛАВИАТУРА И ВВОД
+# =============================================================================
+
+# Раскладки: первая (us) используется для перевода keysym -> keycode
+# в привязках --to-code, поэтому сочетания не зависят от текущей раскладки.
+input * {
+    xkb_layout us,ru
+    xkb_options grp:caps_toggle,grp_led:caps
+}
+
+# NumLock при старте системы
+# input * xkb_numlock enabled
+
+
+# =============================================================================
+#  3. МОНИТОРЫ И ОБОИ
+# =============================================================================
+
+# Конкретный выход (посмотреть список: swaymsg -t get_outputs)
 output DP-2 resolution 1920x1080 position 0,0
 
-# Обои
+# Случайные обои из каталога
 output * bg "$(find $HOME/.local/backgrounds/wallpapers/ -type f|shuf -n1)" fill
 
-### Idle configuration
-#
-# Example configuration:
-#
-#    exec swayidle -w \
-#             timeout 300 'swaylock -f -c 000000' \
-#             timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-#             before-sleep 'swaylock -f -c 000000'
-#
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
-#    exec swayidle -w timeout 1800 'swaylock -f -c 000000'
 
-### Input configuration
-#
-# Example configuration:
-#
-#    input type:pointer {
-#        natural_scroll enabled
-#        middle_emulation enabled
-#    }
-#
-# You can get the names of your inputs by running: swaymsg -t get_inputs
-# Read `man 5 sway-input` for more information about this section.
+# =============================================================================
+#  4. ОФОРМЛЕНИЕ ОКОН И ЭФФЕКТЫ
+# =============================================================================
 
-#--- РАСКЛАДКА КЛАВИАТУРЫ -------------------------------------------------------------
-    input * {
-    	xkb_layout us,ru
-    	xkb_options grp:caps_toggle,grp_led:caps
-    }
-    #NumLock при старте системы
-    # input * xkb_numlock enabled
+# --- Отступы ---
+gaps inner 3
+gaps outer 3
+smart_gaps off
 
-### Key bindings
-#
-# Basics:
-#
-    # Start a terminal
-    bindsym $mod+Return exec $term
+# --- Рамки ---
+default_border pixel 2
+default_floating_border pixel 2
+# Отключать рамку, если окно в контейнере одно
+smart_borders on
+# for_window [tiling] border pixel 2
+# for_window [floating] border pixel 2
 
-    # Kill focused window
-    bindsym $mod+Shift+q kill
-
-    # Start your launcher
-    bindsym --to-code $mod+Shift+d exec $menu
-    bindsym --to-code $mod+d exec $runner
-    bindsym --to-code $mod+b exec $browser
-    bindsym --to-code $mod+n exec $fmanager
-    bindsym --to-code $alt+Control+p exec pavucontrol
-
-
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
-    floating_modifier $mod normal
-
-    # Reload the configuration file
-    bindsym --to-code $mod+Shift+r reload
-
-    # Exit sway (logs you out of your Wayland session)
-    # bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
-    bindsym --to-code $mod+Shift+e exec nwg-bar
-#
-# Moving around:
-#
-    # Move your focus around
-    bindsym $mod+$left focus left
-    bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
-    bindsym $mod+$right focus right
-    # Or use $mod+[up|down|left|right]
-    bindsym $mod+Left focus left
-    bindsym $mod+Down focus down
-    bindsym $mod+Up focus up
-    bindsym $mod+Right focus right
-    bindsym $alt+Tab focus right
-
-    # Move the focused window with the same, but add Shift
-    bindsym $mod+Shift+$left move left
-    bindsym $mod+Shift+$down move down
-    bindsym $mod+Shift+$up move up
-    bindsym $mod+Shift+$right move right
-    # Ditto, with arrow keys
-    bindsym $mod+Shift+Left move left
-    bindsym $mod+Shift+Down move down
-    bindsym $mod+Shift+Up move up
-    bindsym $mod+Shift+Right move right
-#
-# Workspaces:
-#
-    # Switch to workspace
-    bindsym $mod+1 workspace number 1
-    bindsym $mod+2 workspace number 2
-    bindsym $mod+3 workspace number 3
-    bindsym $mod+4 workspace number 4
-    bindsym $mod+5 workspace number 5
-    bindsym $mod+6 workspace number 6
-    bindsym $mod+7 workspace number 7
-    bindsym $mod+8 workspace number 8
-    bindsym $mod+9 workspace number 9
-    bindsym $mod+0 workspace number 10
-    # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
-#
-# Layout stuff:
-#
-    # You can "split" the current object of your focus with
-    # $mod+c or $mod+v, for horizontal and vertical splits
-    # respectively.
-    bindsym $mod+c splith
-    bindsym $mod+v splitv
-
-    # Switch the current container between different layout styles
-    bindsym $mod+s layout stacking
-    bindsym $mod+w layout tabbed
-    bindsym $mod+e layout toggle split
-
-    # Make the current focus fullscreen
-    bindsym $mod+f fullscreen
-
-    # Toggle the current focus between tiling and floating mode
-    bindsym $mod+Shift+space floating toggle
-
-    # Swap focus between the tiling area and the floating area
-    bindsym $mod+space focus mode_toggle
-
-    # Move focus to the parent container
-    bindsym $mod+a focus parent
-#
-# Scratchpad:
-#
-    # Sway has a "scratchpad", which is a bag of holding for windows.
-    # You can send windows there and get them back later.
-
-    # Move the currently focused window to the scratchpad
-    bindsym $mod+Shift+minus move scratchpad
-
-    # Show the next scratchpad window or hide the focused scratchpad window.
-    # If there are multiple scratchpad windows, this command cycles through them.
-    bindsym $mod+minus scratchpad show
-#
-# Resizing containers:
-#
-mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
-
-    # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
-
-    # Return to default mode
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-bindsym $mod+r mode "resize"
-#
-# Utilities:
-#
-    # Special keys to adjust volume via PulseAudio
-    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-    # bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
-    bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-    # bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
-    # bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
-    # bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
-    # Special keys to adjust brightness via brightnessctl
-    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
-    # bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
-    # bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
-    bindsym XF86AudioPlay exec playerctl play-pause
-    bindsym XF86AudioPause exec playerctl play-pause
-    bindsym XF86AudioNext exec playerctl next
-    bindsym XF86AudioPrev exec playerctl previous
-    bindsym XF86AudioStop exec playerctl stop
-    bindsym XF86Search exec dmenu_run
-
-    # Special key to take a screenshot with grim
-    bindsym Print exec grim
-
-#
-# Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
-bar {
-    position top
-
-    # When the status_command prints a new line to stdout, swaybar updates.
-    # The default just shows the current date and time.
-    # status_command while date +'%H:%M %Y-%m-%d'; do sleep 1; done
-    swaybar_command waybar
-    # strip_workspace_numbers yes
-    # binding_mode_indicator yes
-    # separator_symbol "  "
-    #
-    # status_command i3status
-    # colors {
-    #     separator  #81A1C1
-    #     statusline #81A1C1
-    #     background #1F222D
-    #     binding_mode        #5E81AC  #5E81AC  #2E3440
-    #     focused_workspace   #2E3440  #2E3440  #81A1C1
-    #     active_workspace    #2E3440  #2E3440  #D8DEE9
-    #     urgent_workspace    #1f222d  #1f222d  #EE829f
-    #     inactive_workspace  #1f222d  #1f222d  #4C566A
-        # inactive_workspace #32323200 #32323200 #4C566A
-    # }
-}
-
-#--- ДЕКОРАЦИИ ОКОН -------------------------------------------------------------------
-
-# Скругления
+# --- Скругления ---
 corner_radius 10
 smart_corner_radius enable
 
-# Блюр
+# --- Размытие ---
 blur on
 blur_xray on
 blur_passes 2
 blur_radius 2
 
-# Тени
+# --- Тени (отключены) ---
 # shadows on
 # shadows_on_csd on
 # shadow_blur_radius 10
 # shadow_color #0000007F
 
-# Затемнение неактивных окон
+# --- Затемнение неактивных окон ---
 default_dim_inactive 0.5
 dim_inactive_colors.unfocused #000000FF
 dim_inactive_colors.urgent #900000FF
 
-# Гапсы
-gaps inner 3
-gaps outer 3
-smart_gaps off
+# --- Шрифт заголовков ---
+font pango:JetBrainsMono Nerd Font 10
 
-# Толщина рамок для обычных и плавающих окон
-default_border pixel 2
-default_floating_border pixel 2
+# --- Курсор ---
+seat seat0 xcursor_theme "Nordzy-cursors"
 
-# Размер рамок окон
-# for_window [tiling] border pixel 2
-# for_window [floating] border pixel 2
+# --- Цвета рамок ---
+# class                 border  backgr. text    indicator
+client.focused          #81A1C1 #81A1C1 #D8DEE9 #D8DEE9
+client.focused_inactive #3B4252 #5F676A #D8DEE9 #5F676A
+client.unfocused        #2E3440 #2E3440 #8FBCBB #2E3440
+client.urgent           #900000 #900000 #D8DEE9 #900000
 
-# Отключение рамки если открыто одно окно
-smart_borders on
-
+# --- Эффекты для waybar (отключено) ---
 # layer_effects "waybar" {
 #     blur enable;
 #     blur_xray enable;
@@ -312,35 +116,244 @@ smart_borders on
 #     shadows enable;
 # }
 
-#--- УКРАШАТЕЛЬСТВА -------------------------------------------------------------------
-
-# Шрифт (по ходу для заголовков)
-font pango:JetBrainsMono Nerd Font 10
-
-# Курсор
-seat seat0 xcursor_theme "Nordzy-cursors"
-
-# Курсоры, темы, иконки...
+# --- Темы GTK/иконок/курсора (отключено) ---
 # exec_always gsettings set org.gnome.desktop.interface cursor-theme "Nordzy-cursors"
 # set $gnome-schema org.gnome.desktop.interface
 # exec_always {
-#     	gsettings set $gnome-schema gtk-theme 'Nordic'
-#     	gsettings set $gnome-schema icon-theme 'Papirus-Dark'
-#     	gsettings set $gnome-schema cursor-theme 'Norzy-cursors'
-#     	gsettings set $gnome-schema font-name 'Ubuntu Nerd Font Condensed 10'
-# 		# Отключение кнопок управления окном
-# 	gsettings set org.gnome.desktop.wm.preferences button-layout ''
+#     gsettings set $gnome-schema gtk-theme 'Nordic'
+#     gsettings set $gnome-schema icon-theme 'Papirus-Dark'
+#     gsettings set $gnome-schema cursor-theme 'Norzy-cursors'
+#     gsettings set $gnome-schema font-name 'Ubuntu Nerd Font Condensed 10'
+#     # Отключение кнопок управления окном
+#     gsettings set org.gnome.desktop.wm.preferences button-layout ''
 # }
 
-# Цвета рамок
-# class                 border  backgr. text    indicator
-client.focused          #81A1C1 #81A1C1 #D8DEE9 #D8DEE9
-client.focused_inactive #3B4252 #5F676A #D8DEE9 #5F676A
-client.unfocused        #2E3440 #2E3440 #8FBCBB #2E3440
-client.urgent           #900000 #900000 #D8DEE9 #900000
 
-#--- РАСПРЕДЕЛЕНИЕ ОКОН -------------------------------------------------------------------
-# Запуск на определенном воркспейсе
+# =============================================================================
+#  5. ГОРЯЧИЕ КЛАВИШИ
+# -----------------------------------------------------------------------------
+#  Флаг --to-code привязывает физическую клавишу (keycode), а не символ,
+#  поэтому сочетания работают в любой раскладке.
+# =============================================================================
+
+# --- 5.1. Базовые ---
+# Терминал
+bindsym --to-code $mod+Return exec $term
+
+# Закрыть активное окно
+bindsym --to-code $mod+Shift+q kill
+
+# Запуск приложений
+bindsym --to-code $mod+Shift+d exec $menu
+bindsym --to-code $mod+d exec $runner
+bindsym --to-code $mod+b exec $browser
+bindsym --to-code $mod+n exec $fmanager
+bindsym --to-code $alt+Control+p exec pavucontrol
+
+# Перетаскивание/изменение размера плавающих окон ($mod + ЛКМ/ПКМ)
+floating_modifier $mod normal
+
+# Перезагрузка конфигурации
+bindsym --to-code $mod+Shift+r reload
+
+# Выход из Sway (меню nwg-bar)
+# bindsym --to-code $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+bindsym --to-code $mod+Shift+e exec nwg-bar
+
+
+# --- 5.2. Навигация фокусом ---
+bindsym --to-code $mod+$left focus left
+bindsym --to-code $mod+$down focus down
+bindsym --to-code $mod+$up focus up
+bindsym --to-code $mod+$right focus right
+
+# Стрелками
+bindsym --to-code $mod+Left focus left
+bindsym --to-code $mod+Down focus down
+bindsym --to-code $mod+Up focus up
+bindsym --to-code $mod+Right focus right
+bindsym --to-code $alt+Tab focus right
+
+
+# --- 5.3. Перемещение окон ---
+bindsym --to-code $mod+Shift+$left move left
+bindsym --to-code $mod+Shift+$down move down
+bindsym --to-code $mod+Shift+$up move up
+bindsym --to-code $mod+Shift+$right move right
+
+# Стрелками
+bindsym --to-code $mod+Shift+Left move left
+bindsym --to-code $mod+Shift+Down move down
+bindsym --to-code $mod+Shift+Up move up
+bindsym --to-code $mod+Shift+Right move right
+
+
+# --- 5.4. Воркспейсы ---
+# Повторное нажатие $mod+<цифра> возвращает на предыдущий воркспейс (как в i3)
+workspace_auto_back_and_forth yes
+
+# Переключение воркспейсов
+bindsym --to-code $mod+1 workspace number 1
+bindsym --to-code $mod+2 workspace number 2
+bindsym --to-code $mod+3 workspace number 3
+bindsym --to-code $mod+4 workspace number 4
+bindsym --to-code $mod+5 workspace number 5
+bindsym --to-code $mod+6 workspace number 6
+bindsym --to-code $mod+7 workspace number 7
+bindsym --to-code $mod+8 workspace number 8
+bindsym --to-code $mod+9 workspace number 9
+bindsym --to-code $mod+0 workspace number 10
+
+# Перемещение активного окна на воркспейс
+bindsym --to-code $mod+Shift+1 move container to workspace number 1
+bindsym --to-code $mod+Shift+2 move container to workspace number 2
+bindsym --to-code $mod+Shift+3 move container to workspace number 3
+bindsym --to-code $mod+Shift+4 move container to workspace number 4
+bindsym --to-code $mod+Shift+5 move container to workspace number 5
+bindsym --to-code $mod+Shift+6 move container to workspace number 6
+bindsym --to-code $mod+Shift+7 move container to workspace number 7
+bindsym --to-code $mod+Shift+8 move container to workspace number 8
+bindsym --to-code $mod+Shift+9 move container to workspace number 9
+bindsym --to-code $mod+Shift+0 move container to workspace number 10
+
+# Примечание: воркспейсы могут иметь любые имена, не только цифры.
+
+
+# --- 5.5. Раскладка окон ---
+# Разделить контейнер по горизонтали/вертикали
+bindsym --to-code $mod+c splith
+bindsym --to-code $mod+v splitv
+
+# Стиль раскладки
+bindsym --to-code $mod+s layout stacking
+bindsym --to-code $mod+w layout tabbed
+bindsym --to-code $mod+e layout toggle split
+
+# Полноэкранный режим
+bindsym --to-code $mod+f fullscreen
+
+# Переключить окно между тайлингом и плаванием
+bindsym --to-code $mod+Shift+space floating toggle
+
+# Переключить фокус между тайлингом и плавающими окнами
+bindsym --to-code $mod+space focus mode_toggle
+
+# Перейти к родительскому контейнеру
+bindsym --to-code $mod+a focus parent
+
+
+# --- 5.6. Scratchpad ---
+# Sway имеет scratchpad — хранилище скрытых окон.
+
+# Отправить активное окно в scratchpad
+bindsym --to-code $mod+Shift+minus move scratchpad
+
+# Показать следующее окно из scratchpad или скрыть активное
+bindsym --to-code $mod+minus scratchpad show
+
+
+# --- 5.7. Режим изменения размера ($mod+r) ---
+mode "resize" {
+    # h/j/k/l
+    bindsym --to-code $left resize shrink width 10px
+    bindsym --to-code $down resize grow height 10px
+    bindsym --to-code $up resize shrink height 10px
+    bindsym --to-code $right resize grow width 10px
+
+    # Стрелками
+    bindsym --to-code Left resize shrink width 10px
+    bindsym --to-code Down resize grow height 10px
+    bindsym --to-code Up resize shrink height 10px
+    bindsym --to-code Right resize grow width 10px
+
+    # Вернуться в обычный режим
+    bindsym --to-code Return mode "default"
+    bindsym --to-code Escape mode "default"
+}
+bindsym --to-code $mod+r mode "resize"
+
+
+# --- 5.8. Утилиты и мультимедиа ---
+# Громкость (PulseAudio)
+bindsym --to-code XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym --to-code XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym --to-code XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym --to-code XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+# bindsym --to-code --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
+# bindsym --to-code --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+# bindsym --to-code --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+# bindsym --to-code --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
+
+# Яркость
+bindsym --to-code XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym --to-code XF86MonBrightnessUp exec brightnessctl set 5%+
+# bindsym --to-code --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+# bindsym --to-code --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+
+# Медиаплеер
+bindsym --to-code XF86AudioPlay exec playerctl play-pause
+bindsym --to-code XF86AudioPause exec playerctl play-pause
+bindsym --to-code XF86AudioNext exec playerctl next
+bindsym --to-code XF86AudioPrev exec playerctl previous
+bindsym --to-code XF86AudioStop exec playerctl stop
+
+# Поиск/лаунчер
+bindsym --to-code XF86Search exec dmenu_run
+
+# Шпаргалка по горячим клавишам
+bindsym --to-code F1 exec sway-cheatsheet --toggle
+
+# Скриншот
+bindsym --to-code Print exec grim
+
+
+# =============================================================================
+#  6. СТАТУС-БАР
+# =============================================================================
+# Подробнее: man 5 sway-bar
+
+bar {
+    position top
+
+    # Команда статус-бара
+    swaybar_command waybar
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # status_command while date +'%H:%M %Y-%m-%d'; do sleep 1; done
+    # status_command i3status
+
+    # strip_workspace_numbers yes
+    # binding_mode_indicator yes
+    # separator_symbol "  "
+
+    # colors {
+    #     separator          #81A1C1
+    #     statusline         #81A1C1
+    #     background         #1F222D
+    #     binding_mode       #5E81AC  #5E81AC  #2E3440
+    #     focused_workspace  #2E3440  #2E3440  #81A1C1
+    #     active_workspace   #2E3440  #2E3440  #D8DEE9
+    #     urgent_workspace   #1f222d  #1f222d  #EE829f
+    #     inactive_workspace #1f222d  #1f222d  #4C566A
+    # }
+}
+
+
+# =============================================================================
+#  7. БЛОКИРОВКА ЭКРАНА ПО БЕЗДЕЙСТВИЮ
+# =============================================================================
+# Пример:
+# exec swayidle -w \
+#     timeout 300 'swaylock -f -c 000000' \
+#     timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+#     before-sleep 'swaylock -f -c 000000'
+# exec swayidle -w timeout 1800 'swaylock -f -c 000000'
+
+
+# =============================================================================
+#  8. РАСПРЕДЕЛЕНИЕ ОКОН ПО ВОРКСПЕЙСАМ
+# =============================================================================
+
 assign [app_id="foot"] workspace 1
 assign [app_id="(?i)helium|(?i)firefox"] workspace 2
 assign [app_id="(?i)thunar|(?i)pcmanfm"] workspace 3
@@ -354,14 +367,20 @@ assign [app_id="rhythmbox"] 9
 # assign [title="cmus"] workspace 7
 # assign [title="cava"] workspace 7
 
-# Запуск в фокусе
+
+# =============================================================================
+#  9. ПРАВИЛА ОКОН
+# =============================================================================
+
+# --- 9.1. Фокус при запуске ---
 for_window [app_id="gimp"] focus
 for_window [app_id="reaper"] focus
 for_window [app_id="rhythmbox"] focus
 for_window [app_id="(?i)helium|(?i)firefox"] focus
 for_window [app_id="it.mijorus.gearlever"] focus
 
-# Запуск в плавающем режиме
+
+# --- 9.2. Плавающие приложения ---
 for_window [app_id="(?i)thunar|(?i)pcmanfm"] floating enable
 for_window [app_id="galculator"] floating enable
 for_window [app_id="org.telegram.desktop"] floating enable, border none, resize set 400 850, move left 410px, move up 0px
@@ -376,33 +395,70 @@ for_window [app_id="virt-manager"] floating enable, border none
 for_window [app_id="it.mijorus.gearlever"] floating enable, border none
 for_window [class="(?i)steam_proton|(?i)portproton"] floating enable, border none
 
-# set floating for window roles
+
+# --- 9.3. Диалоги, меню и всплывающие окна ---
+# window_type/window_role работают только для X11/XWayland.
+# Native Wayland-диалоги Sway флоатит автоматически, если они помечены
+# как transient/modal.
 for_window [window_type="dialog"] floating enable
+for_window [window_type="utility"] floating enable
+for_window [window_type="toolbar"] floating enable
+for_window [window_type="splash"] floating enable
+for_window [window_type="menu"] floating enable
+for_window [window_type="dropdown_menu"] floating enable
+for_window [window_type="popup_menu"] floating enable
+for_window [window_type="tooltip"] floating enable
+for_window [window_type="notification"] floating enable
+
 for_window [window_role="dialog"] floating enable
 for_window [window_role="pop-up"] floating enable
+for_window [window_role="popup"] floating enable
 for_window [window_role="bubble"] floating enable
 for_window [window_role="task_dialog"] floating enable
+for_window [window_role="modal"] floating enable
+for_window [window_role="menu"] floating enable
+for_window [window_role="tooltip"] floating enable
 for_window [window_role="Preferences"] floating enable
-for_window [window_type="menu"] floating enable
 for_window [window_role="About"] floating enable
+
+
+# --- 9.4. Специальные окна ---
+# Прогресс файловых операций
 for_window [title="File Operation Progress"] floating enable, border pixel 1, sticky enable, resize set width 40 ppt height 30 ppt
 
-# Сатурация
-# for_window [app_id="foot"] saturation 2.0
-# Mark xwayland apps with an [X]:
+# GIMP: диалог печати не помечается transient/modal, поэтому флоатим по title
+for_window [app_id="gimp" title="(?i)^(print|печать)"] floating enable, focus, move position center
+
+# Шпаргалка по горячим клавишам
+for_window [app_id="sway-cheatsheet"] floating enable, border none, focus, resize set 920 700, move position center
+
+
+# --- 9.5. Пометка XWayland-окон ---
 for_window [shell="xwayland"] title_format "<span>[X] %title</span>"
 
-#--- АВТОЗАПУСК ПРИЛОЖЕНИЙ -------------------------------------------------------------------
+# --- 9.6. Сатурация (пример) ---
+# for_window [app_id="foot"] saturation 2.0
+
+
+# =============================================================================
+#  10. АВТОЗАПУСК ПРИЛОЖЕНИЙ
+# =============================================================================
+
 exec dex -ae Sway
+exec foot
 # exec waybar
 # exec nm-applet
 # exec blueman-applet
 # exec autotiling
-exec foot
 # exec {
-#   swaymsg 'workspace 1; exec foot'
-#   swaymsg 'workspace 2; exec firefox'
+#     swaymsg 'workspace 1; exec foot'
+#     swaymsg 'workspace 2; exec firefox'
 # }
 # exec XDG_CURRENT_DESKTOP=gnome telegram-desktop
+
+
+# =============================================================================
+#  11. ПОДКЛЮЧАЕМЫЕ ФРАГМЕНТЫ
+# =============================================================================
 
 include /home/bma/.config/sway/config.d/*
