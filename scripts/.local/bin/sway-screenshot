@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#
+# sway-screenshot — скриншоты в Sway (grim + slurp).
+#
+# Использование:
+#   sway-screenshot region   — выделить область (по умолчанию)
+#   sway-screenshot full     — весь экран
+#
+# Снимок сохраняется в ~/Pictures/Screenshots (или $SCREENSHOT_DIR),
+# копируется в буфер обмена и показывает уведомление.
+
+set -euo pipefail
+
+mode="${1:-region}"
+dir="${SCREENSHOT_DIR:-$HOME/Pictures/Screenshots}"
+file="$dir/$(date +%Y-%m-%d_%H-%M-%S).png"
+
+command -v grim >/dev/null || { echo "sway-screenshot: нужен grim" >&2; exit 1; }
+
+case "$mode" in
+region)
+    command -v slurp >/dev/null || { echo "sway-screenshot: нужен slurp" >&2; exit 1; }
+    # Отмена выделения — тихий выход
+    geometry=$(slurp 2>/dev/null) || exit 0
+    [ -n "$geometry" ] || exit 0
+    mkdir -p "$dir"
+    grim -g "$geometry" "$file"
+    ;;
+full)
+    mkdir -p "$dir"
+    grim "$file"
+    ;;
+-h | --help | help)
+    sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
+    exit 0
+    ;;
+*)
+    echo "usage: ${0##*/} [region|full]" >&2
+    exit 2
+    ;;
+esac
+
+# Копируем PNG в буфер обмена
+if command -v wl-copy >/dev/null; then
+    wl-copy --type image/png <"$file"
+fi
+
+# Уведомление; иконкой служит сам снимок
+if command -v notify-send >/dev/null; then
+    notify-send -i "$file" "Скриншот сохранён" "$file"
+fi
+
+printf '%s\n' "$file"

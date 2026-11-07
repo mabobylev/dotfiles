@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# В Sway этот X11-wrapper не нужен: делегируем Wayland-версии cliphist.
+# В i3 (SWAYSOCK не задан) сохраняется прежнее поведение с xclip/dmenu.
+if [ -n "${SWAYSOCK:-}" ] && [ -x /usr/bin/cliphist ]; then
+  exec /usr/bin/cliphist "$@"
+fi
+
 histfile="$HOME/.cache/cliphist"
 placeholder="<NEWLINE>"
 

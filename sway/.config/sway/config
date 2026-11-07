@@ -25,10 +25,9 @@ set $right l
 # Приложения по умолчанию
 set $term foot
 set $browser firefox
-set $runner rofi -show drun
+set $runner fuzzel
 set $fmanager pcmanfm
-set $menu dmenu_run -i -nb '#1f222d' -nf '#81a1c1' -sb '#81a1c1' -sf '#1f222d' -fn 'JetBrainsMono Nerd Font:bold:pixelsize=16'
-# set $menu wmenu-run
+set $menu fuzzel
 
 
 # =============================================================================
@@ -145,10 +144,21 @@ bindsym --to-code $mod+Shift+q kill
 
 # Запуск приложений
 bindsym --to-code $mod+Shift+d exec $menu
+bindsym --to-code $alt+d exec $menu
 bindsym --to-code $mod+d exec $runner
 bindsym --to-code $mod+b exec $browser
 bindsym --to-code $mod+n exec $fmanager
 bindsym --to-code $alt+Control+p exec pavucontrol
+
+# Утилиты dmenuctl: системное меню, аудиовыходы, заметки
+bindsym --to-code $alt+e exec dmenuctl
+bindsym --to-code $alt+a exec dmenuctl audio
+bindsym --to-code $alt+n exec dmenuctl notes
+
+# Скриншот области
+bindsym --to-code $mod+Shift+s exec sway-screenshot region
+# История буфера обмена
+bindsym --to-code $mod+Shift+v exec sway-clipboard
 
 # Перетаскивание/изменение размера плавающих окон ($mod + ЛКМ/ПКМ)
 floating_modifier $mod normal
@@ -298,13 +308,15 @@ bindsym --to-code XF86AudioPrev exec playerctl previous
 bindsym --to-code XF86AudioStop exec playerctl stop
 
 # Поиск/лаунчер
-bindsym --to-code XF86Search exec dmenu_run
+bindsym --to-code XF86Search exec $menu
 
 # Шпаргалка по горячим клавишам
 bindsym --to-code F1 exec sway-cheatsheet --toggle
 
-# Скриншот
-bindsym --to-code Print exec grim
+# Скриншот всего экрана
+bindsym --to-code Print exec sway-screenshot full
+# Скриншот выделенной области
+bindsym --to-code Shift+Print exec sway-screenshot region
 
 
 # =============================================================================
@@ -446,6 +458,8 @@ for_window [shell="xwayland"] title_format "<span>[X] %title</span>"
 
 exec dex -ae Sway
 exec foot
+# История буфера обмена: складывать каждое новое содержимое в cliphist
+exec wl-paste --watch /usr/bin/cliphist store
 # exec waybar
 # exec nm-applet
 # exec blueman-applet

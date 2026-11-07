@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# sway-clipboard — выбор записи из истории буфера cliphist.
+#
+# История наполняется watcher-процессом:
+#   wl-paste --watch /usr/bin/cliphist store
+#
+# Требуются: cliphist (Wayland-версия), fuzzel, wl-clipboard.
+
+set -euo pipefail
+
+cliphist=/usr/bin/cliphist
+
+command -v "$cliphist" >/dev/null || { echo "sway-clipboard: нужен cliphist" >&2; exit 1; }
+command -v fuzzel >/dev/null || { echo "sway-clipboard: нужен fuzzel" >&2; exit 1; }
+command -v wl-copy >/dev/null || { echo "sway-clipboard: нужен wl-clipboard" >&2; exit 1; }
+
+# При пустой истории cliphist завершается с ошибкой — сообщаем и выходим.
+if ! entries=$("$cliphist" list 2>/dev/null) || [ -z "$entries" ]; then
+    command -v notify-send >/dev/null && notify-send "Буфер обмена" "История пока пуста"
+    exit 0
+fi
+
+# Отмена выбора — тихий выход
+selection=$(printf '%s\n' "$entries" | fuzzel --dmenu -p "Буфер: " --placeholder="Поиск в истории…") || exit 0
+[ -n "$selection" ] || exit 0
+
+printf '%s' "$selection" | "$cliphist" decode | wl-copy
+
+command -v notify-send >/dev/null && notify-send "Буфер обмена" "Скопировано из истории"

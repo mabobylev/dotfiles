@@ -261,7 +261,6 @@ KEY_ACTION_MAP = {
     "XF86AudioPrev": "Предыдущий трек",
     "XF86AudioStop": "Стоп",
     "XF86Search": "Поиск / лаунчер",
-    "Print": "Скриншот",
 }
 
 
@@ -299,8 +298,8 @@ def friendly_exec(raw_command: str) -> str:
     first = raw.split()[0] if raw.split() else ""
     variable_actions = {
         "$term": "Терминал",
-        "$menu": "Меню dmenu",
-        "$runner": "Лаунчер (rofi)",
+        "$menu": "Меню приложений (fuzzel)",
+        "$runner": "Лаунчер (fuzzel)",
         "$browser": "Браузер (firefox)",
         "$fmanager": "Файловый менеджер (pcmanfm)",
     }
@@ -318,6 +317,14 @@ def friendly_exec(raw_command: str) -> str:
         ("playerctl stop", "Стоп"),
         ("pavucontrol", "Громкость (pavucontrol)"),
         ("nwg-bar", "Меню выхода (nwg-bar)"),
+        ("dmenuctl audio", "Аудиовыходы (dmenuctl)"),
+        ("dmenuctl notes", "Заметки (dmenuctl)"),
+        ("dmenuctl", "Системное меню (dmenuctl)"),
+        ("sway-screenshot region", "Скриншот области"),
+        ("sway-screenshot full", "Скриншот экрана"),
+        ("sway-clipboard", "История буфера обмена"),
+        ("fuzzel", "Меню приложений (fuzzel)"),
+        ("wmenu-run", "Меню приложений (wmenu)"),
         ("dmenu_run", "Меню dmenu"),
         ("rofi", "Лаунчер (rofi)"),
         ("grim", "Скриншот"),

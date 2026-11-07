@@ -1,18 +1,61 @@
 #!/usr/bin/env bash
+#
+# dmenuctl — небольшие меню для повседневных действий.
+#
+# В i3 используется dmenu (X11). В Sway dmenu под XWayland не может
+# захватить клавиатуру, поэтому там применяется Wayland-нативный fuzzel.
+# Скрипт сам определяет окружение по переменной SWAYSOCK.
+#
+# Аргументы:
+#   (без аргументов) — системное меню
+#   audio            — переключение аудиовыхода
+#   notes            — заметки
 
-font="Iosevka Nerd Font:bold:size=18"
+font_x11="Iosevka Nerd Font:bold:size=18"
 
-# Функция системных событий (завершение процессов, блокировка экрана, перезагрузка, выключение)
-sys_menu() {
-  case "$(printf "󰅜 kill\\n lock\\n󰍃 logout\\n󰑖 reboot\\n shutdown" | dmenu -i -fn "$font" -c -l 5)" in
-  *󰅜*) ps -u "$USER" -o pid,comm,%cpu,%mem | dmenu -i -fn "$font" -c -l 10 -p Kill: | awk '{print $1}' | xargs -r kill ;;
-  **) i3lock -i "$HOME/.local/backgrounds/wm-lock.png" ;;
-  #	lock) slock systemctl suspend -i ;;
-  *󰍃*) i3-msg exit || pkill -kill -u $USER ;;
-  *󰑖*) systemctl reboot -i ;;
-  **) shutdown now ;;
-  *) exit 1 ;;
-  esac
+if [ -n "${SWAYSOCK:-}" ] && command -v fuzzel >/dev/null 2>&1; then
+  # Sway / Wayland: fuzzel в dmenu-режиме; вид задаётся в fuzzel.ini
+  menu=(fuzzel --dmenu)
+  terminal="${TERMINAL:-foot}"
+  is_wayland=1
+else
+  # i3 / X11: привычный dmenu
+  menu=(dmenu -i -c -fn "$font_x11")
+  terminal="${TERMINAL:-kitty}"
+  is_wayland=0
+fi
+
+# Ввод одной строки (имя заметки и т. п.)
+prompt_input() {
+  local prompt="$1"
+  if [ "$is_wayland" -eq 1 ]; then
+    fuzzel --prompt-only "$prompt"
+  else
+    "${menu[@]}" -p "$prompt" < /dev/null
+  fi
+}
+
+lock_screen() {
+  if [ "$is_wayland" -eq 1 ]; then
+    swaylock -f -i "$HOME/.local/backgrounds/wm-lock.png"
+  else
+    i3lock -i "$HOME/.local/backgrounds/wm-lock.png"
+  fi
+}
+
+logout_session() {
+  if [ "$is_wayland" -eq 1 ]; then
+    swaymsg exit
+  else
+    i3-msg exit || pkill -kill -u "$USER"
+  fi
+}
+
+# Выбор процесса и его завершение
+kill_menu() {
+  ps -u "$USER" -o pid,comm,%cpu,%mem |
+    "${menu[@]}" -l 10 -p "Kill: " |
+    awk '{print $1}' | xargs -r kill
 }
 
 # Функция переключения аудиовыходов
@@ -20,7 +63,7 @@ audio_switch() {
   # Create a list of sinks with pretty names
   options=$(pactl -f json list sinks | jq -r '.[] | .description')
   # Let the user select a description
-  selection=$(echo "$options" | dmenu -i -fn "$font" -l 5 -c -p "Output:")
+  selection=$(echo "$options" | "${menu[@]}" -l 5 -p "Output: ")
   # Extract the corresponding sink name
   sink_name=$(pactl -f json list sinks | jq -r --arg sink_pretty_name "$selection" '.[] | select(.description == $sink_pretty_name) | .name')
   # Set the selected sink as default
@@ -35,20 +78,65 @@ audio_switch() {
 folder=$HOME/.notes/
 
 newnote() {
-  name="$(echo "" | dmenu -fn "$font" -c -p "Enter a name: " <&-)" || exit 0
+  name="$(prompt_input "Имя заметки: ")" || exit 0
   : "${name:=$(date +%F_%T | tr ':' '-')}"
-  setsid -f "$TERMINAL" -e nvim "$folder$name.md" >/dev/null 2>&1
+  setsid -f "$terminal" -e nvim "$folder$name.md" >/dev/null 2>&1
 }
 
 shownotes() {
   if [ ! -d "$folder" ]; then
-    mkdir "$folder"
+    mkdir -p "$folder"
   fi
-  choice=$(echo -e "New\n$(command ls -t1 "$folder")" | dmenu -c -l 5 -i -fn "$font" -p "Notes: ")
+  choice=$(echo -e "New\n$(command ls -t1 "$folder")" | "${menu[@]}" -l 5 -p "Notes: ")
   case $choice in
   New) newnote ;;
-  *.md) setsid -f "$TERMINAL" -e nvim "$folder$choice" >/dev/null 2>&1 ;;
+  *.md) setsid -f "$terminal" -e nvim "$folder$choice" >/dev/null 2>&1 ;;
   *) exit ;;
+  esac
+}
+
+# Системное меню i3 (прежнее поведение)
+sys_menu() {
+  case "$(printf "󰅜 kill\\n lock\\n󰍃 logout\\n󰑖 reboot\\n shutdown" | "${menu[@]}" -l 5)" in
+  *kill*) kill_menu ;;
+  *lock*) lock_screen ;;
+  #	lock) slock systemctl suspend -i ;;
+  *logout*) logout_session ;;
+  *reboot*) systemctl reboot -i ;;
+  *shutdown*) shutdown now ;;
+  *) exit 1 ;;
+  esac
+}
+
+# Расширенное системное меню Sway
+sway_menu() {
+  choice=$(printf '%s\n' \
+    " Приложения" \
+    "󰹑 Скриншот области" \
+    "󰹑 Скриншот экрана" \
+    "󰅇 История буфера" \
+    "󰓃 Аудиовыходы" \
+    "󰎞 Заметки" \
+    "󰅜 Завершить процесс" \
+    " Блокировка" \
+    "󰍃 Выход" \
+    "󰑖 Перезагрузка" \
+    " Выключение" |
+    "${menu[@]}" -p "Меню: ")
+
+  case "$choice" in
+  *"Приложения"*) setsid -f fuzzel ;;
+  *"Скриншот области"*) sway-screenshot region ;;
+  *"Скриншот экрана"*) sway-screenshot full ;;
+  *"История буфера"*) sway-clipboard ;;
+  *"Аудиовыходы"*) audio_switch ;;
+  *"Заметки"*) shownotes ;;
+  *"Завершить процесс"*) kill_menu ;;
+  *"Блокировка"*) lock_screen ;;
+  *"Выход"*) logout_session ;;
+  *"Перезагрузка"*) systemctl reboot -i ;;
+  *"Выключение"*) shutdown now ;;
+  *) exit 1 ;;
   esac
 }
 
@@ -60,10 +148,14 @@ notes)
   shownotes
   ;;
 *)
-  sys_menu
+  if [ "$is_wayland" -eq 1 ]; then
+    sway_menu
+  else
+    sys_menu
+  fi
   ;;
 esac
 
-unset "$folder", "$font"
+unset folder font_x11
 
 #vim ft:sh
