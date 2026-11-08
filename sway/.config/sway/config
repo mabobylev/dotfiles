@@ -377,7 +377,6 @@ assign [app_id="rhythmbox"] 9
 
 # --- 9.1. Фокус при запуске ---
 for_window [app_id="gimp"] focus
-for_window [app_id="reaper"] focus
 for_window [app_id="rhythmbox"] focus
 for_window [app_id="(?i)helium|(?i)firefox"] focus
 for_window [app_id="it.mijorus.gearlever"] focus
@@ -401,30 +400,10 @@ for_window [app_id="it.mijorus.gearlever"] floating enable, border none
 for_window [class="(?i)steam_proton|(?i)portproton"] floating enable, border none
 
 
-# --- 9.3. Диалоги, меню и всплывающие окна ---
-# window_type/window_role работают только для X11/XWayland.
-# Native Wayland-диалоги Sway флоатит автоматически, если они помечены
-# как transient/modal.
-for_window [window_type="dialog"] floating enable
-for_window [window_type="utility"] floating enable
-for_window [window_type="toolbar"] floating enable
-for_window [window_type="splash"] floating enable
-for_window [window_type="menu"] floating enable
-for_window [window_type="dropdown_menu"] floating enable
-for_window [window_type="popup_menu"] floating enable
-for_window [window_type="tooltip"] floating enable
-for_window [window_type="notification"] floating enable
-
-for_window [window_role="dialog"] floating enable
-for_window [window_role="pop-up"] floating enable
-for_window [window_role="popup"] floating enable
-for_window [window_role="bubble"] floating enable
-for_window [window_role="task_dialog"] floating enable
-for_window [window_role="modal"] floating enable
-for_window [window_role="menu"] floating enable
-for_window [window_role="tooltip"] floating enable
-for_window [window_role="Preferences"] floating enable
-for_window [window_role="About"] floating enable
+# --- 9.3. XWayland ---
+# Все XWayland-окна плавающие: DAW и их плагины не должны тайлиться,
+# иначе окна плагинов встают рядом и сдвигают основное окно.
+for_window [shell="xwayland"] floating enable
 
 
 # --- 9.4. Специальные окна ---
