@@ -387,6 +387,8 @@ for_window [app_id="it.mijorus.gearlever"] focus
 for_window [app_id="(?i)thunar|(?i)pcmanfm"] floating enable
 for_window [app_id="galculator"] floating enable
 for_window [app_id="org.telegram.desktop"] floating enable, border none, resize set 400 850, move left 410px, move up 0px
+# Мини-приложения Telegram не разворачиваем на весь экран
+for_window [app_id="^Telegram$"] floating enable, border none, move position center
 # for_window [title="cmus"] floating enable, resize set 700px 400px, move right 210px, move up 115px
 # for_window [title="cava"] floating enable, resize set 700px 200px, move right 210px, move down 205px
 for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px
