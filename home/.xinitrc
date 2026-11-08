@@ -64,6 +64,5 @@ xrandr -s 1920x1080 -r 144
 # Authentication dialog (polkit-gnome)
 # /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
-# qtile start
-exec i3
-# exec startxfce4
+# X11 fallback: XFCE
+exec startxfce4

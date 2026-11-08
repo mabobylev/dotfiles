@@ -2,7 +2,7 @@
 
 # Резервное копирование ключей и конфигурации в tar.gz на /mnt/data.
 # Запускается из cron (текущая строка, см. crontab -l):
-#   0 20 * * 0,2,4 /home/bma/.local/bin/backup_dots.sh >/dev/null 2>&1
+#   0 20 * * */2 /home/bma/.local/bin/backup_dots.sh >/dev/null 2>&1
 # (Вс, Вт, Чт, Сб в 20:00; вывод cron подавлен, ошибки и результат
 # пишутся в $LOG.)
 #
@@ -10,6 +10,8 @@
 # выборочные настройки ~/.config, шрифты и метаданные для
 # восстановления (crontab, списки пакетов pacman/flatpak, схема
 # stow-ссылок) — на верхнем уровне архива отдельными файлами.
+# Тяжёлые и восстановимые каталоги REAPER (Effects, UserPlugins,
+# Scripts, ColorThemes, ReaPack, Data) исключены из архива.
 #
 # Хранятся $KEEP последних архивов; лог построчно ротируется.
 #
@@ -79,6 +81,18 @@ ITEMS=(
     .local/share/fonts
 )
 
+# Крупные каталоги REAPER восстанавливаются через ReaPack/менеджеры
+# плагинов, поэтому в архив их не кладём. Мелкие ini/presets/FXChains
+# остаются внутри .dotfiles.
+TAR_EXCLUDES=(
+    --exclude='.dotfiles/reaper/.config/REAPER/Effects'
+    --exclude='.dotfiles/reaper/.config/REAPER/UserPlugins'
+    --exclude='.dotfiles/reaper/.config/REAPER/Scripts'
+    --exclude='.dotfiles/reaper/.config/REAPER/ColorThemes'
+    --exclude='.dotfiles/reaper/.config/REAPER/ReaPack'
+    --exclude='.dotfiles/reaper/.config/REAPER/Data'
+)
+
 # 4. Проверка наличия; предупреждения — в лог.
 FINAL_ITEMS=()
 for item in "${ITEMS[@]}"; do
@@ -99,7 +113,8 @@ find "$DEST" -maxdepth 1 -name 'backup_dots_*.tar.gz.part' \
 
 # 6. Атомарная запись: пишем в .part, проверяем, переименовываем.
 TMPFILE="$DEST/$BACKUP_FILE.part"
-if ! tar -czf "$TMPFILE" -C "$HOME_DIR" "${FINAL_ITEMS[@]}" \
+if ! tar -czf "$TMPFILE" "${TAR_EXCLUDES[@]}" \
+        -C "$HOME_DIR" "${FINAL_ITEMS[@]}" \
         -C "$META_DIR" .; then
     log "FAIL: tar завершился с ошибкой, архив не создаётся"
     rm -f "$TMPFILE"

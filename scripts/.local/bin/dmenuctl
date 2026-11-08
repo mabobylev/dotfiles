@@ -2,25 +2,24 @@
 #
 # dmenuctl — небольшие меню для повседневных действий.
 #
-# В i3 используется dmenu (X11). В Sway dmenu под XWayland не может
-# захватить клавиатуру, поэтому там применяется Wayland-нативный fuzzel.
-# Скрипт сам определяет окружение по переменной SWAYSOCK.
+# В Sway используется Wayland-нативный fuzzel. В X11 (XFCE) — rofi
+# в dmenu-режиме. Скрипт сам определяет окружение по переменной SWAYSOCK.
 #
 # Аргументы:
 #   (без аргументов) — системное меню
 #   audio            — переключение аудиовыхода
 #   notes            — заметки
 
-font_x11="Iosevka Nerd Font:bold:size=18"
-
 if [ -n "${SWAYSOCK:-}" ] && command -v fuzzel >/dev/null 2>&1; then
   # Sway / Wayland: fuzzel в dmenu-режиме; вид задаётся в fuzzel.ini
   menu=(fuzzel --dmenu)
+  lines=(-l)
   terminal="${TERMINAL:-foot}"
   is_wayland=1
 else
-  # i3 / X11: привычный dmenu
-  menu=(dmenu -i -c -fn "$font_x11")
+  # X11 / XFCE: rofi в dmenu-режиме
+  menu=(rofi -dmenu -i)
+  lines=(-lines)
   terminal="${TERMINAL:-kitty}"
   is_wayland=0
 fi
@@ -39,7 +38,7 @@ lock_screen() {
   if [ "$is_wayland" -eq 1 ]; then
     swaylock -f -i "$HOME/.local/backgrounds/wm-lock.png"
   else
-    i3lock -i "$HOME/.local/backgrounds/wm-lock.png"
+    xfce4-screensaver-command -l
   fi
 }
 
@@ -47,14 +46,14 @@ logout_session() {
   if [ "$is_wayland" -eq 1 ]; then
     swaymsg exit
   else
-    i3-msg exit || pkill -kill -u "$USER"
+    xfce4-session-logout --logout
   fi
 }
 
 # Выбор процесса и его завершение
 kill_menu() {
   ps -u "$USER" -o pid,comm,%cpu,%mem |
-    "${menu[@]}" -l 10 -p "Kill: " |
+    "${menu[@]}" "${lines[@]}" 10 -p "Kill: " |
     awk '{print $1}' | xargs -r kill
 }
 
@@ -63,7 +62,7 @@ audio_switch() {
   # Create a list of sinks with pretty names
   options=$(pactl -f json list sinks | jq -r '.[] | .description')
   # Let the user select a description
-  selection=$(echo "$options" | "${menu[@]}" -l 5 -p "Output: ")
+  selection=$(echo "$options" | "${menu[@]}" "${lines[@]}" 5 -p "Output: ")
   # Extract the corresponding sink name
   sink_name=$(pactl -f json list sinks | jq -r --arg sink_pretty_name "$selection" '.[] | select(.description == $sink_pretty_name) | .name')
   # Set the selected sink as default
@@ -87,7 +86,7 @@ shownotes() {
   if [ ! -d "$folder" ]; then
     mkdir -p "$folder"
   fi
-  choice=$(echo -e "New\n$(command ls -t1 "$folder")" | "${menu[@]}" -l 5 -p "Notes: ")
+  choice=$(echo -e "New\n$(command ls -t1 "$folder")" | "${menu[@]}" "${lines[@]}" 5 -p "Notes: ")
   case $choice in
   New) newnote ;;
   *.md) setsid -f "$terminal" -e nvim "$folder$choice" >/dev/null 2>&1 ;;
@@ -95,9 +94,9 @@ shownotes() {
   esac
 }
 
-# Системное меню i3 (прежнее поведение)
+# Системное меню X11/XFCE
 sys_menu() {
-  case "$(printf "󰅜 kill\\n lock\\n󰍃 logout\\n󰑖 reboot\\n shutdown" | "${menu[@]}" -l 5)" in
+  case "$(printf "󰅜 kill\\n lock\\n󰍃 logout\\n󰑖 reboot\\n shutdown" | "${menu[@]}" "${lines[@]}" 5)" in
   *kill*) kill_menu ;;
   *lock*) lock_screen ;;
   #	lock) slock systemctl suspend -i ;;
@@ -156,6 +155,6 @@ notes)
   ;;
 esac
 
-unset folder font_x11
+unset folder lines
 
 #vim ft:sh

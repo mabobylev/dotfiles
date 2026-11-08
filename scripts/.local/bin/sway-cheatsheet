@@ -310,13 +310,11 @@ def friendly_exec(raw_command: str) -> str:
         ("pactl set-sink-mute", "Звук: выключить/включить"),
         ("pactl set-source-mute", "Микрофон: выключить/включить"),
         ("pactl set-sink-volume", "Громкость"),
-        ("brightnessctl", "Яркость"),
         ("playerctl play-pause", "Играть/пауза"),
         ("playerctl next", "Следующий трек"),
         ("playerctl previous", "Предыдущий трек"),
         ("playerctl stop", "Стоп"),
         ("pavucontrol", "Громкость (pavucontrol)"),
-        ("nwg-bar", "Меню выхода (nwg-bar)"),
         ("dmenuctl audio", "Аудиовыходы (dmenuctl)"),
         ("dmenuctl notes", "Заметки (dmenuctl)"),
         ("dmenuctl", "Системное меню (dmenuctl)"),
@@ -324,9 +322,6 @@ def friendly_exec(raw_command: str) -> str:
         ("sway-screenshot full", "Скриншот экрана"),
         ("sway-clipboard", "История буфера обмена"),
         ("fuzzel", "Меню приложений (fuzzel)"),
-        ("wmenu-run", "Меню приложений (wmenu)"),
-        ("dmenu_run", "Меню dmenu"),
-        ("rofi", "Лаунчер (rofi)"),
         ("grim", "Скриншот"),
         ("sway-cheatsheet", "Шпаргалка по горячим клавишам"),
     ]
@@ -337,11 +332,6 @@ def friendly_exec(raw_command: str) -> str:
                     return "Громкость +"
                 if "-" in raw:
                     return "Громкость −"
-            if needle == "brightnessctl":
-                if "+" in raw:
-                    return "Яркость +"
-                if "-" in raw:
-                    return "Яркость −"
             return label
 
     try:
