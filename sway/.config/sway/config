@@ -90,7 +90,9 @@ blur_radius 2
 # shadow_color #0000007F
 
 # --- Затемнение неактивных окон ---
-default_dim_inactive 0.5
+# Отключено: при старте плавающие окна Reaper/Bitwig оказываются не в
+# фокусе и выглядят затемнёнными. Для возврата затемнения — 0.5.
+default_dim_inactive 0.0
 dim_inactive_colors.unfocused #000000FF
 dim_inactive_colors.urgent #900000FF
 
@@ -237,8 +239,8 @@ bindsym --to-code $mod+c splith
 bindsym --to-code $mod+v splitv
 
 # Стиль раскладки
-bindsym --to-code $mod+s layout stacking
-bindsym --to-code $mod+w layout tabbed
+# stacking/tabbed не используем: Sway всегда рисует в них заголовок,
+# который нельзя отключить.
 bindsym --to-code $mod+e layout toggle split
 
 # Полноэкранный режим
