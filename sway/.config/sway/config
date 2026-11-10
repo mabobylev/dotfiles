@@ -99,6 +99,13 @@ dim_inactive_colors.urgent #900000FF
 # --- Шрифт заголовков ---
 font pango:JetBrainsMono Nerd Font 10
 
+# --- Заголовки tabbed/stacking ---
+# В этих раскладках заголовок отключить нельзя, поэтому делаем его
+# компактнее и убираем разделитель с содержимым окна.
+titlebar_border_thickness 1
+titlebar_padding 5 2
+titlebar_separator disable
+
 # --- Курсор ---
 seat seat0 xcursor_theme "Nordzy-cursors"
 
@@ -239,8 +246,8 @@ bindsym --to-code $mod+c splith
 bindsym --to-code $mod+v splitv
 
 # Стиль раскладки
-# stacking/tabbed не используем: Sway всегда рисует в них заголовок,
-# который нельзя отключить.
+bindsym --to-code $mod+s layout stacking
+bindsym --to-code $mod+w layout tabbed
 bindsym --to-code $mod+e layout toggle split
 
 # Полноэкранный режим
