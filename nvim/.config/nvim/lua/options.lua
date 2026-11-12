@@ -19,22 +19,28 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.laststatus = 3
 
-vim.opt.swapfile = false
+vim.opt.swapfile = true
 vim.opt.backup = false
-vim.opt.undodir = vim.fn.stdpath("data") .. "/undodir"
+
+local undodir = vim.fn.stdpath("data") .. "/undodir"
+vim.fn.mkdir(undodir, "p")
+vim.opt.undodir = undodir
 vim.opt.undofile = true
 
 vim.opt.completeopt = "menuone,noselect,fuzzy,nosort"
 vim.opt.shortmess:append("c")
+vim.opt.confirm = true
 vim.opt.clipboard:append("unnamedplus")
 vim.opt.isfname:append("@-@")
 vim.opt.guicursor = ""
 vim.opt.scrolloff = 8
+vim.opt.updatetime = 250
 
 vim.opt.colorcolumn = "80"
 vim.opt.signcolumn = "yes"
 vim.opt.winborder = "rounded"
-vim.opt.listchars = "tab: ,multispace:|   ,eol:󰌑"
+vim.opt.list = true
+vim.opt.listchars = "tab: ,trail:·,nbsp:␣,eol:󰌑"
 
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking (copying) text",
