@@ -23,7 +23,7 @@
     "custom/weather",
     "custom/cmus",
     "sway/language",
-    "pulseaudio",
+    "wireplumber",
     "clock",
     "custom/notification",
     "tray",
@@ -31,10 +31,20 @@
   ],
   "cpu": {
     "format": " {usage}%",
+    "interval": 2,
+    "states": {
+      "warning": 50,
+      "critical": 90
+    },
     "tooltip": false
   },
   "memory": {
     "format": " {}%",
+    "interval": 3,
+    "states": {
+      "warning": 50,
+      "critical": 90
+    },
     "tooltip": false
   },
   "sway/window": {
@@ -127,16 +137,18 @@
     "exec": "~/.local/bin/weather.sh",
     "tooltip": false
   },
-  "pulseaudio": {
-    "scroll-step": 5,
+  "wireplumber": {
     "format": "{icon} {volume}%",
-    "format-icons": {
-      "headphone": "",
-      "default": [
-        "",
-        "",
-        ""
-      ]
+    "format-muted": " {volume}%",
+    "format-icons": [
+      "",
+      "",
+      ""
+    ],
+    "scroll-step": 5,
+    "states": {
+      "warning": 50,
+      "critical": 90
     },
     "on-click": "pavucontrol",
     "tooltip": false

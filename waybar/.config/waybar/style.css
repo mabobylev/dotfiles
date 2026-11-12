@@ -9,6 +9,8 @@
 @define-color gr #545d70;
 @define-color bg2 #2e313d;
 @define-color blue #51a2da;
+@define-color warning #e5c07b;
+@define-color critical #eb4d4b;
 
 
 window#waybar {
@@ -70,7 +72,7 @@ window#waybar {
 #custom-notification,
 #tray,
 #language,
-#pulseaudio,
+#wireplumber,
 #battery,
 #backlight,
 #clock {
@@ -92,6 +94,31 @@ window#waybar {
 #custom-power:hover {
     color: @blue;
     background-color: @gr;
+    border-bottom: 2px solid @blue;
+}
+
+/* Пороговые состояния: >50% — жёлтый, >90% — красный */
+#cpu.warning,
+#memory.warning,
+#wireplumber.warning {
+    color: @warning;
+    border-bottom: 2px solid @warning;
+}
+
+#cpu.critical,
+#memory.critical,
+#wireplumber.critical {
+    color: @critical;
+    border-bottom: 2px solid @critical;
+}
+
+#wireplumber.muted {
+    color: @gr;
+}
+
+/* Раскладка: русская — акцентный цвет значка уведомлений */
+#language.ru {
+    color: @blue;
     border-bottom: 2px solid @blue;
 }
 
