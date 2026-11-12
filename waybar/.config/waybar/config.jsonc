@@ -147,8 +147,8 @@
     ],
     "scroll-step": 5,
     "states": {
-      "warning": 50,
-      "critical": 90
+      "warning": 70,
+      "critical": 100
     },
     "on-click": "pavucontrol",
     "tooltip": false
