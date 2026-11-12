@@ -45,6 +45,15 @@ vim.lsp.config("clangd", {
     filetypes = { "c", "cpp" },
 })
 
+-- lspconfig's gopls and marksman configs list these filetypes, but Neovim does
+-- not define them out of the box (so :checkhealth vim.lsp warns about unknown
+-- filetypes). Define them: .gotmpl -> gopls (Go templates), .mdx -> marksman.
+vim.filetype.add({
+    extension = { gotmpl = "gotmpl", mdx = "markdown.mdx" },
+})
+-- Highlight .mdx with the markdown parser (there is no dedicated mdx parser).
+vim.treesitter.language.register("markdown", "markdown.mdx")
+
 vim.lsp.enable({
     "lua_ls",
     "marksman",

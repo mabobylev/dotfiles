@@ -1,5 +1,10 @@
 vim.g.netrw_banner = 0
 
+-- No Perl/Ruby on this machine and no plugin needs them: skip their providers
+-- so :checkhealth vim.provider stays quiet.
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
 vim.opt.nu = true
 vim.opt.relativenumber = true
 
