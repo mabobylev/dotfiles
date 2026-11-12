@@ -56,7 +56,6 @@ dexed-vst3
 dmg2img
 dragonfly-reverb-vst3
 drumgizmo-lv2
-dunst
 dxvk-bin
 easytag
 efibootmgr
@@ -236,6 +235,7 @@ swayfx
 swayidle
 swayimg
 swaylock
+swaync
 sws
 system-config-printer
 tal-noisemaker-vst3-bin

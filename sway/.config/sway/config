@@ -173,9 +173,8 @@ bindsym --to-code $mod+Shift+v exec sway-clipboard
 bindsym --to-code $mod+Shift+n exec swaync-client -t -sw
 bindsym --to-code $mod+Control+n exec swaync-client -d -sw
 
-# Мониторинг: btop / nvtop (плавающий foot)
+# Мониторинг: btop (плавающий foot)
 bindsym --to-code $mod+Shift+m exec foot -a btop -e btop
-bindsym --to-code $mod+Control+m exec foot -a nvtop -e nvtop
 
 # Перетаскивание/изменение размера плавающих окон ($mod + ЛКМ/ПКМ)
 floating_modifier $mod normal
@@ -415,9 +414,8 @@ for_window [app_id="swayimg"] floating enable, border none, resize set 800px 500
 for_window [app_id="virt-manager"] floating enable, border none
 for_window [app_id="it.mijorus.gearlever"] floating enable, border none
 for_window [class="(?i)steam_proton|(?i)portproton"] floating enable, border none
-# Мониторинг (foot -a btop / nvtop): плавающее окно по центру
+# Мониторинг (foot -a btop): плавающее окно по центру
 for_window [app_id="btop"] floating enable, border none, resize set 1200px 700px, move position center
-for_window [app_id="nvtop"] floating enable, border none, resize set 1200px 700px, move position center
 
 
 # --- 9.3. XWayland ---
