@@ -67,6 +67,7 @@ window#waybar {
 #window,
 #custom-weather,
 #custom-cmus,
+#custom-notification,
 #tray,
 #language,
 #pulseaudio,
@@ -92,4 +93,19 @@ window#waybar {
     color: @blue;
     background-color: @gr;
     border-bottom: 2px solid @blue;
+}
+
+#custom-notification.notification {
+    color: @blue;
+    border-bottom: 2px solid @blue;
+}
+
+#custom-notification.dnd-notification,
+#custom-notification.dnd-none {
+    color: #eb4d4b;
+    border-bottom: 2px solid #eb4d4b;
+}
+
+#custom-notification.none {
+    color: @gr;
 }
