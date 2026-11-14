@@ -5,8 +5,13 @@
 # Session variables must be set before ~/.bashrc so conditional
 # configuration (Qt toolkit, Java, prompt, etc.) sees the right session.
 if [[ -z "$WAYLAND_DISPLAY" && "${XDG_VTNR:-}" -eq 1 ]]; then
-    export GTK_THEME="Nord_BMA:dark" \
-           XDG_SESSION_TYPE=wayland \
+    # На ПК стоит доработанная тема Nord_BMA, на ноутбуке — обычная Nordic.
+    # Если Nord_BMA не установлена, GTK-приложения берут тему из
+    # ~/.config/gtk-3.0/settings.ini (Nordic).
+    if [[ -d /usr/share/themes/Nord_BMA || -d "$HOME/.themes/Nord_BMA" ]]; then
+        export GTK_THEME="Nord_BMA:dark"
+    fi
+    export XDG_SESSION_TYPE=wayland \
            XDG_SESSION_DESKTOP=sway \
            XDG_CURRENT_DESKTOP=sway
 fi

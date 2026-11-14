@@ -5,29 +5,55 @@
 
 ## Основное окружение
 
-- **Sway** — основной Wayland-сессия; запускается из `~/.bash_profile` на tty1.
-- **XFCE** — запасная X11-сессия; запускается командой `startxfce4`.
+- **Sway** (swayfx) — основная Wayland-сессия; запускается из
+  `~/.bash_profile` на tty1.
+- **XFCE** — запасная X11-сессия на ПК; запускается командой
+  `startxfce4`.
 - **fuzzel** — лаунчер и dmenu-режим в Sway.
 - **rofi** — dmenu-режим в X11/XFCE.
 - **waybar**, **swaync**, **swaylock**, **swayidle**.
 - **foot** — терминал Sway; **kitty** — терминал для X11/резерва.
-- **fish** — интерактивный shell; **bash** — login shell и автозапуск Sway.
+- **fish** — интерактивный shell; **bash** — login shell и автозапуск
+  Sway.
 
-## Пакеты
+## Общие пакеты и отличия машин
 
-- `scripts/.local/bin/pkglist.txt` — список явно установленных пакетов.
-- `scripts/.local/bin/arch_setup.sh` — установка пакетов из списка.
-  Скрипт не создаёт пользователя и не меняет locale/раскладку.
+Общая конфигурация лежит в обычных пакетах (`sway`, `waybar`, ...).
+Всё, что зависит от железа и разрешения экрана, вынесено в отдельные
+пакеты:
 
-## Установка
+- `host-pc` — домашний ПК: `output DP-2 1920x1080`, waybar высотой 30,
+  без модуля battery.
+- `host-laptop` — ноутбук Lenovo B50-45: `output eDP-1 1366x768`,
+  тачпад, яркость, отключённое размытие SwayFX, waybar с авто-высотой
+  (≈29 px) и модулем battery.
+
+На каждой машине stow-ятся общие пакеты **и ровно один** host-пакет:
 
 ```sh
 cd ~/.dotfiles
-stow -t "$HOME" <пакет>
+stow -t "$HOME" --no-folding \
+    fish foot fuzzel home kitty mc nvim ranger rofi scripts \
+    sway swaync tmux wallp waybar
+stow -t "$HOME" --no-folding host-laptop   # или host-pc
 ```
 
-Пакеты: `fish fuzzel home kitty mc nvim ranger reaper rofi scripts
-sway swaync tmux wallp waybar`.
+`--no-folding` обязателен: он позволяет общему пакету и host-пакету
+добавлять файлы в один каталог (например, `~/.config/sway`).
+
+Sway подключает `~/.config/sway/host.d/*` последним, поэтому host-файлы
+переопределяют общие настройки. Waybar подключает
+`~/.config/waybar/host.jsonc` и `host.css`.
+
+## Пакеты
+
+- `scripts/.local/bin/pkglist-common.txt` — минимум для работы dotfiles.
+- `scripts/.local/bin/pkglist-laptop.txt` — дополнительно для ноутбука.
+- `scripts/.local/bin/pkglist-desktop.txt` — полный список домашнего ПК.
+- `scripts/.local/bin/arch_setup.sh [common|laptop|desktop]` —
+  установка пакетов из соответствующего набора. Без аргумента профиль
+  определяется по типу корпуса (ноутбук/ПК). Скрипт не создаёт
+  пользователя и не меняет locale/раскладку.
 
 ## Резервное копирование
 

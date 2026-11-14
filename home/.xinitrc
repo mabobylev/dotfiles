@@ -59,7 +59,9 @@ xset s noblank
 xset -dpms
 xset r rate 300 45
 
-xrandr -s 1920x1080 -r 144
+# Выбрать предпочтительный режим подключённого монитора автоматически:
+# 1920x1080@144 на ПК, 1366x768@60 на ноутбуке.
+xrandr --auto
 
 # Authentication dialog (polkit-gnome)
 # /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &

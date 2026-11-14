@@ -1,0 +1,15 @@
+// -*- mode: jsonc -*-
+// Waybar: отличия домашнего ПК (1920x1080)
+{
+  "height": 30,
+  "modules-right": [
+    "custom/weather",
+    "custom/cmus",
+    "sway/language",
+    "wireplumber",
+    "clock",
+    "custom/notification",
+    "tray",
+    "custom/power"
+  ]
+}

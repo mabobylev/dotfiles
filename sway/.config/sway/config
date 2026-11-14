@@ -48,9 +48,10 @@ input * {
 # =============================================================================
 #  3. МОНИТОРЫ И ОБОИ
 # =============================================================================
-
-# Конкретный выход (посмотреть список: swaymsg -t get_outputs)
-output DP-2 resolution 1920x1080 position 0,0
+# Разрешение и позиция конкретного выхода задаются в пакете своей машины:
+#   host-pc/.config/sway/host.d/10-output.conf
+#   host-laptop/.config/sway/host.d/10-output.conf
+# Посмотреть список выходов: swaymsg -t get_outputs
 
 # Случайные обои из каталога
 output * bg "$(find $HOME/.local/backgrounds/wallpapers/ -type f|shuf -n1)" fill
@@ -448,6 +449,12 @@ for_window [shell="xwayland"] title_format "<span>[X] %title</span>"
 
 exec dex -ae Sway
 exec foot
+# Агент polkit: диалоги ввода пароля для GUI-приложений
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# Демон уведомлений (иначе waybar не видит статус «не беспокоить»)
+exec swaync
+# Применяем GTK-тему/иконки/курсор из ~/.config/gtk-3.0/settings.ini
+exec ~/.local/bin/import_gsettings.sh
 # История буфера обмена: складывать каждое новое содержимое в cliphist
 exec wl-paste --watch /usr/bin/cliphist store
 # exec waybar
@@ -465,4 +472,9 @@ exec wl-paste --watch /usr/bin/cliphist store
 #  11. ПОДКЛЮЧАЕМЫЕ ФРАГМЕНТЫ
 # =============================================================================
 
-include /home/bma/.config/sway/config.d/*
+include ~/.config/sway/config.d/*
+
+# Отличия конкретной машины (пакеты host-pc и host-laptop): разрешение
+# экрана, тачпад, яркость, производительность. Подключается последним,
+# поэтому может переопределять общие настройки.
+include ~/.config/sway/host.d/*
