@@ -3,8 +3,8 @@
 {
   "height": 30,
   "modules-right": [
-    "custom/weather",
     "mpris",
+    "custom/weather",
     "sway/language",
     "wireplumber",
     "clock",

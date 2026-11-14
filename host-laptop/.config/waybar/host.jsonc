@@ -3,9 +3,9 @@
 {
   "output": ["eDP-1"],
   "modules-right": [
-    "battery",
-    "custom/weather",
     "mpris",
+    "custom/weather",
+    "battery",
     "sway/language",
     "wireplumber",
     "clock",
