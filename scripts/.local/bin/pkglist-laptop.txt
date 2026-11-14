@@ -18,8 +18,6 @@ libao
 libmad
 libmp4v2
 libpulse
-lightdm
-lightdm-gtk-greeter
 nnn
 nwg-look
 opencode
@@ -27,16 +25,11 @@ plymouth
 rclone
 reapack
 reaper
-rofi
 sws
 ttc-iosevka
 ttf-ubuntu-font-family
 vulkan-radeon
 xclip
-xf86-video-amdgpu
-xf86-video-ati
-xorg-xinit
-xorg-xrandr
 xsel
 yazi
 yt-dlp
