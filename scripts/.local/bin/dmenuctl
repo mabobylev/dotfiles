@@ -1,73 +1,45 @@
 #!/usr/bin/env bash
 #
-# dmenuctl — небольшие меню для повседневных действий.
-#
-# В Sway используется Wayland-нативный fuzzel. В X11 (XFCE) — rofi
-# в dmenu-режиме. Скрипт сам определяет окружение по переменной SWAYSOCK.
+# dmenuctl — небольшие меню для повседневных действий в Sway.
+# Меню рисует fuzzel в dmenu-режиме.
 #
 # Аргументы:
 #   (без аргументов) — системное меню
 #   audio            — переключение аудиовыхода
 #   notes            — заметки
 
-if [ -n "${SWAYSOCK:-}" ] && command -v fuzzel >/dev/null 2>&1; then
-  # Sway / Wayland: fuzzel в dmenu-режиме; вид задаётся в fuzzel.ini
-  menu=(fuzzel --dmenu)
-  lines=(-l)
-  terminal="${TERMINAL:-foot}"
-  is_wayland=1
-else
-  # X11 / XFCE: rofi в dmenu-режиме
-  menu=(rofi -dmenu -i)
-  lines=(-lines)
-  terminal="${TERMINAL:-kitty}"
-  is_wayland=0
-fi
+terminal="${TERMINAL:-foot}"
 
 # Ввод одной строки (имя заметки и т. п.)
 prompt_input() {
-  local prompt="$1"
-  if [ "$is_wayland" -eq 1 ]; then
-    fuzzel --prompt-only "$prompt"
-  else
-    "${menu[@]}" -p "$prompt" < /dev/null
-  fi
+  fuzzel --prompt-only "$1"
 }
 
 lock_screen() {
-  if [ "$is_wayland" -eq 1 ]; then
-    swaylock -f -i "$HOME/.local/backgrounds/wm-lock.png"
-  else
-    xfce4-screensaver-command -l
-  fi
+  swaylock -f -i "$HOME/.local/backgrounds/wm-lock.png"
 }
 
 logout_session() {
-  if [ "$is_wayland" -eq 1 ]; then
-    swaymsg exit
-  else
-    xfce4-session-logout --logout
-  fi
+  swaymsg exit
 }
 
 # Выбор процесса и его завершение
 kill_menu() {
   ps -u "$USER" -o pid,comm,%cpu,%mem |
-    "${menu[@]}" "${lines[@]}" 10 -p "Kill: " |
+    fuzzel --dmenu -l 10 -p "Kill: " |
     awk '{print $1}' | xargs -r kill
 }
 
-# Функция переключения аудиовыходов
+# Переключение аудиовыходов
 audio_switch() {
-  # Create a list of sinks with pretty names
   options=$(pactl -f json list sinks | jq -r '.[] | .description')
-  # Let the user select a description
-  selection=$(echo "$options" | "${menu[@]}" "${lines[@]}" 5 -p "Output: ")
-  # Отмена выбора (Esc) — просто выходим, без ложного «failed»
-  [ -z "$selection" ] && exit 0
-  # Extract the corresponding sink name
-  sink_name=$(pactl -f json list sinks | jq -r --arg sink_pretty_name "$selection" '.[] | select(.description == $sink_pretty_name) | .name')
-  # Set the selected sink as default
+  selection=$(printf '%s\n' "$options" | fuzzel --dmenu -l 5 -p "Output: ")
+  # Отмена выбора (Esc) — тихо выходим
+  [ -n "$selection" ] || return 0
+
+  sink_name=$(pactl -f json list sinks |
+    jq -r --arg sink_pretty_name "$selection" \
+      '.[] | select(.description == $sink_pretty_name) | .name')
   if [ -n "$sink_name" ]; then
     pactl set-default-sink "$sink_name" && notify-send "Audio switched to: $selection"
   else
@@ -75,7 +47,7 @@ audio_switch() {
   fi
 }
 
-# Функция управления заметками
+# Заметки
 folder=$HOME/.notes/
 
 newnote() {
@@ -85,32 +57,18 @@ newnote() {
 }
 
 shownotes() {
-  if [ ! -d "$folder" ]; then
-    mkdir -p "$folder"
-  fi
-  choice=$(echo -e "New\n$(command ls -t1 "$folder")" | "${menu[@]}" "${lines[@]}" 5 -p "Notes: ")
+  [ -d "$folder" ] || mkdir -p "$folder"
+  choice=$(printf 'New\n%s\n' "$(command ls -t1 "$folder")" |
+    fuzzel --dmenu -l 5 -p "Notes: ")
   case $choice in
   New) newnote ;;
   *.md) setsid -f "$terminal" -e nvim "$folder$choice" >/dev/null 2>&1 ;;
-  *) exit ;;
+  *) exit 0 ;;
   esac
 }
 
-# Системное меню X11/XFCE
+# Системное меню
 sys_menu() {
-  case "$(printf "󰅜 kill\\n󰌾 lock\\n󰍃 logout\\n󰑖 reboot\\n󰐥 shutdown" | "${menu[@]}" "${lines[@]}" 5)" in
-  *kill*) kill_menu ;;
-  *lock*) lock_screen ;;
-  #	lock) slock systemctl suspend -i ;;
-  *logout*) logout_session ;;
-  *reboot*) systemctl reboot -i ;;
-  *shutdown*) shutdown now ;;
-  *) exit 1 ;;
-  esac
-}
-
-# Расширенное системное меню Sway
-sway_menu() {
   choice=$(printf '%s\n' \
     "󰀻 Приложения" \
     "󰹑 Скриншот области" \
@@ -123,7 +81,7 @@ sway_menu() {
     "󰍃 Выход" \
     "󰑖 Перезагрузка" \
     "󰐥 Выключение" |
-    "${menu[@]}" -p "Меню: ")
+    fuzzel --dmenu -p "Меню: ")
 
   case "$choice" in
   *"Приложения"*) setsid -f fuzzel ;;
@@ -149,14 +107,10 @@ notes)
   shownotes
   ;;
 *)
-  if [ "$is_wayland" -eq 1 ]; then
-    sway_menu
-  else
-    sys_menu
-  fi
+  sys_menu
   ;;
 esac
 
-unset folder lines
+unset folder
 
 #vim ft:sh
