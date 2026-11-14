@@ -4,7 +4,7 @@
   "height": 30,
   "modules-right": [
     "custom/weather",
-    "custom/cmus",
+    "mpris",
     "sway/language",
     "wireplumber",
     "clock",

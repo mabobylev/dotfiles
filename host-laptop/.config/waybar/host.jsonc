@@ -5,12 +5,39 @@
   "modules-right": [
     "battery",
     "custom/weather",
-    "custom/cmus",
+    "mpris",
     "sway/language",
     "wireplumber",
     "clock",
     "custom/notification",
     "tray",
     "custom/power"
-  ]
+  ],
+  // Иконка зависит от состояния: разряд (по уровню), зарядка, полный.
+  "battery": {
+    "interval": 5,
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon} {capacity}%",
+    "format-icons": {
+      "default": [
+        "󰁺", "󰁻", "󰁼", "󰁽", "󰁾",
+        "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"
+      ],
+      "discharging": [
+        "󰁺", "󰁻", "󰁼", "󰁽", "󰁾",
+        "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"
+      ],
+      "charging": [
+        "󰢜", "󰂆", "󰂇", "󰂈", "󰢝",
+        "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"
+      ],
+      "full": "󰂅",
+      "plugged": "󰚥",
+      "not-charging": "󰚥"
+    },
+    "tooltip-format": "{timeTo} · {power} · {capacity}% · health {health}%"
+  }
 }

@@ -68,7 +68,7 @@ window#waybar {
 #memory,
 #window,
 #custom-weather,
-#custom-cmus,
+#mpris,
 #custom-notification,
 #tray,
 #language,
@@ -114,6 +114,22 @@ window#waybar {
 
 #wireplumber.muted {
     color: @gr;
+}
+
+/* Батарея: зарядка — акцент, низкий заряд — предупреждение */
+#battery.charging {
+    color: @blue;
+    border-bottom: 2px solid @blue;
+}
+
+#battery.warning:not(.charging) {
+    color: @warning;
+    border-bottom: 2px solid @warning;
+}
+
+#battery.critical:not(.charging) {
+    color: @critical;
+    border-bottom: 2px solid @critical;
 }
 
 /* Раскладка: русская — акцентный цвет значка уведомлений */

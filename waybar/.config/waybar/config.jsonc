@@ -86,16 +86,27 @@
     "tooltip": true,
     "tooltip-format": "{app}: {title}"
   },
-  "custom/cmus": {
-    "format": " {}",
+  // Управление любым MPRIS-плеером (cmus, mpv, браузер) через playerctl.
+  // Иконка меняется по статусу: играет / пауза / остановлен.
+  "mpris": {
+    "format": "{status_icon} {dynamic}",
+    "format-paused": "{status_icon} <i>{dynamic}</i>",
+    "status-icons": {
+      "playing": "󰐊",
+      "paused": "󰏤",
+      "stopped": "󰓛"
+    },
+    "player-icons": {
+      "default": "󰝚"
+    },
+    "dynamic-order": ["title", "artist"],
+    "dynamic-separator": " — ",
+    "title-len": 35,
+    "artist-len": 20,
     "max-length": 45,
-    "interval": 1,
-    "exec": "cmus-remote -C \"format_print '%F'\"",
-    "exec-if": "pgrep cmus",
-    "on-click": "cmus-remote -u",
-    "on-scroll-up": "cmus-remote --next",
-    "on-scroll-down": "cmus-remote --prev",
-    "escape": true,
+    "on-click": "playerctl play-pause",
+    "on-scroll-up": "playerctl next",
+    "on-scroll-down": "playerctl previous",
     "tooltip": false
   },
   "custom/notification": {
