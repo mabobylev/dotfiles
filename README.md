@@ -90,9 +90,10 @@ amdgpu.cik_support=1 radeon.cik_support=0
 sudo mkinitcpio -P
 ```
 
-Для отката в меню systemd-boot оставлен пункт
-`arch-linux-zen-radeon.efi` — копия прежнего образа с radeon. Полный
-откат:
+Резервный пункт radeon удалён. При необходимости вернуться на radeon
+можно временно восстановить старую командную строку из
+`/etc/kernel/cmdline.radeon.bak`, вернуть `MODULES=()` в
+`/etc/mkinitcpio.conf` и пересобрать UKI:
 
 ```sh
 sudo cp /etc/kernel/cmdline.radeon.bak /etc/kernel/cmdline
