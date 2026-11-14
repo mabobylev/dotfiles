@@ -45,6 +45,29 @@ Sway подключает `~/.config/sway/host.d/*` последним, поэт
 переопределяют общие настройки. Waybar подключает
 `~/.config/waybar/host.jsonc` и `host.css`.
 
+## Автозапуск Sway
+
+Sway запускается из `~/.bash_profile` на tty1. Чтобы при загрузке не
+вводить пароль, нужен автологин на tty1:
+
+```sh
+sudo systemctl enable getty@tty1.service
+sudo systemctl edit getty@tty1.service
+```
+
+В открывшемся drop-in добавьте (замените `bma` на своё имя пользователя):
+
+```ini
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --autologin bma - $TERM
+```
+
+Если `getty@tty1.service` выключен, после загрузки будет обычный вход в
+tty2 и Sway автоматически не запустится. Демон уведомлений `swaync` не
+запускается через `exec`: его поднимает systemd через D-Bus, когда
+Waybar запускает `swaync-client -swb`.
+
 ## Пакеты
 
 - `scripts/.local/bin/pkglist-common.txt` — минимум для работы dotfiles.

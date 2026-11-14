@@ -451,8 +451,10 @@ exec dex -ae Sway
 exec foot
 # Агент polkit: диалоги ввода пароля для GUI-приложений
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-# Демон уведомлений (иначе waybar не видит статус «не беспокоить»)
-exec swaync
+# Демон уведомлений не запускаем напрямую: пакет swaync содержит
+# D-Bus-сервис org.freedesktop.Notifications. Waybar запрашивает его через
+# `swaync-client -swb`, после чего systemd поднимает swaync.service.
+# Прямой `exec swaync` создаёт второй экземпляр и ломает сервис.
 # Применяем GTK-тему/иконки/курсор из ~/.config/gtk-3.0/settings.ini
 exec ~/.local/bin/import_gsettings.sh
 # История буфера обмена: складывать каждое новое содержимое в cliphist
