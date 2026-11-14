@@ -116,6 +116,12 @@ window#waybar {
     color: @gr;
 }
 
+/* Активный плеер — акцентный цвет */
+#mpris.playing {
+    color: @blue;
+    border-bottom: 2px solid @blue;
+}
+
 /* Батарея: зарядка — акцент, низкий заряд — предупреждение */
 #battery.charging {
     color: @blue;
