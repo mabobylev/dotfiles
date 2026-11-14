@@ -7,12 +7,9 @@
 
 - **Sway** (swayfx) — основная Wayland-сессия; запускается из
   `~/.bash_profile` на tty1.
-- **XFCE** — запасная X11-сессия на ПК; запускается командой
-  `startxfce4`.
 - **fuzzel** — лаунчер и dmenu-режим в Sway.
-- **rofi** — dmenu-режим в X11/XFCE.
 - **waybar**, **swaync**, **swaylock**, **swayidle**.
-- **foot** — терминал Sway; **kitty** — терминал для X11/резерва.
+- **foot** — основной терминал; **kitty** — альтернативный.
 - **fish** — интерактивный shell; **bash** — login shell и автозапуск
   Sway.
 
@@ -33,7 +30,7 @@
 ```sh
 cd ~/.dotfiles
 stow -t "$HOME" --no-folding \
-    fish foot fuzzel home kitty mc nvim ranger rofi scripts \
+    fish foot fuzzel home kitty mc nvim ranger scripts \
     sway swaync tmux wallp waybar
 stow -t "$HOME" --no-folding host-laptop   # или host-pc
 ```
