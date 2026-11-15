@@ -87,14 +87,19 @@ BLUE="$(get BLUE)"
 WARNING="$(get WARNING)"
 CRITICAL="$(get CRITICAL)"
 FOOT_THEME="$(get FOOT_THEME)"
+ALPHA="$(get ALPHA)"
 NVIM_COLORSCHEME="$(get NVIM_COLORSCHEME)"
 NVIM_BACKGROUND="$(get NVIM_BACKGROUND)"
 STARSHIP_PALETTE="$(get STARSHIP_PALETTE)"
 
 for v in GTK_THEME ICON_THEME CURSOR_THEME CURSOR_SIZE FONT COLOR_SCHEME \
-         PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL FOOT_THEME; do
+         PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL FOOT_THEME ALPHA; do
   [ -n "${!v}" ] || die "в $conf не задан ключ $v"
 done
+
+case "$ALPHA" in
+  ''|*[!0-9.]*) die "ALPHA должна быть числом 0.0–1.0, получено: $ALPHA" ;;
+esac
 
 NVIM_BACKGROUND="${NVIM_BACKGROUND:-dark}"
 
@@ -330,6 +335,12 @@ if [ -d "$HOME/.config/foot" ]; then
 # Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
 [main]
 include=$foot_theme_file
+
+[colors-dark]
+alpha=$ALPHA
+
+[colors-light]
+alpha=$ALPHA
 EOF
 fi
 

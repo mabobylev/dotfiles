@@ -104,7 +104,8 @@ cp --remove-destination "$(readlink -f ~/.gtkrc-2.0)" ~/.gtkrc-2.0
 - GTK: `GTK_THEME`, `ICON_THEME`, `CURSOR_THEME`, `CURSOR_SIZE`, `FONT`,
   `COLOR_SCHEME`, `ACCENT`, `PREFER_DARK`;
 - палитра: `BG`, `FG`, `GR`, `BG2`, `HOVER`, `BLUE`, `WARNING`, `CRITICAL`;
-- терминал: `FOOT_THEME` (имя набора из `/usr/share/foot/themes`);
+- терминал: `FOOT_THEME` (имя набора из `/usr/share/foot/themes`),
+  `ALPHA` (прозрачность foot, 0.0–1.0);
 - редактор и промпт: `NVIM_COLORSCHEME`, `NVIM_BACKGROUND`,
   `STARSHIP_PALETTE`.
 
