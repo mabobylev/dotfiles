@@ -106,7 +106,7 @@ cp --remove-destination "$(readlink -f ~/.gtkrc-2.0)" ~/.gtkrc-2.0
   `COLOR_SCHEME`, `ACCENT`, `PREFER_DARK`;
 - палитра: `BG`, `FG`, `GR`, `BG2`, `HOVER`, `BLUE`, `WARNING`, `CRITICAL`;
 - терминал: `FOOT_THEME` (имя набора из `/usr/share/foot/themes`),
-  `ALPHA` (прозрачность foot, 0.0–1.0), `WALLPAPER` (файл из
+  `ALPHA` (прозрачность foot, 0.0–1.0), `WALLPAPERS` (список файлов из
   `~/.local/backgrounds/wallpapers`);
 - редактор и промпт: `NVIM_COLORSCHEME`, `NVIM_BACKGROUND`,
   `STARSHIP_PALETTE`.
@@ -122,9 +122,12 @@ theme-apply --menu      # выбрать из списка (то же, что Mo
 атомарно. Для Neovim нужны colorscheme-плагины из `pack.lua`
 (tokyonight, nord, catppuccin, gruvbox).
 
-Обои теперь часть темы: `WALLPAPER` из `theme.conf` ставится через
-`swaymsg output bg` при каждом применении. Случайный выбор обоев убран.
+Обои теперь часть темы: список `WALLPAPERS` из `theme.conf` ставится
+через `swaymsg output bg`; выбранный файл запоминается в
+`~/.local/state/theme/<тема>.bg`. Следующие обои в наборе —
+`theme-bg-next` (хоткей `$mod+Control+t`). Случайный выбор обоев убран.
 `bat` переведён на тему `ansi`, поэтому следует палитре терминала.
+Живые окна foot перекрашиваются через OSC 4/10/11/12, без перезапуска.
 
 Новая тема — это новый каталог `themes/<имя>/theme.conf` (образец —
 `nord`). После `stow` один раз запусти `theme-apply`, чтобы появились

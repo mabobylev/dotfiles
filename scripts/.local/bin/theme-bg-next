@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#
+# theme-bg-next — следующее обои в наборе активной темы.
+#
+# Набор задаётся ключом WALLPAPERS в theme.conf (файлы ищутся в
+# ~/.local/backgrounds/wallpapers). Выбор запоминается в
+# ~/.local/state/theme/<тема>.bg, чтобы theme-apply его не сбрасывал.
+#
+set -euo pipefail
+
+theme_dir="${XDG_CONFIG_HOME:-$HOME/.config}/theme"
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/theme"
+wall_dir="$HOME/.local/backgrounds/wallpapers"
+
+die() { printf 'theme-bg-next: %s\n' "$*" >&2; exit 2; }
+
+[ -n "${SWAYSOCK:-}" ] || die "нет Sway-сессии"
+command -v swaymsg >/dev/null || die "swaymsg не найден"
+
+name=""
+[ -L "$theme_dir/current" ] && name="$(basename "$(readlink "$theme_dir/current")")"
+[ -n "$name" ] || die "нет активной темы"
+
+conf="$theme_dir/themes/$name/theme.conf"
+[ -f "$conf" ] || die "нет $conf"
+
+get() { sed -n "s/^$1=//p" "$conf" | head -n1 | sed 's/^"//; s/"$//'; }
+
+wallpapers="$(get WALLPAPERS)"
+[ -n "$wallpapers" ] || wallpapers="$(get WALLPAPER)"
+[ -n "$wallpapers" ] || die "в $conf не задан WALLPAPERS"
+
+list=()
+read -r -a list <<<"$wallpapers"
+[ "${#list[@]}" -gt 0 ] || die "пустой WALLPAPERS"
+
+state_file="$state_dir/$name.bg"
+current=""
+[ -f "$state_file" ] && current="$(<"$state_file")"
+
+idx=-1
+for i in "${!list[@]}"; do
+  [ "$current" = "$wall_dir/${list[$i]}" ] && idx="$i"
+done
+
+wall=""
+n="${#list[@]}"
+for ((step = 1; step <= n; step++)); do
+  i=$(((idx + step) % n))
+  cand="$wall_dir/${list[$i]}"
+  if [ -f "$cand" ]; then
+    wall="$cand"
+    break
+  fi
+done
+[ -n "$wall" ] || die "в наборе темы «$name» нет доступных файлов"
+
+mkdir -p "$state_dir"
+printf '%s\n' "$wall" >"$state_file"
+
+swaymsg output '*' bg "$wall" fill >/dev/null
+notify-send -a theme "Обои: $(basename "$wall")" 2>/dev/null || true
+printf 'Обои: %s\n' "$wall"

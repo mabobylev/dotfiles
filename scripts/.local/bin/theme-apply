@@ -39,6 +39,55 @@ list_themes() {
   find "$themes_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort
 }
 
+# Обновить палитру уже открытых окон foot через OSC 4/10/11/12.
+apply_foot_osc() {
+  local file=$1 active osc pts pid ppid comm
+  [ -f "$file" ] || return 0
+
+  active="dark"
+  grep -qE '^[[:space:]]*initial-color-theme[[:space:]]*=[[:space:]]*light' "$file" &&
+    active="light"
+
+  osc="$(awk -v theme="$active" -F= '
+    function trim(s) { gsub(/^[ \t]+|[ \t]+$/, "", s); return s }
+    /^[ \t]*\[/ { sect = trim($1); next }
+    {
+      k = trim($1); v = trim($2); gsub(/#/, "", v)
+      if (sect == "[colors]")            act = 1
+      else if (sect == "[colors-dark]")  act = (theme == "dark")
+      else if (sect == "[colors-light]") act = (theme == "light")
+      else { act = 0; next }
+      if (!act) next
+
+      if (k == "foreground")       fg = v
+      else if (k == "background")  bg = v
+      else if (k == "cursor")      { n = split(v, a, " "); cur = (n >= 2 ? a[2] : a[1]) }
+      else if (k ~ /^regular[0-7]$/) reg[substr(k, 8)] = v
+      else if (k ~ /^bright[0-7]$/)  bri[substr(k, 7)] = v
+    }
+    END {
+      if (bg != "")  printf "\033]11;#%s\a", bg
+      if (fg != "")  printf "\033]10;#%s\a", fg
+      if (cur != "") printf "\033]12;#%s\a", cur
+      for (i = 0; i < 8; i++) {
+        if (reg[i] != "") printf "\033]4;%d;#%s\a", i, reg[i]
+        if (bri[i] != "") printf "\033]4;%d;#%s\a", i + 8, bri[i]
+      }
+    }' "$file")"
+
+  [ -n "$osc" ] || return 0
+
+  for pts in /dev/pts/[0-9]*; do
+    [ -O "$pts" ] || continue
+    pid="$(pgrep -o -t "${pts#/dev/}" 2>/dev/null)" || continue
+    ppid="$(ps -o ppid= -p "$pid" | tr -d ' ')"
+    comm="$(ps -o comm= -p "$ppid" 2>/dev/null || true)"
+    case "$comm" in
+      foot|footclient) printf '%s' "$osc" >"$pts" 2>/dev/null || true ;;
+    esac
+  done
+}
+
 # --- выбор темы -------------------------------------------------------------
 if [ "${1:-}" = "--menu" ]; then
   command -v fuzzel >/dev/null || die "fuzzel не найден"
@@ -68,7 +117,7 @@ fi
 conf="$themes_dir/$name/theme.conf"
 [ -f "$conf" ] || die "нет темы «$name»: $conf"
 
-get() { sed -n "s/^$1=//p" "$conf" | head -n1; }
+get() { sed -n "s/^$1=//p" "$conf" | head -n1 | sed 's/^"//; s/"$//'; }
 
 GTK_THEME="$(get GTK_THEME)"
 ICON_THEME="$(get ICON_THEME)"
@@ -88,6 +137,7 @@ WARNING="$(get WARNING)"
 CRITICAL="$(get CRITICAL)"
 FOOT_THEME="$(get FOOT_THEME)"
 ALPHA="$(get ALPHA)"
+WALLPAPERS="$(get WALLPAPERS)"
 WALLPAPER="$(get WALLPAPER)"
 NVIM_COLORSCHEME="$(get NVIM_COLORSCHEME)"
 NVIM_BACKGROUND="$(get NVIM_BACKGROUND)"
@@ -95,12 +145,18 @@ STARSHIP_PALETTE="$(get STARSHIP_PALETTE)"
 
 for v in GTK_THEME ICON_THEME CURSOR_THEME CURSOR_SIZE FONT COLOR_SCHEME \
          PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL FOOT_THEME \
-         ALPHA WALLPAPER; do
+         ALPHA; do
   [ -n "${!v}" ] || die "в $conf не задан ключ $v"
 done
 
-wallpaper="$HOME/.local/backgrounds/wallpapers/$WALLPAPER"
-[ -f "$wallpaper" ] || { warn "нет обоев: $wallpaper"; wallpaper=""; }
+[ -n "$WALLPAPERS$WALLPAPER" ] || die "в $conf не задан WALLPAPERS"
+
+wallpaper_list=()
+if [ -n "$WALLPAPERS" ]; then
+  read -r -a wallpaper_list <<<"$WALLPAPERS"
+elif [ -n "$WALLPAPER" ]; then
+  wallpaper_list=("$WALLPAPER")
+fi
 
 case "$ALPHA" in
   ''|*[!0-9.]*) die "ALPHA должна быть числом 0.0–1.0, получено: $ALPHA" ;;
@@ -172,6 +228,27 @@ EOF
       warn "в sway/config нет include theme.d/* — проверка Sway пропущена"
     fi
   fi
+fi
+
+# --- обои темы: помним выбор для каждой темы -------------------------------
+wallpaper=""
+bg_state="$state_dir/$name.bg"
+if [ -f "$bg_state" ]; then
+  cand="$(<"$bg_state")"
+  for w in "${wallpaper_list[@]}"; do
+    [ "$cand" = "$HOME/.local/backgrounds/wallpapers/$w" ] && { wallpaper="$cand"; break; }
+  done
+fi
+if [ -z "$wallpaper" ]; then
+  for w in "${wallpaper_list[@]}"; do
+    cand="$HOME/.local/backgrounds/wallpapers/$w"
+    [ -f "$cand" ] && { wallpaper="$cand"; break; }
+  done
+fi
+[ -n "$wallpaper" ] || warn "нет доступных обоев для темы «$name»"
+if [ -n "$wallpaper" ]; then
+  mkdir -p "$state_dir"
+  printf '%s\n' "$wallpaper" | atomic_write "$bg_state"
 fi
 
 # --- GTK: ini-файлы ---------------------------------------------------------
@@ -348,6 +425,9 @@ alpha=$ALPHA
 alpha=$ALPHA
 EOF
 fi
+
+# Живые окна foot не перечитывают конфиг — обновляем палитру через OSC.
+apply_foot_osc "$foot_theme_file"
 
 # --- fuzzel -----------------------------------------------------------------
 if [ -d "$HOME/.config/fuzzel" ]; then

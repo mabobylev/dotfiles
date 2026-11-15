@@ -180,6 +180,7 @@ bindsym --to-code $mod+Shift+m exec foot -a btop -e btop
 
 # Переключение темы (fuzzel-меню)
 bindsym --to-code $mod+Shift+t exec theme-apply --menu
+bindsym --to-code $mod+Control+t exec ~/.local/bin/theme-bg-next
 
 # Перетаскивание/изменение размера плавающих окон ($mod + ЛКМ/ПКМ)
 floating_modifier $mod normal
