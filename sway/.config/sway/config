@@ -53,9 +53,8 @@ input * {
 #   host-laptop/.config/sway/host.d/10-output.conf
 # Посмотреть список выходов: swaymsg -t get_outputs
 
-# Случайные обои из каталога: выбираются один раз за сессию скриптом,
-# чтобы `swaymsg reload` (например, при смене темы) их не менял.
-exec ~/.local/bin/wallpaper-random
+# Обои задаются темой: theme-apply берёт WALLPAPER из theme.conf и вызывает
+# swaymsg output bg. Отдельный случайный выбор больше не используется.
 
 
 # =============================================================================

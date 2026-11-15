@@ -1,0 +1,237 @@
+"$schema" = "https://starship.rs/config-schema.json"
+
+palette = "nord"
+
+format = """
+[](fg:surface0)\
+$os\
+$python\
+[](fg:surface0 bg:surface1)\
+$directory\
+$direnv\
+[](fg:surface1 bg:surface2)\
+$git_branch\
+$git_status\
+[](fg:surface2 bg:accent)\
+$c\
+$cpp\
+$golang\
+$haskell\
+$java\
+$nodejs\
+$rust\
+$php\
+[](fg:accent bg:teal)\
+$docker_context\
+[](fg:teal bg:blue)\
+$cmd_duration\
+[ ](fg:blue)\
+$shell$character"""
+# $shell$fill\
+# $memory_usage\
+# [](fg:surface0)\
+# $status\
+# [ ](fg:surface0)\
+# $linebreak
+
+continuation_prompt = '[▸▹ ](dimmed white)'
+
+command_timeout = 5000
+
+scan_timeout = 100
+# False = disable the blank line at the start of the prompt
+add_newline = true
+
+[character]
+success_symbol = '[➜ ](bold green)'
+error_symbol = '[✗ ](bold red)'
+
+[package]
+disabled = true
+
+[os]
+disabled = false
+style = 'bg:surface0 fg:accent'
+
+[os.symbols]
+Ubuntu = '󰕈 '
+SUSE = ' '
+Mint = '󰣭 '
+Macos = '󰀵 '
+Manjaro = ' '
+Linux = '󰌽 '
+Gentoo = '󰣨 '
+Fedora = '󰣛 '
+Android = ' '
+Arch = '󰣇 '
+CentOS = ' '
+Debian = '󰣚 '
+Redhat = '󱄛 '
+Pop = ' '
+
+# You can also replace your username with a neat symbol like  to save some space
+[username]
+show_always = true
+style_user = 'bg:surface0'
+style_root = 'bg:#FF0000'
+format = '[ $user ]($style)'
+# format = '[ ]($style)'
+
+[directory]
+style = 'bg:surface1'
+format = '[ $path ]($style)'
+truncation_length = 3
+truncation_symbol = '…/'
+
+[direnv]
+disabled = false
+
+# Here is how you can shorten some long paths by text replacement
+# similar to mapped_locations in Oh My Posh:
+[directory.substitutions]
+'Documents' = '󰈙 '
+'Downloads' = ' '
+'Music' = ' '
+'Pictures' = ' '
+'Workspace' = '󰲋 '
+# Keep in mind that the order matters. For example:
+# 'Important Documents' = '  '
+# will not be replaced, because 'Documents' was already substituted before.
+# So either put 'Important Documents' before 'Documents' or use the substituted version:
+# 'Important  ' = '  '
+
+[c]
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[ $symbol ($version) ]($style)'
+
+[cpp]
+disabled = false
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[ $symbol ($version) ]($style)'
+
+[docker_context]
+symbol = ' '
+style = 'bg:teal'
+format = '[ $symbol $context ]($style) $path'
+
+[git_branch]
+symbol = ''
+style = 'bg:surface2'
+format = '[ $symbol $branch ]($style)'
+
+[git_status]
+style = 'bg:surface2'
+format = '[$all_status$ahead_behind ]($style)'
+
+[golang]
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[ $symbol ($version) ]($style)'
+
+[haskell]
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[ $symbol ($version) ]($style)'
+
+[java]
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[ $symbol ($version) ]($style)'
+
+[lua]
+style = 'bg:accent fg:blue'
+format = '[󰢱 ($version) ]($style)'
+
+[nodejs]
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[ $symbol ($version) ]($style)'
+
+[python]
+symbol = ' '
+style = 'bg:surface0'
+format = '[ $symbol (\($virtualenv\) )]($style)'
+
+[rust]
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[ $symbol ($version) ]($style)'
+
+[php]
+symbol = ' '
+style = 'bg:accent fg:blue'
+format = '[[ $symbol ($version) ]($style)'
+
+[time]
+disabled = false
+time_format = '%R'              # Hour:Minute Format
+style = 'bg:surface0'
+format = '[   $time ]($style)'
+
+[status]
+disabled = false
+style = 'bg:surface0'
+symbol = ' '
+success_symbol = ' '
+format = '[ $symbol ]($style)'
+
+[cmd_duration]
+min_time = 500
+style = 'bg:blue'
+format = '[  $duration ]($style)'
+
+[memory_usage]
+disabled = false
+threshold = -1
+symbol = ' '
+style = 'bold dimmed green'
+# format = '$symbol[${ram}( | ${swap})]($style)'
+format = '[ $symbol${ram} ]($style)'
+
+[shell]
+disabled = false
+bash_indicator = ''
+fish_indicator = '󰈺'
+
+# Палитры для theme-apply. Строку `palette = "..."` выше меняет theme-apply.
+[palettes.nord]
+surface0 = "#3B4252"
+surface1 = "#434C5E"
+surface2 = "#4C566A"
+accent   = "#86BBD8"
+teal     = "#06969A"
+blue     = "#33658A"
+
+[palettes.tokyonight]
+surface0 = "#292e42"
+surface1 = "#3b4261"
+surface2 = "#414868"
+accent   = "#7aa2f7"
+teal     = "#73daca"
+blue     = "#3d59a1"
+
+[palettes.catppuccin]
+surface0 = "#313244"
+surface1 = "#45475a"
+surface2 = "#585b70"
+accent   = "#89b4fa"
+teal     = "#94e2d5"
+blue     = "#74c7ec"
+
+[palettes.gruvbox]
+surface0 = "#3c3836"
+surface1 = "#504945"
+surface2 = "#665c54"
+accent   = "#83a598"
+teal     = "#8ec07c"
+blue     = "#458588"
+
+[palettes.light]
+surface0 = "#d6dae1"
+surface1 = "#e4e7ec"
+surface2 = "#f2f3f5"
+accent   = "#2f6f9f"
+teal     = "#1f7a7a"
+blue     = "#24506b"

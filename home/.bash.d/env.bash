@@ -15,7 +15,7 @@ case ":$PATH:" in
   *) PATH="$HOME/.local/bin:$PATH" ;;
 esac
 export PATH
-export BAT_THEME="Nord"
+export BAT_THEME="ansi"
 # export DOTBARE_DIR="$HOME/.cfg"
 # export DOTBARE_TREE="$HOME"
 # export DOTBARE_BACKUP="${XDG_DATA_HOME:-$HOME/.local/share}/dotbare"
@@ -26,6 +26,11 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
+
+# Активная палитра starship генерируется theme-apply в state-каталог.
+if [ -f "$XDG_STATE_HOME/theme/starship.toml" ]; then
+    export STARSHIP_CONFIG="$XDG_STATE_HOME/theme/starship.toml"
+fi
 
 #######################################################
 # Expand the history size

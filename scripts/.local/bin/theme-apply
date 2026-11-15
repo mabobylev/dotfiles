@@ -88,14 +88,19 @@ WARNING="$(get WARNING)"
 CRITICAL="$(get CRITICAL)"
 FOOT_THEME="$(get FOOT_THEME)"
 ALPHA="$(get ALPHA)"
+WALLPAPER="$(get WALLPAPER)"
 NVIM_COLORSCHEME="$(get NVIM_COLORSCHEME)"
 NVIM_BACKGROUND="$(get NVIM_BACKGROUND)"
 STARSHIP_PALETTE="$(get STARSHIP_PALETTE)"
 
 for v in GTK_THEME ICON_THEME CURSOR_THEME CURSOR_SIZE FONT COLOR_SCHEME \
-         PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL FOOT_THEME ALPHA; do
+         PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL FOOT_THEME \
+         ALPHA WALLPAPER; do
   [ -n "${!v}" ] || die "в $conf не задан ключ $v"
 done
+
+wallpaper="$HOME/.local/backgrounds/wallpapers/$WALLPAPER"
+[ -f "$wallpaper" ] || { warn "нет обоев: $wallpaper"; wallpaper=""; }
 
 case "$ALPHA" in
   ''|*[!0-9.]*) die "ALPHA должна быть числом 0.0–1.0, получено: $ALPHA" ;;
@@ -403,10 +408,12 @@ fi
 
 # --- starship ---------------------------------------------------------------
 ss="$HOME/.config/starship.toml"
+starship_out="$state_dir/starship.toml"
 if [ -f "$ss" ] && [ -n "$STARSHIP_PALETTE" ]; then
   if grep -q '^palette[[:space:]]*=' "$ss"; then
-    sed -i --follow-symlinks \
-      "s/^palette[[:space:]]*=.*/palette = \"$STARSHIP_PALETTE\"/" "$ss"
+    mkdir -p "$state_dir"
+    sed "s/^palette[[:space:]]*=.*/palette = \"$STARSHIP_PALETTE\"/" "$ss" |
+      atomic_write "$starship_out"
   else
     warn "в $ss нет строки palette = … — starship не переключён"
   fi
@@ -427,6 +434,13 @@ if [ "$no_reload" -eq 0 ] && [ -n "${SWAYSOCK:-}" ]; then
     notify-send -a theme -u critical "Тема" "Sway reload не удался" 2>/dev/null || true
   fi
   notify-send -a theme "Тема: $name" 2>/dev/null || true
+fi
+
+# Обои темы: не зависят от reload и применяются сразу.
+if [ -n "$wallpaper" ] && [ -n "${SWAYSOCK:-}" ] && command -v swaymsg >/dev/null 2>&1; then
+  if ! swaymsg output '*' bg "$wallpaper" fill >/dev/null 2>&1; then
+    warn "не удалось поставить обои: $wallpaper"
+  fi
 fi
 
 printf 'Тема применена: %s\n' "$name"

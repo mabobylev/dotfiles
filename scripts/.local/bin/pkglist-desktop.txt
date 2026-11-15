@@ -115,7 +115,6 @@ imagemagick
 imv
 iwd
 kimi-cli-bin
-kitty
 less
 lib32-gamemode
 lib32-libsndfile

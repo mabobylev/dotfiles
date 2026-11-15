@@ -59,7 +59,6 @@ xorg-xwayland
 
 # --- Terminals and GUI applications ---------------------------------------
 foot
-kitty
 firefox
 firefox-i18n-ru
 pcmanfm

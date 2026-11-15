@@ -10,7 +10,7 @@
   через XWayland.
 - **fuzzel** — лаунчер и dmenu-режим в Sway.
 - **waybar**, **swaync**, **swaylock**, **swayidle**.
-- **foot** — основной терминал; **kitty** — альтернативный.
+- **foot** — терминал.
 - **fish** — интерактивный shell; **bash** — login shell и автозапуск
   Sway.
 
@@ -31,7 +31,7 @@
 ```sh
 cd ~/.dotfiles
 stow -t "$HOME" --no-folding \
-    fish foot fuzzel home kitty mc nvim ranger scripts \
+    fish foot fuzzel home mc nvim ranger scripts starship \
     sway swaync theme tmux wallp waybar
 stow -t "$HOME" --no-folding host-laptop   # или host-pc
 ```
@@ -96,8 +96,9 @@ cp --remove-destination "$(readlink -f ~/.gtkrc-2.0)" ~/.gtkrc-2.0
 палитры Waybar (`~/.config/waybar/theme.css`) и SwayNC
 (`swaync/theme.css`), `foot/theme.ini`, `fuzzel/theme.ini`, цвета рамок
 и курсор `~/.config/sway/theme.d/50-theme.conf`, тема Neovim
-(`~/.local/state/theme/nvim.lua`), палитра starship и окружение курсора
-`~/.config/theme/env`.
+(`~/.local/state/theme/nvim.lua`), палитра starship
+(`~/.local/state/theme/starship.toml`, путь задаёт `STARSHIP_CONFIG`),
+обои темы и окружение курсора `~/.config/theme/env`.
 
 Ключи `theme.conf`:
 
@@ -105,7 +106,8 @@ cp --remove-destination "$(readlink -f ~/.gtkrc-2.0)" ~/.gtkrc-2.0
   `COLOR_SCHEME`, `ACCENT`, `PREFER_DARK`;
 - палитра: `BG`, `FG`, `GR`, `BG2`, `HOVER`, `BLUE`, `WARNING`, `CRITICAL`;
 - терминал: `FOOT_THEME` (имя набора из `/usr/share/foot/themes`),
-  `ALPHA` (прозрачность foot, 0.0–1.0);
+  `ALPHA` (прозрачность foot, 0.0–1.0), `WALLPAPER` (файл из
+  `~/.local/backgrounds/wallpapers`);
 - редактор и промпт: `NVIM_COLORSCHEME`, `NVIM_BACKGROUND`,
   `STARSHIP_PALETTE`.
 
@@ -119,6 +121,10 @@ theme-apply --menu      # выбрать из списка (то же, что Mo
 записи, блокируется от параллельного запуска (`flock`) и пишет файлы
 атомарно. Для Neovim нужны colorscheme-плагины из `pack.lua`
 (tokyonight, nord, catppuccin, gruvbox).
+
+Обои теперь часть темы: `WALLPAPER` из `theme.conf` ставится через
+`swaymsg output bg` при каждом применении. Случайный выбор обоев убран.
+`bat` переведён на тему `ansi`, поэтому следует палитре терминала.
 
 Новая тема — это новый каталог `themes/<имя>/theme.conf` (образец —
 `nord`). После `stow` один раз запусти `theme-apply`, чтобы появились
