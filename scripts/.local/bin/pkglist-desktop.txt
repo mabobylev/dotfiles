@@ -39,7 +39,6 @@ brightnessctl
 btop
 btrfs-progs
 calf
-catfish
 cdrtools
 chatblade
 chatgpt-desktop
@@ -63,7 +62,6 @@ epson-inkjet-printer-201401w
 espeak-ng
 espeakup
 ethtool
-exo
 fabla
 fd
 ffmpegthumbnailer
@@ -204,7 +202,6 @@ reapack
 reaper
 reflector
 ripgrep
-rofi
 rtaudio
 rtkit
 rtmidi
@@ -242,10 +239,6 @@ tal-noisemaker-vst3-bin
 tesseract
 tesseract-data-eng
 thefuck
-thunar
-thunar-archive-plugin
-thunar-media-tags-plugin
-thunar-volman
 tk
 tldr
 tmux
@@ -255,7 +248,6 @@ tree-sitter-cli
 ttf-iosevka-nerd
 ttf-jetbrains-mono-nerd
 ttf-ubuntu-nerd
-tumbler
 udftools
 udiskie
 udisks2
@@ -296,8 +288,6 @@ xdotool
 xed
 xf86-video-amdgpu
 xf86-video-ati
-xfconf
-xfwm4
 xiccd
 xorg-server
 xorg-xinit

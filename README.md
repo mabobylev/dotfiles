@@ -10,7 +10,7 @@
   через XWayland.
 - **fuzzel** — лаунчер и dmenu-режим в Sway.
 - **waybar**, **swaync**, **swaylock**, **swayidle**.
-- **foot** — терминал Sway; **kitty** — резервный терминал.
+- **foot** — основной терминал; **kitty** — альтернативный.
 - **fish** — интерактивный shell; **bash** — login shell и автозапуск
   Sway.
 
@@ -31,7 +31,7 @@
 ```sh
 cd ~/.dotfiles
 stow -t "$HOME" --no-folding \
-    fish foot fuzzel home kitty mc nvim ranger rofi scripts \
+    fish foot fuzzel home kitty mc nvim ranger scripts \
     sway swaync tmux wallp waybar
 stow -t "$HOME" --no-folding host-laptop   # или host-pc
 ```
@@ -96,6 +96,51 @@ ExecStart=-/sbin/agetty -o '-p -f -- \\u' --noclear --autologin bma - $TERM
 tty2 и Sway автоматически не запустится. Демон уведомлений `swaync` не
 запускается через `exec`: его поднимает systemd через D-Bus, когда
 Waybar запускает `swaync-client -swb`.
+
+## Видеодрайвер на ноутбуке
+
+На Lenovo B50-45 (AMD A4-6210, Mullins Radeon R3) Sway работает через
+**amdgpu**. Legacy-драйвер `radeon` периодически зависал на смене кадра
+(`radeon_flip_work_func` → `radeon_fence_wait_seq_timeout`), особенно
+под нагрузкой; система при этом оставалась живой, но изображение
+замирало.
+
+Параметры загрузки в `/etc/kernel/cmdline`:
+
+```
+amdgpu.cik_support=1 radeon.cik_support=0
+```
+
+В `/etc/mkinitcpio.conf` указано `MODULES=(amdgpu)`, чтобы драйвер и
+прошивка Mullins попадали в initramfs. После правки этих файлов
+пересоберите UKI:
+
+```sh
+sudo mkinitcpio -P
+```
+
+Резервный пункт radeon удалён. При необходимости вернуться на radeon
+можно временно восстановить старую командную строку из
+`/etc/kernel/cmdline.radeon.bak`, вернуть `MODULES=()` в
+`/etc/mkinitcpio.conf` и пересобрать UKI:
+
+```sh
+sudo cp /etc/kernel/cmdline.radeon.bak /etc/kernel/cmdline
+sudo sed -i 's/^MODULES=(amdgpu)/MODULES=()/' /etc/mkinitcpio.conf
+sudo mkinitcpio -P
+```
+
+При зависании GPU используйте SysRq вместо кнопки питания:
+`kernel.sysrq=1` уже включён, последовательность — Alt+SysRq+R, E, I,
+S, U, B. Диагностика прошлой загрузки:
+
+```sh
+journalctl -k -b -1 | grep -E 'blocked for more|radeon_fence|amdgpu.*(error|timeout)'
+```
+
+Устройство подсветки после перехода называется `amdgpu_bl1`;
+`brightnessctl` определяет его автоматически. Vulkan работает через
+Mesa RADV (`vulkan-radeon`).
 
 ## Пакеты
 

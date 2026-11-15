@@ -116,6 +116,28 @@ window#waybar {
     color: @gr;
 }
 
+/* Активный плеер — акцентный цвет */
+#mpris.playing {
+    color: @blue;
+    border-bottom: 2px solid @blue;
+}
+
+/* Батарея: зарядка — акцент, низкий заряд — предупреждение */
+#battery.charging {
+    color: @blue;
+    border-bottom: 2px solid @blue;
+}
+
+#battery.warning:not(.charging) {
+    color: @warning;
+    border-bottom: 2px solid @warning;
+}
+
+#battery.critical:not(.charging) {
+    color: @critical;
+    border-bottom: 2px solid @critical;
+}
+
 /* Раскладка: русская — акцентный цвет значка уведомлений */
 #language.ru {
     color: @blue;

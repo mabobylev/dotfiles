@@ -8,6 +8,7 @@ chafa
 devtools
 dpkg
 fuse2
+github-cli
 htop
 imagemagick
 iwd
