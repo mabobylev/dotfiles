@@ -1,5 +1,8 @@
 vim.pack.add({
     { src = "https://github.com/folke/tokyonight.nvim" },
+    { src = "https://github.com/shaunsingh/nord.nvim" },
+    { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
+    { src = "https://github.com/ellisonleao/gruvbox.nvim" },
     { src = "https://github.com/nvim-mini/mini.nvim" },
     { src = "https://github.com/rafamadriz/friendly-snippets" },
     { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },

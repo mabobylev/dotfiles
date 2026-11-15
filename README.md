@@ -85,20 +85,39 @@ cp --remove-destination "$(readlink -f ~/.gtkrc-2.0)" ~/.gtkrc-2.0
 ├── env                         XCURSOR_* для ~/.bash_profile
 └── themes/
     ├── nord/theme.conf
-    └── light/theme.conf
+    ├── light/theme.conf
+    ├── tokyonight/theme.conf
+    ├── catppuccin/theme.conf
+    └── gruvbox/theme.conf
 ```
 
 Из `theme.conf` генерируются: `gsettings` (libadwaita, порталы),
-`gtk-3.0`/`gtk-4.0/settings.ini`, `~/.gtkrc-2.0`, палитры Waybar
-(`~/.config/waybar/theme.css`) и SwayNC (`swaync/theme.css`),
-`foot/theme.ini`, `fuzzel/theme.ini`, цвета рамок
-`~/.config/sway/theme.d/50-theme.conf`.
+`gtk-3.0`/`gtk-4.0/settings.ini`, симлинки GTK4-темы, `~/.gtkrc-2.0`,
+палитры Waybar (`~/.config/waybar/theme.css`) и SwayNC
+(`swaync/theme.css`), `foot/theme.ini`, `fuzzel/theme.ini`, цвета рамок
+и курсор `~/.config/sway/theme.d/50-theme.conf`, тема Neovim
+(`~/.local/state/theme/nvim.lua`), палитра starship и окружение курсора
+`~/.config/theme/env`.
+
+Ключи `theme.conf`:
+
+- GTK: `GTK_THEME`, `ICON_THEME`, `CURSOR_THEME`, `CURSOR_SIZE`, `FONT`,
+  `COLOR_SCHEME`, `ACCENT`, `PREFER_DARK`;
+- палитра: `BG`, `FG`, `GR`, `BG2`, `HOVER`, `BLUE`, `WARNING`, `CRITICAL`;
+- терминал: `FOOT_THEME` (имя набора из `/usr/share/foot/themes`);
+- редактор и промпт: `NVIM_COLORSCHEME`, `NVIM_BACKGROUND`,
+  `STARSHIP_PALETTE`.
 
 ```sh
 theme-apply nord        # применить тему
 theme-apply             # применить текущую
 theme-apply --menu      # выбрать из списка (то же, что Mod+Shift+T)
 ```
+
+`theme-apply` проверяет сгенерированный фрагмент через `sway -C` до
+записи, блокируется от параллельного запуска (`flock`) и пишет файлы
+атомарно. Для Neovim нужны colorscheme-плагины из `pack.lua`
+(tokyonight, nord, catppuccin, gruvbox).
 
 Новая тема — это новый каталог `themes/<имя>/theme.conf` (образец —
 `nord`). После `stow` один раз запусти `theme-apply`, чтобы появились

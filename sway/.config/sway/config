@@ -109,7 +109,8 @@ titlebar_padding 5 2
 titlebar_separator disable
 
 # --- Курсор ---
-seat seat0 xcursor_theme "Nordzy-cursors"
+# Задаётся темой: theme-apply пишет `seat seat0 xcursor_theme` в
+# ~/.config/sway/theme.d/50-theme.conf.
 
 # --- Цвета рамок ---
 # class                 border  backgr. text    indicator

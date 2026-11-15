@@ -28,11 +28,11 @@ window#waybar {
     border-bottom: 2px solid @fg;
 }
 #workspaces button.urgent {
-    background-color: #eb4d4b;
+    background-color: @critical;
 }
 
 #scratchpad button {
-    background-color: #d8dee9;
+    background-color: @scratchpad;
 }
 
 #custom-menu {
@@ -143,8 +143,8 @@ window#waybar {
 
 #custom-notification.dnd-notification,
 #custom-notification.dnd-none {
-    color: #eb4d4b;
-    border-bottom: 2px solid #eb4d4b;
+    color: @critical;
+    border-bottom: 2px solid @critical;
 }
 
 #custom-notification.none {

@@ -5,20 +5,35 @@
 #   theme-apply <имя>       применить тему
 #   theme-apply             применить текущую (из ~/.config/theme/current)
 #   theme-apply --menu      выбрать тему из списка (fuzzel)
-#   theme-apply --no-reload только записать файлы (автозапуск)
+#   theme-apply --no-reload только записать файлы (без перезагрузки Sway)
 #
 # Из одного файла ~/.config/theme/themes/<имя>/theme.conf пишутся все
 # потребители: gsettings, gtk-3.0/gtk-4.0 settings.ini, ~/.gtkrc-2.0,
-# палитры Waybar и SwayNC, foot, fuzzel, цвета рамок Sway и окружение
-# курсора. Отдельный import_gsettings.sh больше не нужен.
+# палитры Waybar и SwayNC, foot, fuzzel, цвета рамок и курсор Sway,
+# окружение курсора, тема Neovim и палитра starship.
 #
 set -euo pipefail
 
 theme_dir="${XDG_CONFIG_HOME:-$HOME/.config}/theme"
 themes_dir="$theme_dir/themes"
 current_link="$theme_dir/current"
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/theme"
 
 die() { printf 'theme-apply: %s\n' "$*" >&2; exit 2; }
+warn() { printf 'theme-apply: %s\n' "$*" >&2; }
+
+# Атомарная запись: файл заменяется целиком, без обрезанных половин.
+atomic_write() {
+  local file=$1 tmp
+  tmp="$(mktemp "${file}.XXXXXX")" || return 1
+  if cat >"$tmp"; then
+    mv -f "$tmp" "$file"
+    chmod 644 "$file"
+  else
+    rm -f "$tmp"
+    return 1
+  fi
+}
 
 list_themes() {
   find "$themes_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort
@@ -38,7 +53,7 @@ for arg in "$@"; do
   case "$arg" in
     --no-reload) no_reload=1 ;;
     -h|--help)
-      sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '2,14p' "$0" | sed 's/^# \{0,1\}//'
       exit 0 ;;
     -*) die "неизвестный параметр: $arg" ;;
     *) name="$arg" ;;
@@ -72,11 +87,28 @@ BLUE="$(get BLUE)"
 WARNING="$(get WARNING)"
 CRITICAL="$(get CRITICAL)"
 FOOT_THEME="$(get FOOT_THEME)"
+NVIM_COLORSCHEME="$(get NVIM_COLORSCHEME)"
+NVIM_BACKGROUND="$(get NVIM_BACKGROUND)"
+STARSHIP_PALETTE="$(get STARSHIP_PALETTE)"
 
 for v in GTK_THEME ICON_THEME CURSOR_THEME CURSOR_SIZE FONT COLOR_SCHEME \
-         PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL; do
+         PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL FOOT_THEME; do
   [ -n "${!v}" ] || die "в $conf не задан ключ $v"
 done
+
+NVIM_BACKGROUND="${NVIM_BACKGROUND:-dark}"
+
+foot_theme_file="/usr/share/foot/themes/$FOOT_THEME"
+[ -f "$foot_theme_file" ] || die "нет foot-темы: $foot_theme_file"
+
+gtk_found=0
+case "$GTK_THEME" in
+  Adwaita) gtk_found=1 ;;  # встроенная тема GTK, файлов в /usr/share/themes может не быть
+esac
+for d in "$HOME/.themes/$GTK_THEME" "/usr/share/themes/$GTK_THEME"; do
+  [ -d "$d" ] && { gtk_found=1; break; }
+done
+[ "$gtk_found" -eq 1 ] || warn "GTK-тема «$GTK_THEME» не найдена — GTK-приложения используют fallback"
 
 hex_rgb() { printf '%d, %d, %d' "0x${1:0:2}" "0x${1:2:2}" "0x${1:4:2}"; }
 BG_RGB="$(hex_rgb "$BG")"
@@ -86,12 +118,58 @@ BG2_RGB="$(hex_rgb "$BG2")"
 BLUE_RGB="$(hex_rgb "$BLUE")"
 HOVER_RGB="$(hex_rgb "$HOVER")"
 
+# --- блокировка от параллельного запуска ------------------------------------
+mkdir -p "$theme_dir"
+if command -v flock >/dev/null 2>&1; then
+  exec 9>"$theme_dir/.lock"
+  flock -n 9 || { warn "уже выполняется другой theme-apply"; exit 0; }
+fi
+
+# --- проверка генерируемого фрагмента Sway до записи ------------------------
+tmp_theme=""
+tmp_conf=""
+tmp_log=""
+cleanup() { rm -f "$tmp_theme" "$tmp_conf" "$tmp_log"; }
+trap cleanup EXIT
+
+tm_theme_dir="$HOME/.config/sway/theme.d"
+if [ -d "$HOME/.config/sway" ]; then
+  mkdir -p "$tm_theme_dir"
+  tmp_theme="$(mktemp "$tm_theme_dir/.50-theme.XXXXXX")"
+
+  cat >"$tmp_theme" <<EOF
+# Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
+client.focused          #$BLUE #$BLUE #$FG #$BLUE
+client.focused_inactive #$BG2 #$GR #$FG #$GR
+client.unfocused        #$BG #$BG #$GR #$BG
+client.urgent           #$CRITICAL #$CRITICAL #$FG #$CRITICAL
+
+seat seat0 xcursor_theme $CURSOR_THEME $CURSOR_SIZE
+EOF
+
+  if command -v sway >/dev/null 2>&1 && [ -f "$HOME/.config/sway/config" ]; then
+    tmp_conf="$(mktemp)"
+    tmp_log="$(mktemp)"
+    if grep -q 'include ~/.config/sway/theme.d/\*' "$HOME/.config/sway/config"; then
+      sed "s|include ~/.config/sway/theme.d/\*|include $tmp_theme|" \
+        "$HOME/.config/sway/config" >"$tmp_conf"
+      if ! sway -C -c "$tmp_conf" >"$tmp_log" 2>&1; then
+        printf 'theme-apply: sway -C не прошёл для темы «%s»\n' "$name" >&2
+        sed -n '1,12p' "$tmp_log" >&2
+        exit 1
+      fi
+    else
+      warn "в sway/config нет include theme.d/* — проверка Sway пропущена"
+    fi
+  fi
+fi
+
 # --- GTK: ini-файлы ---------------------------------------------------------
 gtk3_dir="$HOME/.config/gtk-3.0"
 gtk4_dir="$HOME/.config/gtk-4.0"
 mkdir -p "$gtk3_dir" "$gtk4_dir"
 
-cat > "$gtk3_dir/settings.ini" <<EOF
+atomic_write "$gtk3_dir/settings.ini" <<EOF
 [Settings]
 gtk-theme-name=$GTK_THEME
 gtk-icon-theme-name=$ICON_THEME
@@ -116,7 +194,7 @@ gtk-shell-shows-app-menu=true
 gtk-shell-shows-menubar=true
 EOF
 
-cat > "$gtk4_dir/settings.ini" <<EOF
+atomic_write "$gtk4_dir/settings.ini" <<EOF
 [Settings]
 gtk-theme-name=$GTK_THEME
 gtk-icon-theme-name=$ICON_THEME
@@ -140,14 +218,18 @@ if [ -n "$gtk4_src" ]; then
   else
     rm -f "$gtk4_dir/gtk-dark.css"
   fi
+  if [ -f "$gtk4_src/thumbnail.png" ]; then
+    ln -sfn "$gtk4_src/thumbnail.png" "$gtk4_dir/thumbnail.png"
+  else
+    rm -f "$gtk4_dir/thumbnail.png"
+  fi
 else
-  rm -f "$gtk4_dir/gtk.css" "$gtk4_dir/gtk-dark.css"
+  rm -f "$gtk4_dir/gtk.css" "$gtk4_dir/gtk-dark.css" "$gtk4_dir/thumbnail.png"
 fi
 
 # GTK2
-cat > "$HOME/.gtkrc-2.0" <<EOF
+atomic_write "$HOME/.gtkrc-2.0" <<EOF
 # Сгенерировано theme-apply (тема «$name»). Не редактировать вручную.
-include "$HOME/.gtkrc-2.0.mine"
 gtk-theme-name="$GTK_THEME"
 gtk-icon-theme-name="$ICON_THEME"
 gtk-font-name="$FONT"
@@ -177,7 +259,7 @@ fi
 # --- Waybar -----------------------------------------------------------------
 waybar_css="$HOME/.config/waybar/theme.css"
 if [ -d "$HOME/.config/waybar" ]; then
-  cat > "$waybar_css" <<EOF
+  atomic_write "$waybar_css" <<EOF
 /* Сгенерировано theme-apply: тема «$name». Не редактировать вручную. */
 @define-color bg #$BG;
 @define-color fg #$FG;
@@ -187,13 +269,14 @@ if [ -d "$HOME/.config/waybar" ]; then
 @define-color blue #$BLUE;
 @define-color warning #$WARNING;
 @define-color critical #$CRITICAL;
+@define-color scratchpad #$FG;
 EOF
 fi
 
 # --- SwayNC -----------------------------------------------------------------
 swaync_css="$HOME/.config/swaync/theme.css"
 if [ -d "$HOME/.config/swaync" ]; then
-  cat > "$swaync_css" <<EOF
+  atomic_write "$swaync_css" <<EOF
 /* Сгенерировано theme-apply: тема «$name». Не редактировать вручную. */
 :root {
   --cc-bg: rgba($BG_RGB, 0.98);
@@ -243,16 +326,16 @@ fi
 
 # --- foot -------------------------------------------------------------------
 if [ -d "$HOME/.config/foot" ]; then
-  cat > "$HOME/.config/foot/theme.ini" <<EOF
+  atomic_write "$HOME/.config/foot/theme.ini" <<EOF
 # Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
 [main]
-include=/usr/share/foot/themes/$FOOT_THEME
+include=$foot_theme_file
 EOF
 fi
 
 # --- fuzzel -----------------------------------------------------------------
 if [ -d "$HOME/.config/fuzzel" ]; then
-  cat > "$HOME/.config/fuzzel/theme.ini" <<EOF
+  atomic_write "$HOME/.config/fuzzel/theme.ini" <<EOF
 # Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
 [main]
 icon-theme=$ICON_THEME
@@ -273,25 +356,50 @@ border=${GR}ff
 EOF
 fi
 
-# --- рамки Sway -------------------------------------------------------------
-if [ -d "$HOME/.config/sway" ]; then
-  mkdir -p "$HOME/.config/sway/theme.d"
-  cat > "$HOME/.config/sway/theme.d/50-theme.conf" <<EOF
-# Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
-client.focused          #$BLUE #$BLUE #$FG #$BLUE
-client.focused_inactive #$BG2 #$GR #$FG #$GR
-client.unfocused        #$BG #$BG #$GR #$BG
-client.urgent           #$CRITICAL #$CRITICAL #$FG #$CRITICAL
-EOF
+# --- рамки и курсор Sway ----------------------------------------------------
+if [ -n "$tmp_theme" ]; then
+  chmod 644 "$tmp_theme"
+  mv -f "$tmp_theme" "$tm_theme_dir/50-theme.conf"
+  tmp_theme=""
 fi
 
 # --- окружение курсора для композитора (применяется при следующем входе) ----
-mkdir -p "$theme_dir"
-cat > "$theme_dir/env" <<EOF
+atomic_write "$theme_dir/env" <<EOF
 # Сгенерировано theme-apply. Подхватывается ~/.bash_profile при входе.
 export XCURSOR_THEME="$CURSOR_THEME"
 export XCURSOR_SIZE=$CURSOR_SIZE
 EOF
+
+# --- Neovim -----------------------------------------------------------------
+if [ -n "$NVIM_COLORSCHEME" ]; then
+  mkdir -p "$state_dir"
+  atomic_write "$state_dir/nvim.lua" <<EOF
+return { colorscheme = "$NVIM_COLORSCHEME", background = "$NVIM_BACKGROUND" }
+EOF
+
+  if command -v nvim >/dev/null 2>&1; then
+    run="${XDG_RUNTIME_DIR:-/run/user/$UID}"
+    for sock in "$run"/nvim.*; do
+      [ -S "$sock" ] || continue
+      nvim --server "$sock" \
+        --remote-expr 'luaeval("(function() if _G.ApplyTheme then _G.ApplyTheme() end end)()")' \
+        >/dev/null 2>&1 || true
+    done
+  fi
+else
+  rm -f "$state_dir/nvim.lua"
+fi
+
+# --- starship ---------------------------------------------------------------
+ss="$HOME/.config/starship.toml"
+if [ -f "$ss" ] && [ -n "$STARSHIP_PALETTE" ]; then
+  if grep -q '^palette[[:space:]]*=' "$ss"; then
+    sed -i --follow-symlinks \
+      "s/^palette[[:space:]]*=.*/palette = \"$STARSHIP_PALETTE\"/" "$ss"
+  else
+    warn "в $ss нет строки palette = … — starship не переключён"
+  fi
+fi
 
 ln -sfn "$themes_dir/$name" "$current_link"
 
@@ -301,9 +409,12 @@ ln -sfn "$themes_dir/$name" "$current_link"
 pkill -USR2 waybar 2>/dev/null || true
 swaync-client -rs >/dev/null 2>&1 || true
 
-# Полная перезагрузка Sway нужна только ради цветов рамок (client.*).
-if [ "$no_reload" -eq 0 ]; then
-  swaymsg reload >/dev/null 2>&1 || true
+# Полная перезагрузка Sway нужна только ради рамок и курсора.
+if [ "$no_reload" -eq 0 ] && [ -n "${SWAYSOCK:-}" ]; then
+  if ! swaymsg reload >/dev/null 2>&1; then
+    warn "swaymsg reload не удался; тема применена частично"
+    notify-send -a theme -u critical "Тема" "Sway reload не удался" 2>/dev/null || true
+  fi
   notify-send -a theme "Тема: $name" 2>/dev/null || true
 fi
 
