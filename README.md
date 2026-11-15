@@ -31,7 +31,7 @@
 ```sh
 cd ~/.dotfiles
 stow -t "$HOME" --no-folding \
-    fish foot fuzzel home mc nvim ranger scripts starship \
+    fish foot fuzzel home mc nvim opencode ranger scripts starship \
     sway swaync theme tmux wallp waybar
 stow -t "$HOME" --no-folding host-laptop   # или host-pc
 ```
