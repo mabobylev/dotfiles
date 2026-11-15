@@ -1,0 +1,139 @@
+# Packages required by the dotfiles on every machine.
+# List format: one package per line; comments and blank lines are ignored.
+# Installed by: arch_setup.sh common|desktop|laptop
+
+# --- Base system -----------------------------------------------------------
+base
+base-devel
+linux-zen
+linux-firmware
+amd-ucode
+mkinitcpio
+efibootmgr
+sudo
+git
+stow
+reflector
+pkgfile
+zram-generator
+smartmontools
+
+# --- Network ---------------------------------------------------------------
+networkmanager
+network-manager-applet
+bluez
+bluez-utils
+
+# --- Audio -----------------------------------------------------------------
+pipewire
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+wireplumber
+gst-plugin-pipewire
+alsa-utils
+pavucontrol
+playerctl
+brightnessctl
+
+# --- Wayland / Sway --------------------------------------------------------
+swayfx
+swaybg
+swayidle
+swaylock
+sway-contrib
+waybar
+fuzzel
+swaync
+cliphist
+wl-clipboard
+grim
+slurp
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+xdg-desktop-portal-gtk
+polkit-gnome
+seatd
+dex
+xorg-xwayland
+
+# --- Terminals and GUI applications ---------------------------------------
+foot
+kitty
+firefox
+firefox-i18n-ru
+pcmanfm
+thunar
+thunar-archive-plugin
+thunar-volman
+tumbler
+file-roller
+gvfs
+gvfs-mtp
+
+# --- Shell and CLI tools ---------------------------------------------------
+fish
+fisher
+starship
+zoxide
+fzf
+fd
+ripgrep
+bat
+lsd
+jq
+curl
+wget
+unzip
+zip
+7zip
+atool
+highlight
+thefuck
+tldr
+nano
+less
+man-db
+libnotify
+
+# --- Editors, file managers, multiplexer ----------------------------------
+neovim
+mc
+ranger
+tmux
+
+# --- Monitoring ------------------------------------------------------------
+btop
+
+# --- Fonts -----------------------------------------------------------------
+ttf-jetbrains-mono-nerd
+ttf-ubuntu-nerd
+ttf-ubuntu-mono-nerd
+ttf-iosevka-nerd
+ttf-nerd-fonts-symbols
+noto-fonts-emoji
+ttf-dejavu
+ttf-liberation
+awesome-terminal-fonts
+
+# --- GTK themes, icons and cursors ----------------------------------------
+nordic-theme
+nordzy-cursors
+papirus-icon-theme
+gtk3
+
+# --- XDG / desktop integration --------------------------------------------
+xdg-utils
+xdg-user-dirs
+xdg-user-dirs-gtk
+
+# --- Media used by Waybar modules -----------------------------------------
+cmus
+mpv
+
+# --- Power management ------------------------------------------------------
+power-profiles-daemon
+
+# --- Python (sway-cheatsheet uses PyGObject) -------------------------------
+python
+python-gobject

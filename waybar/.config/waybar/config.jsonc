@@ -2,9 +2,10 @@
 {
   // "layer": "top",
   // "position": "top",
-  // "output": ["eDP-1"],
   "reload_style_on_change": true,
-  "height": 30,
+  // Отличия конкретной машины (пакеты host-pc и host-laptop):
+  // высота бара, список правых модулей, battery, output.
+  "include": ["~/.config/waybar/host.jsonc"],
   // "margin-top": 15,
   // "margin-bottom": 5,
   // "spacing": 4,
@@ -18,16 +19,6 @@
   "modules-center": [
     "sway/workspaces",
     "sway/mode"
-  ],
-  "modules-right": [
-    "custom/weather",
-    "custom/cmus",
-    "sway/language",
-    "wireplumber",
-    "clock",
-    "custom/notification",
-    "tray",
-    "custom/power"
   ],
   "cpu": {
     "format": " {usage}%",

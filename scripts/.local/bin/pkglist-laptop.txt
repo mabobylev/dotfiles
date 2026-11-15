@@ -1,0 +1,35 @@
+# Laptop-specific packages (Lenovo B50-45).
+# Installed in addition to pkglist-common.txt: arch_setup.sh laptop
+
+acpi
+alacritty
+bash-completion
+chafa
+devtools
+dpkg
+fuse2
+htop
+imagemagick
+iwd
+jdk-openjdk
+lf
+lib32-vulkan-radeon
+libao
+libmad
+libmp4v2
+libpulse
+nnn
+nwg-look
+opencode
+plymouth
+rclone
+reapack
+reaper
+sws
+ttc-iosevka
+ttf-ubuntu-font-family
+vulkan-radeon
+xclip
+xsel
+yazi
+yt-dlp

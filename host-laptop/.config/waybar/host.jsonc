@@ -1,0 +1,16 @@
+// -*- mode: jsonc -*-
+// Waybar: отличия ноутбука (1366x768)
+{
+  "output": ["eDP-1"],
+  "modules-right": [
+    "battery",
+    "custom/weather",
+    "custom/cmus",
+    "sway/language",
+    "wireplumber",
+    "clock",
+    "custom/notification",
+    "tray",
+    "custom/power"
+  ]
+}
