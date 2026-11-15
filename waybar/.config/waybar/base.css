@@ -4,14 +4,6 @@
     font-size: 14px;
 }
 
-@define-color bg #272a34;
-@define-color fg #f9f9f9;
-@define-color gr #545d70;
-@define-color bg2 #2e313d;
-@define-color blue #51a2da;
-@define-color warning #e5c07b;
-@define-color critical #eb4d4b;
-
 
 window#waybar {
 	background-color: @bg;

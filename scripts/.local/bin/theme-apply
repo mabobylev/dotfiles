@@ -1,0 +1,310 @@
+#!/usr/bin/env bash
+#
+# theme-apply — единая точка применения темы в Sway-сессии.
+#
+#   theme-apply <имя>       применить тему
+#   theme-apply             применить текущую (из ~/.config/theme/current)
+#   theme-apply --menu      выбрать тему из списка (fuzzel)
+#   theme-apply --no-reload только записать файлы (автозапуск)
+#
+# Из одного файла ~/.config/theme/themes/<имя>/theme.conf пишутся все
+# потребители: gsettings, gtk-3.0/gtk-4.0 settings.ini, ~/.gtkrc-2.0,
+# палитры Waybar и SwayNC, foot, fuzzel, цвета рамок Sway и окружение
+# курсора. Отдельный import_gsettings.sh больше не нужен.
+#
+set -euo pipefail
+
+theme_dir="${XDG_CONFIG_HOME:-$HOME/.config}/theme"
+themes_dir="$theme_dir/themes"
+current_link="$theme_dir/current"
+
+die() { printf 'theme-apply: %s\n' "$*" >&2; exit 2; }
+
+list_themes() {
+  find "$themes_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort
+}
+
+# --- выбор темы -------------------------------------------------------------
+if [ "${1:-}" = "--menu" ]; then
+  command -v fuzzel >/dev/null || die "fuzzel не найден"
+  choice="$(list_themes | fuzzel --dmenu -l 10 -p 'Тема: ')"
+  [ -n "$choice" ] || exit 0
+  exec "$0" "$choice"
+fi
+
+no_reload=0
+name=""
+for arg in "$@"; do
+  case "$arg" in
+    --no-reload) no_reload=1 ;;
+    -h|--help)
+      sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'
+      exit 0 ;;
+    -*) die "неизвестный параметр: $arg" ;;
+    *) name="$arg" ;;
+  esac
+done
+
+if [ -z "$name" ] && [ -L "$current_link" ]; then
+  name="$(basename "$(readlink "$current_link")")"
+fi
+[ -n "$name" ] || die "тема не выбрана (нет $current_link)"
+
+conf="$themes_dir/$name/theme.conf"
+[ -f "$conf" ] || die "нет темы «$name»: $conf"
+
+get() { sed -n "s/^$1=//p" "$conf" | head -n1; }
+
+GTK_THEME="$(get GTK_THEME)"
+ICON_THEME="$(get ICON_THEME)"
+CURSOR_THEME="$(get CURSOR_THEME)"
+CURSOR_SIZE="$(get CURSOR_SIZE)"
+FONT="$(get FONT)"
+COLOR_SCHEME="$(get COLOR_SCHEME)"
+PREFER_DARK="$(get PREFER_DARK)"
+ACCENT="$(get ACCENT)"
+BG="$(get BG)"
+FG="$(get FG)"
+GR="$(get GR)"
+BG2="$(get BG2)"
+HOVER="$(get HOVER)"
+BLUE="$(get BLUE)"
+WARNING="$(get WARNING)"
+CRITICAL="$(get CRITICAL)"
+FOOT_THEME="$(get FOOT_THEME)"
+
+for v in GTK_THEME ICON_THEME CURSOR_THEME CURSOR_SIZE FONT COLOR_SCHEME \
+         PREFER_DARK BG FG GR BG2 HOVER BLUE WARNING CRITICAL; do
+  [ -n "${!v}" ] || die "в $conf не задан ключ $v"
+done
+
+hex_rgb() { printf '%d, %d, %d' "0x${1:0:2}" "0x${1:2:2}" "0x${1:4:2}"; }
+BG_RGB="$(hex_rgb "$BG")"
+FG_RGB="$(hex_rgb "$FG")"
+GR_RGB="$(hex_rgb "$GR")"
+BG2_RGB="$(hex_rgb "$BG2")"
+BLUE_RGB="$(hex_rgb "$BLUE")"
+HOVER_RGB="$(hex_rgb "$HOVER")"
+
+# --- GTK: ini-файлы ---------------------------------------------------------
+gtk3_dir="$HOME/.config/gtk-3.0"
+gtk4_dir="$HOME/.config/gtk-4.0"
+mkdir -p "$gtk3_dir" "$gtk4_dir"
+
+cat > "$gtk3_dir/settings.ini" <<EOF
+[Settings]
+gtk-theme-name=$GTK_THEME
+gtk-icon-theme-name=$ICON_THEME
+gtk-font-name=$FONT
+gtk-cursor-theme-name=$CURSOR_THEME
+gtk-cursor-theme-size=$CURSOR_SIZE
+gtk-toolbar-style=GTK_TOOLBAR_ICONS
+gtk-toolbar-icon-size=GTK_ICON_SIZE_SMALL_TOOLBAR
+gtk-button-images=1
+gtk-menu-images=1
+gtk-sound-theme-name=default
+gtk-enable-event-sounds=0
+gtk-enable-input-feedback-sounds=0
+gtk-error-bell=0
+gtk-xft-antialias=1
+gtk-xft-hinting=1
+gtk-xft-hintstyle=hintslight
+gtk-xft-rgba=rgb
+gtk-application-prefer-dark-theme=$PREFER_DARK
+gtk-decoration-layout=menu:
+gtk-shell-shows-app-menu=true
+gtk-shell-shows-menubar=true
+EOF
+
+cat > "$gtk4_dir/settings.ini" <<EOF
+[Settings]
+gtk-theme-name=$GTK_THEME
+gtk-icon-theme-name=$ICON_THEME
+gtk-font-name=$FONT
+gtk-cursor-theme-name=$CURSOR_THEME
+gtk-cursor-theme-size=$CURSOR_SIZE
+gtk-sound-theme-name=default
+gtk-error-bell=0
+gtk-application-prefer-dark-theme=$PREFER_DARK
+EOF
+
+# GTK4-темы (не libadwaita) подключаются симлинками в ~/.config/gtk-4.0
+gtk4_src=""
+for d in "$HOME/.themes/$GTK_THEME/gtk-4.0" "/usr/share/themes/$GTK_THEME/gtk-4.0"; do
+  if [ -f "$d/gtk.css" ]; then gtk4_src="$d"; break; fi
+done
+if [ -n "$gtk4_src" ]; then
+  ln -sfn "$gtk4_src/gtk.css" "$gtk4_dir/gtk.css"
+  if [ -f "$gtk4_src/gtk-dark.css" ]; then
+    ln -sfn "$gtk4_src/gtk-dark.css" "$gtk4_dir/gtk-dark.css"
+  else
+    rm -f "$gtk4_dir/gtk-dark.css"
+  fi
+else
+  rm -f "$gtk4_dir/gtk.css" "$gtk4_dir/gtk-dark.css"
+fi
+
+# GTK2
+cat > "$HOME/.gtkrc-2.0" <<EOF
+# Сгенерировано theme-apply (тема «$name»). Не редактировать вручную.
+include "$HOME/.gtkrc-2.0.mine"
+gtk-theme-name="$GTK_THEME"
+gtk-icon-theme-name="$ICON_THEME"
+gtk-font-name="$FONT"
+gtk-cursor-theme-name="$CURSOR_THEME"
+gtk-cursor-theme-size=$CURSOR_SIZE
+gtk-toolbar-style=GTK_TOOLBAR_ICONS
+gtk-toolbar-icon-size=GTK_ICON_SIZE_SMALL_TOOLBAR
+gtk-button-images=1
+gtk-menu-images=1
+gtk-enable-event-sounds=0
+gtk-enable-input-feedback-sounds=0
+gtk-error-bell=0
+gtk-application-prefer-dark-theme=$PREFER_DARK
+EOF
+
+# --- gsettings (libadwaita и порталы) --------------------------------------
+if command -v gsettings >/dev/null 2>&1; then
+  iface="org.gnome.desktop.interface"
+  gsettings set "$iface" gtk-theme "$GTK_THEME" 2>/dev/null || true
+  gsettings set "$iface" icon-theme "$ICON_THEME" 2>/dev/null || true
+  gsettings set "$iface" cursor-theme "$CURSOR_THEME" 2>/dev/null || true
+  gsettings set "$iface" font-name "$FONT" 2>/dev/null || true
+  gsettings set "$iface" color-scheme "$COLOR_SCHEME" 2>/dev/null || true
+  gsettings set "$iface" accent-color "$ACCENT" 2>/dev/null || true
+fi
+
+# --- Waybar -----------------------------------------------------------------
+waybar_css="$HOME/.config/waybar/theme.css"
+if [ -d "$HOME/.config/waybar" ]; then
+  cat > "$waybar_css" <<EOF
+/* Сгенерировано theme-apply: тема «$name». Не редактировать вручную. */
+@define-color bg #$BG;
+@define-color fg #$FG;
+@define-color gr #$GR;
+@define-color bg2 #$BG2;
+@define-color hover #$HOVER;
+@define-color blue #$BLUE;
+@define-color warning #$WARNING;
+@define-color critical #$CRITICAL;
+EOF
+fi
+
+# --- SwayNC -----------------------------------------------------------------
+swaync_css="$HOME/.config/swaync/theme.css"
+if [ -d "$HOME/.config/swaync" ]; then
+  cat > "$swaync_css" <<EOF
+/* Сгенерировано theme-apply: тема «$name». Не редактировать вручную. */
+:root {
+  --cc-bg: rgba($BG_RGB, 0.98);
+  --noti-border-color: rgba($GR_RGB, 0.55);
+  --noti-bg: $BG2_RGB;
+  --noti-bg-alpha: 0.98;
+  --noti-bg-darker: rgb($BG_RGB);
+  --noti-bg-hover: rgb($HOVER_RGB);
+  --noti-bg-focus: rgba($BLUE_RGB, 0.25);
+  --noti-close-bg: rgba($GR_RGB, 0.6);
+  --noti-close-bg-hover: rgba($BLUE_RGB, 0.9);
+  --text-color: rgb($FG_RGB);
+  --text-color-disabled: rgb($GR_RGB);
+  --bg-selected: rgb($BLUE_RGB);
+  --warning: #$WARNING;
+  --critical: #$CRITICAL;
+  --notification-icon-size: 40px;
+  --notification-app-icon-size: calc(var(--notification-icon-size) / 3);
+  --notification-group-icon-size: 28px;
+  --border: 1px solid var(--noti-border-color);
+  --border-radius: 5px;
+  --notification-shadow: 0 2px 10px 2px rgba(0, 0, 0, 0.45);
+  --font-size-body: 13px;
+  --font-size-summary: 14px;
+  --hover-tranistion: background 0.15s ease-in-out;
+  --group-collapse-tranistion: opacity 400ms ease-in-out;
+  --hover-transition: var(--hover-tranistion);
+  --group-collapse-transition: var(--group-collapse-tranistion);
+}
+
+/* Fallback для старых тем SwayNC */
+@define-color cc-bg rgba($BG_RGB, 0.98);
+@define-color noti-border-color rgba($GR_RGB, 0.55);
+@define-color noti-bg rgba($BG2_RGB, 0.98);
+@define-color noti-bg-opaque rgb($BG2_RGB);
+@define-color noti-bg-darker rgb($BG_RGB);
+@define-color noti-bg-hover rgb($HOVER_RGB);
+@define-color noti-bg-hover-opaque rgb($HOVER_RGB);
+@define-color noti-bg-focus rgba($BLUE_RGB, 0.25);
+@define-color noti-close-bg rgba($GR_RGB, 0.6);
+@define-color noti-close-bg-hover rgba($BLUE_RGB, 0.9);
+@define-color text-color rgb($FG_RGB);
+@define-color text-color-disabled rgb($GR_RGB);
+@define-color bg-selected rgb($BLUE_RGB);
+EOF
+fi
+
+# --- foot -------------------------------------------------------------------
+if [ -d "$HOME/.config/foot" ]; then
+  cat > "$HOME/.config/foot/theme.ini" <<EOF
+# Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
+[main]
+include=/usr/share/foot/themes/$FOOT_THEME
+EOF
+fi
+
+# --- fuzzel -----------------------------------------------------------------
+if [ -d "$HOME/.config/fuzzel" ]; then
+  cat > "$HOME/.config/fuzzel/theme.ini" <<EOF
+# Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
+[main]
+icon-theme=$ICON_THEME
+
+[colors]
+background=${BG2}f2
+text=${FG}ff
+message=${FG}ff
+prompt=${BLUE}ff
+placeholder=${GR}ff
+input=${FG}ff
+match=${BLUE}ff
+selection=${BLUE}ff
+selection-text=${BG2}ff
+selection-match=${BG2}ff
+counter=${FG}ff
+border=${GR}ff
+EOF
+fi
+
+# --- рамки Sway -------------------------------------------------------------
+if [ -d "$HOME/.config/sway" ]; then
+  mkdir -p "$HOME/.config/sway/theme.d"
+  cat > "$HOME/.config/sway/theme.d/50-theme.conf" <<EOF
+# Сгенерировано theme-apply: тема «$name». Не редактировать вручную.
+client.focused          #$BLUE #$BLUE #$FG #$BLUE
+client.focused_inactive #$BG2 #$GR #$FG #$GR
+client.unfocused        #$BG #$BG #$GR #$BG
+client.urgent           #$CRITICAL #$CRITICAL #$FG #$CRITICAL
+EOF
+fi
+
+# --- окружение курсора для композитора (применяется при следующем входе) ----
+mkdir -p "$theme_dir"
+cat > "$theme_dir/env" <<EOF
+# Сгенерировано theme-apply. Подхватывается ~/.bash_profile при входе.
+export XCURSOR_THEME="$CURSOR_THEME"
+export XCURSOR_SIZE=$CURSOR_SIZE
+EOF
+
+ln -sfn "$themes_dir/$name" "$current_link"
+
+# --- перезагрузка потребителей ---------------------------------------------
+# Waybar и SwayNC перечитывают CSS всегда: при первом запуске их конфиги
+# уже ссылаются на сгенерированные файлы, даже если темы ещё не было.
+pkill -USR2 waybar 2>/dev/null || true
+swaync-client -rs >/dev/null 2>&1 || true
+
+# Полная перезагрузка Sway нужна только ради цветов рамок (client.*).
+if [ "$no_reload" -eq 0 ]; then
+  swaymsg reload >/dev/null 2>&1 || true
+  notify-send -a theme "Тема: $name" 2>/dev/null || true
+fi
+
+printf 'Тема применена: %s\n' "$name"

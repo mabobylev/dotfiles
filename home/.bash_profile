@@ -15,6 +15,8 @@ fi
 # Start Sway on tty1. Validate the config first and fall back to a login
 # shell instead of letting getty's Restart=always loop forever.
 if [[ -z "$WAYLAND_DISPLAY" && "${XDG_VTNR:-}" -eq 1 && -z "${SWAY_SKIP_AUTOSTART:-}" ]]; then
+    # Оформление, выбранное theme-apply: курсор для композитора и т. п.
+    [[ -f "$HOME/.config/theme/env" ]] && . "$HOME/.config/theme/env"
     if sway -C; then
         exec sway
     fi

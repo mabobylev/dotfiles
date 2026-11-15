@@ -1,0 +1,25 @@
+#!/bin/sh
+# wallpaper-random — выбрать случайные обои один раз за сессию.
+#
+# Путь кэшируется в XDG_RUNTIME_DIR (живёт до выхода из сессии), поэтому
+# `swaymsg reload` — например, при смене темы — обои не меняет, а после
+# повторного входа выбираются новые.
+set -e
+
+dir="$HOME/.local/backgrounds/wallpapers"
+cache="${XDG_RUNTIME_DIR:-/tmp}/sway-wallpaper"
+
+[ -d "$dir" ] || exit 0
+
+bg=""
+if [ -s "$cache" ]; then
+  bg="$(cat "$cache")"
+fi
+if [ -z "$bg" ] || [ ! -f "$bg" ]; then
+  bg="$(find "$dir" -maxdepth 1 -type f | shuf -n1)"
+  [ -n "$bg" ] || exit 0
+  mkdir -p "${cache%/*}" 2>/dev/null || true
+  printf '%s\n' "$bg" > "$cache" 2>/dev/null || true
+fi
+
+exec swaymsg output '*' bg "$bg" fill
