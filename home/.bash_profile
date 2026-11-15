@@ -5,8 +5,7 @@
 # Session variables must be set before ~/.bashrc so conditional
 # configuration (Qt toolkit, Java, prompt, etc.) sees the right session.
 if [[ -z "$WAYLAND_DISPLAY" && "${XDG_VTNR:-}" -eq 1 ]]; then
-    export GTK_THEME="Nord_BMA:dark" \
-           XDG_SESSION_TYPE=wayland \
+    export XDG_SESSION_TYPE=wayland \
            XDG_SESSION_DESKTOP=sway \
            XDG_CURRENT_DESKTOP=sway
 fi
