@@ -5,7 +5,7 @@
   "modules-right": [
     "battery",
     "custom/weather",
-    "custom/cmus",
+    "mpris",
     "sway/language",
     "wireplumber",
     "clock",
