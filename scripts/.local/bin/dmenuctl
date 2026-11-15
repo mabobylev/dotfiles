@@ -2,52 +2,29 @@
 #
 # dmenuctl — небольшие меню для повседневных действий.
 #
-# В Sway используется Wayland-нативный fuzzel. В X11 (XFCE) — rofi
-# в dmenu-режиме. Скрипт сам определяет окружение по переменной SWAYSOCK.
+# Меню рисует fuzzel в режиме dmenu; вид задаётся в fuzzel.ini.
 #
 # Аргументы:
 #   (без аргументов) — системное меню
 #   audio            — переключение аудиовыхода
 #   notes            — заметки
 
-if [ -n "${SWAYSOCK:-}" ] && command -v fuzzel >/dev/null 2>&1; then
-  # Sway / Wayland: fuzzel в dmenu-режиме; вид задаётся в fuzzel.ini
-  menu=(fuzzel --dmenu)
-  lines=(-l)
-  terminal="${TERMINAL:-foot}"
-  is_wayland=1
-else
-  # X11 / XFCE: rofi в dmenu-режиме
-  menu=(rofi -dmenu -i)
-  lines=(-lines)
-  terminal="${TERMINAL:-kitty}"
-  is_wayland=0
-fi
+menu=(fuzzel --dmenu)
+lines=(-l)
+terminal="${TERMINAL:-foot}"
 
 # Ввод одной строки (имя заметки и т. п.)
 prompt_input() {
   local prompt="$1"
-  if [ "$is_wayland" -eq 1 ]; then
-    fuzzel --prompt-only "$prompt"
-  else
-    "${menu[@]}" -p "$prompt" < /dev/null
-  fi
+  fuzzel --prompt-only "$prompt"
 }
 
 lock_screen() {
-  if [ "$is_wayland" -eq 1 ]; then
-    swaylock -f -i "$HOME/.local/backgrounds/wm-lock.png"
-  else
-    xfce4-screensaver-command -l
-  fi
+  swaylock -f -i "$HOME/.local/backgrounds/wm-lock.png"
 }
 
 logout_session() {
-  if [ "$is_wayland" -eq 1 ]; then
-    swaymsg exit
-  else
-    xfce4-session-logout --logout
-  fi
+  swaymsg exit
 }
 
 # Выбор процесса и его завершение
@@ -94,19 +71,6 @@ shownotes() {
   esac
 }
 
-# Системное меню X11/XFCE
-sys_menu() {
-  case "$(printf "󰅜 kill\\n lock\\n󰍃 logout\\n󰑖 reboot\\n shutdown" | "${menu[@]}" "${lines[@]}" 5)" in
-  *kill*) kill_menu ;;
-  *lock*) lock_screen ;;
-  #	lock) slock systemctl suspend -i ;;
-  *logout*) logout_session ;;
-  *reboot*) systemctl reboot -i ;;
-  *shutdown*) shutdown now ;;
-  *) exit 1 ;;
-  esac
-}
-
 # Расширенное системное меню Sway
 sway_menu() {
   choice=$(printf '%s\n' \
@@ -147,11 +111,7 @@ notes)
   shownotes
   ;;
 *)
-  if [ "$is_wayland" -eq 1 ]; then
-    sway_menu
-  else
-    sys_menu
-  fi
+  sway_menu
   ;;
 esac
 
