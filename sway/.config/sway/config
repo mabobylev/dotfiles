@@ -112,11 +112,7 @@ titlebar_separator disable
 # ~/.config/sway/theme.d/50-theme.conf.
 
 # --- Цвета рамок ---
-# class                 border  backgr. text    indicator
-client.focused          #81A1C1 #81A1C1 #D8DEE9 #D8DEE9
-client.focused_inactive #3B4252 #5F676A #D8DEE9 #5F676A
-client.unfocused        #2E3440 #2E3440 #8FBCBB #2E3440
-client.urgent           #900000 #900000 #D8DEE9 #900000
+# Задаются темой: ~/.config/sway/theme.d/50-theme.conf (theme-apply).
 
 # --- Эффекты для waybar (отключено) ---
 # layer_effects "waybar" {
