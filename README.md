@@ -5,14 +5,12 @@
 
 ## Основное окружение
 
-- **Sway** (swayfx) — основная Wayland-сессия; запускается из
-  `~/.bash_profile` на tty1.
-- **XFCE** — запасная X11-сессия на ПК; запускается командой
-  `startxfce4`.
+- **Sway** (swayfx) — единственная сессия; запускается из
+  `~/.bash_profile` на tty1. X11-сессии нет: X11-приложения работают
+  через XWayland.
 - **fuzzel** — лаунчер и dmenu-режим в Sway.
-- **rofi** — dmenu-режим в X11/XFCE.
 - **waybar**, **swaync**, **swaylock**, **swayidle**.
-- **foot** — терминал Sway; **kitty** — терминал для X11/резерва.
+- **foot** — терминал Sway; **kitty** — резервный терминал.
 - **fish** — интерактивный shell; **bash** — login shell и автозапуск
   Sway.
 
