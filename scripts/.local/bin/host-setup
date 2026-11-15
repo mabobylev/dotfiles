@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+#
+# host-setup — идемпотентно привести машину в порядок после git pull:
+# stow общих пакетов и host-пакета, применить тему, проверить конфиги.
+#
+#   host-setup            определить host по уже пристованному host.d
+#   host-setup pc         явно домашний ПК
+#   host-setup laptop     явно ноутбук
+#
+set -euo pipefail
+
+dots="${DOTFILES_DIR:-$HOME/.dotfiles}"
+cd "$dots"
+
+die() { printf 'host-setup: %s\n' "$*" >&2; exit 2; }
+
+host="${1:-}"
+if [ -z "$host" ]; then
+  link="$HOME/.config/sway/host.d/10-output.conf"
+  if [ -L "$link" ]; then
+    case "$(readlink -f "$link")" in
+      *"/host-pc/"*)     host=pc ;;
+      *"/host-laptop/"*) host=laptop ;;
+    esac
+  fi
+fi
+
+[ -n "$host" ] || {
+  printf 'Не удалось определить машину. Укажите: host-setup pc|laptop\n' >&2
+  exit 2
+}
+case "$host" in
+  pc|laptop) ;;
+  *) die "неизвестная машина «$host» (ожидается pc или laptop)" ;;
+esac
+
+# theme-apply пишет сгенерированные файлы в ~/.config. Если каталог — единый
+# симлинк на репозиторий, файлы попадут в git. Проверяем до запуска.
+folded=()
+for d in theme waybar swaync foot fuzzel sway; do
+  [ -L "$HOME/.config/$d" ] && folded+=("$d")
+done
+if [ "${#folded[@]}" -gt 0 ]; then
+  printf 'host-setup: эти каталоги — свёрнутые stow-симлинки:\n' >&2
+  printf '  ~/.config/%s\n' "${folded[@]}" >&2
+  printf 'Нужна разовая миграция на --no-folding, например:\n' >&2
+  for p in "${folded[@]}"; do
+    printf '  stow -D -t "$HOME" %s && stow -t "$HOME" --no-folding %s\n' "$p" "$p" >&2
+  done
+  printf 'Если stow не снимает симлинк — удалите его вручную (он ведёт в репозиторий).\n' >&2
+  exit 1
+fi
+
+packages=(
+  fish foot fuzzel home mc nvim opencode ranger scripts starship
+  sway swaync theme tmux wallp waybar
+)
+
+printf 'host-setup: stow пакетов + host-%s\n' "$host"
+stow -t "$HOME" --no-folding "${packages[@]}"
+stow -t "$HOME" --no-folding "host-$host"
+
+printf 'host-setup: применяю тему\n'
+"$HOME/.local/bin/theme-apply"
+
+printf 'host-setup: проверки\n'
+sway -C >/dev/null && echo '  sway: ok'
+foot -C >/dev/null && echo '  foot: ok'
+fuzzel --check-config >/dev/null && echo '  fuzzel: ok'
+
+printf 'host-setup: готово (%s)\n' "$host"

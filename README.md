@@ -54,8 +54,12 @@ git add -A && git commit -m "..." && git push
 
 # на второй машине
 cd ~/.dotfiles
-git pull --rebase
+git pull --ff-only
+host-setup          # stow + theme-apply + проверки
 ```
+
+Подробная инструкция для ноутбука, включая разовую миграцию старых
+свёрнутых stow-симлинков: **[LAPTOP.md](LAPTOP.md)**.
 
 Общие файлы (`sway/config`, `waybar/config.jsonc`, `base.css`, `foot.ini`,
 `scripts/*`) должны быть одинаковыми на всех машинах. Всё машинное —
