@@ -451,6 +451,10 @@ exec dex -ae Sway
 exec foot
 # Агент polkit: диалоги ввода пароля для GUI-приложений
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# Активный MPRIS-плеер для waybar/mpris: playerctld сводит все плееры
+# к одному источнику. Если уже поднят через D-Bus, повторный запуск просто
+# завершится, ничего не сломав.
+exec playerctld daemon
 # Демон уведомлений не запускаем напрямую: пакет swaync содержит
 # D-Bus-сервис org.freedesktop.Notifications. Waybar запрашивает его через
 # `swaync-client -swb`, после чего systemd поднимает swaync.service.
