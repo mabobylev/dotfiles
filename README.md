@@ -110,8 +110,9 @@ cp --remove-destination "$(readlink -f ~/.gtkrc-2.0)" ~/.gtkrc-2.0
   `COLOR_SCHEME`, `ACCENT`, `PREFER_DARK`;
 - палитра: `BG`, `FG`, `GR`, `BG2`, `HOVER`, `BLUE`, `WARNING`, `CRITICAL`;
 - терминал: `FOOT_THEME` (имя набора из `/usr/share/foot/themes`),
-  `ALPHA` (прозрачность foot, 0.0–1.0), `WALLPAPERS` (список файлов из
-  `~/.local/backgrounds/wallpapers`);
+  `ALPHA` (прозрачность foot, 0.0–1.0)
+- обои: `WALLPAPER_PREFIX` (строго `<имя-темы>-`; файлы
+  `~/.local/backgrounds/wallpapers/<тема>-<номер>.<ext>`, порядок по имени)
 - редактор и промпт: `NVIM_COLORSCHEME`, `NVIM_BACKGROUND`,
   `STARSHIP_PALETTE`.
 
@@ -126,10 +127,15 @@ theme-apply --menu      # выбрать из списка (то же, что Mo
 атомарно. Для Neovim нужны colorscheme-плагины из `pack.lua`
 (tokyonight, nord, catppuccin, gruvbox).
 
-Обои теперь часть темы: список `WALLPAPERS` из `theme.conf` ставится
-через `swaymsg output bg`; выбранный файл запоминается в
-`~/.local/state/theme/<тема>.bg`. Следующие обои в наборе —
-`theme-bg-next` (хоткей `$mod+Control+t`). Случайный выбор обоев убран.
+Обои теперь часть темы: `theme-apply` динамически находит все файлы с
+`WALLPAPER_PREFIX` (например, `nord-`) в
+`~/.local/backgrounds/wallpapers/`, сортирует по имени и запоминает выбор
+в `~/.local/state/theme/<тема>.bg`. Чтобы добавить обои, достаточно положить
+`<тема>-<номер>.<ext>` в каталог; номера рекомендуется дополнять нулями
+(`001`, `002`, …). Допустимы `.jpg`, `.jpeg`, `.png`, `.webp`; остальные
+файлы игнорируются. `theme-bg-next` листает набор (хоткей `$mod+Control+t`).
+Источники новых обоев и их лицензии фиксируются в `wallp/.local/backgrounds/wallpapers/SOURCES.md`.
+Случайный выбор обоев убран.
 `bat` переведён на тему `ansi`, поэтому следует палитре терминала.
 Живые окна foot перекрашиваются через OSC 4/10/11/12, без перезапуска.
 

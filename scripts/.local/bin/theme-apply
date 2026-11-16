@@ -137,8 +137,6 @@ WARNING="$(get WARNING)"
 CRITICAL="$(get CRITICAL)"
 FOOT_THEME="$(get FOOT_THEME)"
 ALPHA="$(get ALPHA)"
-WALLPAPERS="$(get WALLPAPERS)"
-WALLPAPER="$(get WALLPAPER)"
 NVIM_COLORSCHEME="$(get NVIM_COLORSCHEME)"
 NVIM_BACKGROUND="$(get NVIM_BACKGROUND)"
 STARSHIP_PALETTE="$(get STARSHIP_PALETTE)"
@@ -149,14 +147,19 @@ for v in GTK_THEME ICON_THEME CURSOR_THEME CURSOR_SIZE FONT COLOR_SCHEME \
   [ -n "${!v}" ] || die "в $conf не задан ключ $v"
 done
 
-[ -n "$WALLPAPERS$WALLPAPER" ] || die "в $conf не задан WALLPAPERS"
+WALLPAPER_PREFIX="$(get WALLPAPER_PREFIX)"
+[ -n "$WALLPAPER_PREFIX" ] || die "в $conf не задан WALLPAPER_PREFIX"
+[[ "$WALLPAPER_PREFIX" == "$name-" ]] ||
+  die "WALLPAPER_PREFIX должен быть «$name-» в $conf"
+[[ "$name" =~ ^[a-zA-Z0-9_-]+$ ]] || die "недопустимое имя темы: $name"
 
+wall_dir="$HOME/.local/backgrounds/wallpapers"
 wallpaper_list=()
-if [ -n "$WALLPAPERS" ]; then
-  read -r -a wallpaper_list <<<"$WALLPAPERS"
-elif [ -n "$WALLPAPER" ]; then
-  wallpaper_list=("$WALLPAPER")
-fi
+while IFS= read -r -d '' file; do
+  file="${file##*/}"
+  [[ "$file" =~ ^${name}-[0-9]{3,}\.(jpg|jpeg|png|webp)$ ]] && wallpaper_list+=("$file")
+done < <(find "$wall_dir" -maxdepth 1 -type f -name "$WALLPAPER_PREFIX*" -print0 2>/dev/null | sort -z)
+[ "${#wallpaper_list[@]}" -gt 0 ] || die "нет обоев с префиксом «$WALLPAPER_PREFIX» в $wall_dir"
 
 case "$ALPHA" in
   ''|*[!0-9.]*) die "ALPHA должна быть числом 0.0–1.0, получено: $ALPHA" ;;
@@ -236,16 +239,16 @@ bg_state="$state_dir/$name.bg"
 if [ -f "$bg_state" ]; then
   cand="$(<"$bg_state")"
   for w in "${wallpaper_list[@]}"; do
-    [ "$cand" = "$HOME/.local/backgrounds/wallpapers/$w" ] && { wallpaper="$cand"; break; }
+    [ "$cand" = "$wall_dir/$w" ] && { wallpaper="$cand"; break; }
   done
 fi
 if [ -z "$wallpaper" ]; then
   for w in "${wallpaper_list[@]}"; do
-    cand="$HOME/.local/backgrounds/wallpapers/$w"
+    cand="$wall_dir/$w"
     [ -f "$cand" ] && { wallpaper="$cand"; break; }
   done
 fi
-[ -n "$wallpaper" ] || warn "нет доступных обоев для темы «$name»"
+[ -n "$wallpaper" ] || die "нет доступных обоев для темы «$name»"
 if [ -n "$wallpaper" ]; then
   mkdir -p "$state_dir"
   printf '%s\n' "$wallpaper" | atomic_write "$bg_state"

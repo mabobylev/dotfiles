@@ -46,8 +46,14 @@ theme-bg-next                # следующее обои темы (Mod+Control
   `COLOR_SCHEME`, `ACCENT`, `PREFER_DARK`
 - палитра: `BG`, `FG`, `GR`, `BG2`, `HOVER`, `BLUE`, `WARNING`, `CRITICAL`
 - терминал: `FOOT_THEME` (набор из `/usr/share/foot/themes`), `ALPHA`
-- обои: `WALLPAPERS` (список файлов из `~/.local/backgrounds/wallpapers`)
+- обои: `WALLPAPER_PREFIX` (`<имя-темы>-`); файлы
+  `~/.local/backgrounds/wallpapers/<тема>-<номер>.<ext>` находятся автоматически
 - Neovim/starship: `NVIM_COLORSCHEME`, `NVIM_BACKGROUND`, `STARSHIP_PALETTE`
+
+Чтобы добавить обои, помести файл с очередным номером (`nord-007.jpg`)
+в `~/.local/backgrounds/wallpapers/`; менять скрипты или перечислять файл
+в конфиге не нужно. Источники/лицензии скачанных изображений записывай в
+`wallp/.local/backgrounds/wallpapers/SOURCES.md`.
 
 ## Добавить тему
 

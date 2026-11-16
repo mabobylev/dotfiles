@@ -2,9 +2,9 @@
 #
 # theme-bg-next — следующее обои в наборе активной темы.
 #
-# Набор задаётся ключом WALLPAPERS в theme.conf (файлы ищутся в
-# ~/.local/backgrounds/wallpapers). Выбор запоминается в
-# ~/.local/state/theme/<тема>.bg, чтобы theme-apply его не сбрасывал.
+# Обои находятся в ~/.local/backgrounds/wallpapers/<тема>-<номер>.<ext>.
+# Выбор запоминается в ~/.local/state/theme/<тема>.bg, чтобы theme-apply
+# его не сбрасывал.
 #
 set -euo pipefail
 
@@ -25,14 +25,16 @@ conf="$theme_dir/themes/$name/theme.conf"
 [ -f "$conf" ] || die "нет $conf"
 
 get() { sed -n "s/^$1=//p" "$conf" | head -n1 | sed 's/^"//; s/"$//'; }
-
-wallpapers="$(get WALLPAPERS)"
-[ -n "$wallpapers" ] || wallpapers="$(get WALLPAPER)"
-[ -n "$wallpapers" ] || die "в $conf не задан WALLPAPERS"
+prefix="$(get WALLPAPER_PREFIX)"
+[ "$prefix" = "$name-" ] || die "неверный WALLPAPER_PREFIX в $conf"
+[[ "$name" =~ ^[a-zA-Z0-9_-]+$ ]] || die "недопустимое имя темы: $name"
 
 list=()
-read -r -a list <<<"$wallpapers"
-[ "${#list[@]}" -gt 0 ] || die "пустой WALLPAPERS"
+while IFS= read -r -d '' file; do
+  file="${file##*/}"
+  [[ "$file" =~ ^${name}-[0-9]{3,}\.(jpg|jpeg|png|webp)$ ]] && list+=("$file")
+done < <(find "$wall_dir" -maxdepth 1 -type f -name "$prefix*" -print0 2>/dev/null | sort -z)
+[ "${#list[@]}" -gt 0 ] || die "нет обоев с префиксом «$prefix» в $wall_dir"
 
 state_file="$state_dir/$name.bg"
 current=""
@@ -53,7 +55,7 @@ for ((step = 1; step <= n; step++)); do
     break
   fi
 done
-[ -n "$wall" ] || die "в наборе темы «$name» нет доступных файлов"
+[ -n "$wall" ] || die "нет доступных обоев с префиксом «$prefix»"
 
 mkdir -p "$state_dir"
 printf '%s\n' "$wall" >"$state_file"
