@@ -11,7 +11,7 @@
 #
 set -euo pipefail
 
-battery_percent=40
+battery_percent=30
 state=/run/power-brightness.state
 lock=/run/power-brightness.lock
 
