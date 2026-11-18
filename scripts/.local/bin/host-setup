@@ -73,4 +73,8 @@ sway -C >/dev/null && echo '  sway: ok'
 foot -C >/dev/null && echo '  foot: ok'
 fuzzel --check-config >/dev/null && echo '  fuzzel: ok'
 
+if [ "$host" = laptop ] && [ ! -f /etc/udev/rules.d/99-power-brightness.rules ]; then
+  printf 'host-setup: нет udev-правила яркости — см. README, «Яркость при работе от батареи»\n' >&2
+fi
+
 printf 'host-setup: готово (%s)\n' "$host"

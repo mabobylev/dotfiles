@@ -217,6 +217,35 @@ journalctl -k -b -1 | grep -E 'blocked for more|radeon_fence|amdgpu.*(error|time
 `brightnessctl` определяет его автоматически. Vulkan работает через
 Mesa RADV (`vulkan-radeon`).
 
+## Яркость при работе от батареи
+
+На ноутбуке за питанием следит udev: при переходе на батарею яркость
+экрана снижается до 40 % от максимума, при подключении сети возвращается
+та, что была до отключения. Если яркость уже ниже 40 %, она не меняется,
+а при подключении питания не восстанавливается (чтобы не перебивать
+ручную регулировку).
+
+Правило и скрипт лежат в `host-laptop/system/` — этот каталог исключён из
+stow (`host-laptop/.stow-local-ignore`) и устанавливается один раз:
+
+```sh
+sudo install -Dm755 ~/.dotfiles/host-laptop/system/bin/power-brightness /usr/local/bin/
+sudo install -Dm644 ~/.dotfiles/host-laptop/system/udev/99-power-brightness.rules /etc/udev/rules.d/
+sudo udevadm control --reload-rules
+```
+
+Проверка:
+
+```sh
+brightnessctl -c backlight get
+journalctl -t power-brightness -f    # отключить и подключить кабель
+```
+
+Состояние («яркость до отключения») хранится в `/run/power-brightness.state`
+и очищается при загрузке, поэтому после ребута от сети яркость не
+перезаписывается. Скрипт работает от root и не использует D-Bus: уведомлений
+при смене яркости нет.
+
 ## Пакеты
 
 - `scripts/.local/bin/pkglist-common.txt` — минимум для работы dotfiles.
