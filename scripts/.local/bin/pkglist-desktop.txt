@@ -151,7 +151,6 @@ nordzy-cursors
 nsxiv
 ntfs-3g
 numaplayer
-nwg-look
 ob-xf-vst3
 odin2-synthesizer-vst3
 odt2txt

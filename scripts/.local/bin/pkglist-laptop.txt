@@ -20,7 +20,6 @@ libmad
 libmp4v2
 libpulse
 nnn
-nwg-look
 opencode
 plymouth
 rclone
