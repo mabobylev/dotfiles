@@ -33,7 +33,7 @@ list=()
 while IFS= read -r -d '' file; do
   file="${file##*/}"
   [[ "$file" =~ ^${name}-[0-9]{3,}\.(jpg|jpeg|png|webp)$ ]] && list+=("$file")
-done < <(find "$wall_dir" -maxdepth 1 -type f -name "$prefix*" -print0 2>/dev/null | sort -z)
+done < <(find -L "$wall_dir" -maxdepth 1 -type f -name "$prefix*" -print0 2>/dev/null | sort -z)
 [ "${#list[@]}" -gt 0 ] || die "нет обоев с префиксом «$prefix» в $wall_dir"
 
 state_file="$state_dir/$name.bg"

@@ -61,7 +61,12 @@ stow -t "$HOME" --no-folding "${packages[@]}"
 stow -t "$HOME" --no-folding "host-$host"
 
 printf 'host-setup: применяю тему\n'
-"$HOME/.local/bin/theme-apply"
+if [ -L "$HOME/.config/theme/current" ]; then
+  "$HOME/.local/bin/theme-apply"
+else
+  printf 'host-setup: тема ещё не выбрана, применяю nord\n'
+  "$HOME/.local/bin/theme-apply" nord
+fi
 
 printf 'host-setup: проверки\n'
 sway -C >/dev/null && echo '  sway: ok'

@@ -15,7 +15,8 @@ host-setup            # или: host-setup laptop
 - `stow --no-folding` всех общих пакетов (включая `theme`, `starship`,
   `opencode` с навыком `sway-theme`);
 - `stow --no-folding host-laptop`;
-- `theme-apply` — раскладывает текущую тему по приложениям;
+- `theme-apply` — раскладывает текущую тему по приложениям (при первом
+  запуске, пока тема не выбрана, применяется `nord`);
 - проверяет `sway -C`, `foot -C`, `fuzzel --check-config`.
 
 Если `host-setup` не установлен (старый клон), сначала:

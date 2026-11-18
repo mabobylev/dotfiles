@@ -158,7 +158,7 @@ wallpaper_list=()
 while IFS= read -r -d '' file; do
   file="${file##*/}"
   [[ "$file" =~ ^${name}-[0-9]{3,}\.(jpg|jpeg|png|webp)$ ]] && wallpaper_list+=("$file")
-done < <(find "$wall_dir" -maxdepth 1 -type f -name "$WALLPAPER_PREFIX*" -print0 2>/dev/null | sort -z)
+done < <(find -L "$wall_dir" -maxdepth 1 -type f -name "$WALLPAPER_PREFIX*" -print0 2>/dev/null | sort -z)
 [ "${#wallpaper_list[@]}" -gt 0 ] || die "нет обоев с префиксом «$WALLPAPER_PREFIX» в $wall_dir"
 
 case "$ALPHA" in
