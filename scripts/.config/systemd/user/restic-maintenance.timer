@@ -2,7 +2,8 @@
 Description=Monthly restic repository maintenance
 
 [Timer]
-OnCalendar=monthly
+# Не в полночь: в 00:03 запускается restic-backup.timer.
+OnCalendar=*-*-1 03:00
 Persistent=true
 RandomizedDelaySec=1h
 

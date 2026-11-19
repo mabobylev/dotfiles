@@ -31,13 +31,16 @@ if [ ! -r "$PASS_FILE" ]; then
     exit 1
 fi
 
-if ! restic forget --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune >>"$LOG" 2>&1; then
+# Снять «висячие» блокировки от прерванного запуска (активные не трогает).
+restic unlock >>"$LOG" 2>&1 || true
+
+if ! restic forget --retry-lock 15m --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune >>"$LOG" 2>&1; then
     log "FAIL: restic forget --prune завершился с ошибкой"
     exit 1
 fi
 
 # 5% данных за запуск: полная проверка на 14+ ГБ каждый месяц избыточна.
-if ! restic check --read-data-subset=5% >>"$LOG" 2>&1; then
+if ! restic check --retry-lock 15m --read-data-subset=5% >>"$LOG" 2>&1; then
     log "FAIL: restic check нашёл проблемы"
     exit 1
 fi
