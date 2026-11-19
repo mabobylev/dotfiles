@@ -325,8 +325,8 @@ systemctl --user restart pipewire wireplumber pipewire-pulse
 
 REAPER ходит в ALSA напрямую (`hw:speed`), поэтому его буфер задаётся
 в самом REAPER: разумная отправная точка — 256×2 при 48 кГц, дальше
-смотреть счётчик xrun'ов. `qpwgraph` — граф-патчбей PipeWire для
-маршрутизации между REAPER, Bitwig и системным звуком.
+смотреть счётчик xrun'ов. Для соединения портов PipeWire вручную есть
+`pw-link -l` / `pw-link <выход> <вход>`, для микшера — `wiremix`.
 
 ## Резервное копирование
 

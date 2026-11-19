@@ -315,7 +315,6 @@ zoxide
 zram-generator
 zynaddsubfx
 restic
-qpwgraph
 uv
 ccache
 bear
