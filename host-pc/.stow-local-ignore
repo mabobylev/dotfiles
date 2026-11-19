@@ -1,0 +1,28 @@
+# Файлы, которые stow не должен раскладывать по $HOME.
+# Копия стандартного списка GNU Stow плюс исключение для system/:
+# там лежит /etc/nftables.conf (см. README, «Файрвол (nftables)»),
+# он устанавливается вручную через sudo install.
+
+RCS
+.+,v
+
+CVS
+\.\#.+       # CVS conflict files / emacs lock files
+\.cvsignore
+
+\.svn
+_darcs
+\.hg
+
+\.git
+\.gitignore
+\.gitmodules
+
+.*\.md
+\.bak$
+\.swp$
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+^/system

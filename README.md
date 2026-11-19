@@ -246,6 +246,48 @@ journalctl -t power-brightness -f    # отключить и подключит�
 перезаписывается. Скрипт работает от root и не использует D-Bus: уведомлений
 при смене яркости нет.
 
+## Файрвол (nftables)
+
+На ПК включён хост-файрвол: `/etc/nftables.conf` с `policy drop` на
+входящие. Внешний периметр закрывает роутер (OpenWrt, 192.168.1.1), но
+NAT не защищает от других устройств в LAN и от сервисов, случайно
+поднятых на `0.0.0.0`.
+
+Разрешено:
+
+- исходящие и ответные пакеты (`established/related`), `lo`, ICMP;
+- SSH на этот хост — только из `192.168.1.0/24` (для подключения *с*
+  машины к роутеру правило не нужно);
+- libvirt: DHCP/DNS/PXE от dnsmasq на `virbr*` и форвардинг трафика
+  гостей (NAT и изоляцию новых входящих делает сам libvirt).
+
+Всё остальное отбрасывается, заблокированное пишется в журнал с
+ограничением 10 сообщений в минуту (`journalctl -k -g nft-drop -f`).
+mDNS/Avahi, KDE Connect и Syncthing заготовлены закомментированными
+строками — включать по мере надобности.
+
+Файл лежит в `host-pc/system/` (исключён из stow) и устанавливается
+вручную:
+
+```sh
+sudo install -Dm644 ~/.dotfiles/host-pc/system/etc/nftables.conf /etc/nftables.conf
+sudo systemctl enable --now nftables
+```
+
+После правки конфига:
+
+```sh
+sudo nft -c -f /etc/nftables.conf      # проверка синтаксиса
+sudo systemctl restart nftables
+```
+
+`nftables.service` — oneshot, поэтому `systemctl status` показывает
+`inactive` при загруженных правилах; смотреть `sudo nft list ruleset`.
+
+Для libvirt нужен системный демон (`qemu:///system`), пакет `dnsmasq` и
+сеть с NAT (например, `default`). Сейчас их нет: в сессионном режиме
+(`qemu:///session`) мост создать нельзя.
+
 ## Пакеты
 
 - `scripts/.local/bin/pkglist-common.txt` — минимум для работы dotfiles.
