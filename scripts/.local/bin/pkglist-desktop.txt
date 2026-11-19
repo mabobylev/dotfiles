@@ -47,7 +47,6 @@ cliphist
 cmus
 colord
 cracklib
-cronie
 crql-anina
 deepseek-harness-bin
 dex

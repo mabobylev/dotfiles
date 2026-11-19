@@ -375,6 +375,7 @@ restic restore latest --target /tmp/restore --include /home/bma/Music
 периодически уносить на внешний диск (`restic copy --repo2 ...`).
 
 Раньше конфиги и ключи складывались отдельным tar-архивом через
-`backup_dots.sh` и cron. Скрипт удалён: `~/.ssh` и `~/.gnupg` теперь
-в restic, остальное (dotfiles) есть в git. Старые архивы
+`backup_dots.sh` и cron. Скрипт удалён, `cronie` снят: `~/.ssh` и
+`~/.gnupg` теперь в restic, остальное (dotfiles) есть в git. Все
+периодические задачи выполняют systemd-таймеры. Старые архивы
 `backup_dots_*.tar.gz` в `/mnt/data/Files/backup` можно удалить.
