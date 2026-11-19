@@ -74,6 +74,10 @@ smart_borders on
 # for_window [tiling] border pixel 2
 # for_window [floating] border pixel 2
 
+# --- Анимации ---
+# Плавное появление и закрытие окон. 0 — без анимаций.
+animation_duration_ms 200
+
 # --- Скругления ---
 corner_radius 10
 smart_corner_radius enable
@@ -81,19 +85,24 @@ smart_corner_radius enable
 # --- Размытие ---
 blur on
 blur_xray on
+# passes отвечают за качество и стоят дороже всего; radius — за силу.
 blur_passes 2
-blur_radius 2
+blur_radius 4
 
-# --- Тени (отключены) ---
-# shadows on
-# shadows_on_csd on
-# shadow_blur_radius 10
-# shadow_color #0000007F
+# --- Тени ---
+# Глобально выключены: тайлинг остаётся плоским и дешёвым. Плавающим окнам
+# `shadows on` прописан в их правилах из раздела 9: критерии for_window
+# вычисляются до выполнения команд, поэтому отдельное правило [floating]
+# не видит окна, ставшие плавающими по другим правилам.
+shadows off
+shadow_blur_radius 10
+shadow_color #0000007F
 
 # --- Затемнение неактивных окон ---
-# Отключено: при старте плавающие окна Reaper/Bitwig оказываются не в
-# фокусе и выглядят затемнёнными. Для возврата затемнения — 0.5.
-default_dim_inactive 0.0
+# Небольшое затемнение для нативных окон. XWayland (Reaper, Bitwig и их
+# плагины) исключён, чтобы DAW не выглядели затемнёнными без фокуса.
+default_dim_inactive 0.12
+for_window [shell="xwayland"] dim_inactive 0.0
 dim_inactive_colors.unfocused #000000FF
 dim_inactive_colors.urgent #900000FF
 
@@ -114,13 +123,10 @@ titlebar_separator disable
 # --- Цвета рамок ---
 # Задаются темой: ~/.config/sway/theme.d/50-theme.conf (theme-apply).
 
-# --- Эффекты для waybar (отключено) ---
-# layer_effects "waybar" {
-#     blur enable;
-#     blur_xray enable;
-#     blur_ignore_transparent enable;
-#     shadows enable;
-# }
+# --- Эффекты для waybar ---
+# layer_effects здесь не работают: Waybar живёт в bottom-слое, а эффекты
+# для bottom-слоя не поддерживаются. Переход в top-слой перекрывал бы
+# fullscreen-окна: в Sway top-слой рисуется выше fullscreen.
 
 # --- Темы GTK/иконок/курсора (отключено) ---
 # exec_always gsettings set org.gnome.desktop.interface cursor-theme "Nordzy-cursors"
@@ -401,40 +407,40 @@ for_window [app_id="it.mijorus.gearlever"] focus
 
 
 # --- 9.2. Плавающие приложения ---
-for_window [app_id="(?i)pcmanfm"] floating enable
-for_window [app_id="galculator"] floating enable
-for_window [app_id="org.telegram.desktop"] floating enable, border none, resize set 400 850, move left 410px, move up 0px
+for_window [app_id="(?i)pcmanfm"] floating enable, shadows on
+for_window [app_id="galculator"] floating enable, shadows on
+for_window [app_id="org.telegram.desktop"] floating enable, border none, resize set 400 850, move left 410px, move up 0px, shadows on
 # Мини-приложения Telegram не разворачиваем на весь экран
-for_window [app_id="^Telegram$"] floating enable, border none, move position center
+for_window [app_id="^Telegram$"] floating enable, border none, move position center, shadows on
 # for_window [title="cmus"] floating enable, resize set 700px 400px, move right 210px, move up 115px
 # for_window [title="cava"] floating enable, resize set 700px 200px, move right 210px, move down 205px
-for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px
-for_window [app_id="nm-connection-editor"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px
-for_window [app_id="mpv"] floating enable, border none, move position center
-for_window [app_id="org.gnome.FileRoller"] floating enable, border none, move position center
-for_window [app_id="swayimg"] floating enable, border none, resize set 800px 500px, move position center
-for_window [app_id="virt-manager"] floating enable, border none
-for_window [app_id="it.mijorus.gearlever"] floating enable, border none
-for_window [class="(?i)steam_proton|(?i)portproton"] floating enable, border none
+for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px, shadows on
+for_window [app_id="nm-connection-editor"] floating enable, border none, resize set 600px 400px, move right 650px, move up 300px, shadows on
+for_window [app_id="mpv"] floating enable, border none, move position center, shadows on
+for_window [app_id="org.gnome.FileRoller"] floating enable, border none, move position center, shadows on
+for_window [app_id="swayimg"] floating enable, border none, resize set 800px 500px, move position center, shadows on
+for_window [app_id="virt-manager"] floating enable, border none, shadows on
+for_window [app_id="it.mijorus.gearlever"] floating enable, border none, shadows on
+for_window [class="(?i)steam_proton|(?i)portproton"] floating enable, border none, shadows on
 # Мониторинг (foot -a btop): плавающее окно по центру
-for_window [app_id="btop"] floating enable, border none, resize set 1200px 700px, move position center
+for_window [app_id="btop"] floating enable, border none, resize set 1200px 700px, move position center, shadows on
 
 
 # --- 9.3. XWayland ---
 # Все XWayland-окна плавающие: DAW и их плагины не должны тайлиться,
 # иначе окна плагинов встают рядом и сдвигают основное окно.
-for_window [shell="xwayland"] floating enable
+for_window [shell="xwayland"] floating enable, shadows on
 
 
 # --- 9.4. Специальные окна ---
 # Прогресс файловых операций
-for_window [title="File Operation Progress"] floating enable, border pixel 1, sticky enable, resize set width 40 ppt height 30 ppt
+for_window [title="File Operation Progress"] floating enable, border pixel 1, sticky enable, resize set width 40 ppt height 30 ppt, shadows on
 
 # GIMP: диалог печати не помечается transient/modal, поэтому флоатим по title
-for_window [app_id="gimp" title="(?i)^(print|печать)"] floating enable, focus, move position center
+for_window [app_id="gimp" title="(?i)^(print|печать)"] floating enable, focus, move position center, shadows on
 
 # Шпаргалка по горячим клавишам
-for_window [app_id="sway-cheatsheet"] floating enable, border none, focus, resize set 920 700, move position center
+for_window [app_id="sway-cheatsheet"] floating enable, border none, focus, resize set 920 700, move position center, shadows on
 
 
 # --- 9.5. Пометка XWayland-окон ---
@@ -442,6 +448,12 @@ for_window [shell="xwayland"] title_format "<span>[X] %title</span>"
 
 # --- 9.6. Сатурация (пример) ---
 # for_window [app_id="foot"] saturation 2.0
+
+# --- 9.7. Тени только у плавающих окон ---
+# Ловит окна, которые уже плавающие к моменту маппинга (например,
+# транзиентные диалоги). Окна, которые флоатятся правилами выше, критерий
+# [floating] не увидит: все критерии вычисляются до выполнения команд.
+for_window [floating] shadows on
 
 
 # =============================================================================

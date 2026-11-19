@@ -6,9 +6,11 @@
 
 
 window#waybar {
-	background-color: @bg;
+	/* Полупрозрачный фон: сквозь бар видно обои. Blur под баром
+	 * недоступен: Waybar живёт в bottom-слое, а layer_effects в bottom
+	 * не работают; top-слой перекрывал бы fullscreen-окна. */
+	background-color: alpha(@bg, 0.8);
 	color: @fg;
-  /* background: transparent; */
 }
 
 #workspaces button {
