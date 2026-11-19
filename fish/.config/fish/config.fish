@@ -28,6 +28,11 @@ if test -f "$XDG_STATE_HOME/theme/starship.toml"
     set -gx STARSHIP_CONFIG "$XDG_STATE_HOME/theme/starship.toml"
 end
 
+# direnv: окружение из .envrc при входе в каталог проекта.
+if type -q direnv
+    direnv hook fish | source
+end
+
 # Fzf options
 set fzf_preview_dir_cmd lsd --all --color=always
 set fzf_preview_file_cmd bat -n --color=always

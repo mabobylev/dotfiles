@@ -288,6 +288,18 @@ sudo systemctl restart nftables
 сеть с NAT (например, `default`). Сейчас их нет: в сессионном режиме
 (`qemu:///session`) мост создать нельзя.
 
+## Инструменты разработки
+
+- `uv` — быстрые Python-окружения: `uv run tools/run.py` вместо venv.
+- `ccache` — кэш компиляции для C/C++ (`CC="ccache cc"`,
+  `cmake -DCMAKE_C_COMPILER_LAUNCHER=ccache`).
+- `bear -- make` — создаёт `compile_commands.json`, чтобы clangd видел
+  Makefile-проекты.
+- `direnv` — подключается в fish; в каталоге с `.envrc` нужно один раз
+  выполнить `direnv allow`.
+- `valgrind` — утечки и UB в C-плагинах; `shfmt -i 4 -w` — форматирование
+  скриптов (в репозитории отступ в 4 пробела).
+
 ## Пакеты
 
 - `scripts/.local/bin/pkglist-common.txt` — минимум для работы dotfiles.
