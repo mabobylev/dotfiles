@@ -330,27 +330,28 @@ REAPER ходит в ALSA напрямую (`hw:speed`), поэтому его �
 
 ## Резервное копирование
 
-### Конфиги и ключи (tar)
-
-`scripts/.local/bin/backup_dots.sh` создаёт tar.gz в `/mnt/data/Files/backup`,
-хранит 3 последних архива и пишет лог. Запускается из cron раз в два
-дня. Тяжёлые каталоги REAPER (`Effects`, `UserPlugins`, `Scripts`,
-`ColorThemes`, `ReaPack`, `Data`) исключены: они восстанавливаются
-через ReaPack/менеджеры плагинов.
-
-### Пользовательские данные (restic)
+## Резервное копирование
 
 `scripts/.local/bin/restic-backup` делает инкрементальный бэкап
-`~/Music`, `~/Workspace`, `~/Documents` и `~/.notes` в репозиторий
-`/mnt/data/Files/backup/restic` (шифрование и дедупликация). Кэши,
-`node_modules`, `.venv`, `build/` и `target/` исключены.
+`~/Music`, `~/Workspace`, `~/Documents`, `~/.notes`, `~/.ssh`,
+`~/.gnupg`, `~/.config/{dconf,autostart}` и `~/.local/share/fonts`
+в репозиторий `/mnt/data/Files/backup/restic` (шифрование и
+дедупликация). Кэши, `node_modules`, `.venv`, `build/` и `target/`
+исключены.
 
-- Пароль: `~/.config/restic/password` (0600); он же попадает в tar-архив
-  `backup_dots.sh`. **Без пароля репозиторий не восстановить.**
+Каждый запуск создаёт снапшот: логически это полная копия, но в
+репозиторий попадают только новые и изменённые данные. Поэтому
+ежедневный бэкап занимает секунды, а размер репозитория растёт на
+объём изменений. Хранятся 7 дневных, 4 недельных и 6 месячных
+снапшотов; старые удаляет `restic-maintenance` (1-го числа в 03:00)
+вместе с `check --read-data-subset=5%`.
+
+- Пароль: `~/.config/restic/password` (0600). В бэкап он не попадает —
+  **без него репозиторий не восстановить**, поэтому продублируй его
+  отдельно (менеджер паролей, бумага).
 - Ежедневно: `restic-backup.timer` (пропущенный запуск выполняется после
   включения машины).
-- Ежемесячно: `restic-maintenance.timer` — `forget --prune` и
-  `check --read-data-subset=5%`.
+- Ежемесячно: `restic-maintenance.timer`.
 - При ошибке: `restic-failure@.service` показывает уведомление.
 - Логи: `~/.local/state/restic/`.
 
@@ -371,4 +372,9 @@ restic restore latest --target /tmp/restore --include /home/bma/Music
 
 Репозиторий лежит на том же внутреннем диске, поэтому от потери корпуса
 не спасает: копию каталога `/mnt/data/Files/backup/restic` нужно
-периодически уносить на внешний диск.
+периодически уносить на внешний диск (`restic copy --repo2 ...`).
+
+Раньше конфиги и ключи складывались отдельным tar-архивом через
+`backup_dots.sh` и cron. Скрипт удалён: `~/.ssh` и `~/.gnupg` теперь
+в restic, остальное (dotfiles) есть в git. Старые архивы
+`backup_dots_*.tar.gz` в `/mnt/data/Files/backup` можно удалить.
