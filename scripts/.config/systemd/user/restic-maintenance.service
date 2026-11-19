@@ -1,6 +1,6 @@
 [Unit]
 Description=Monthly restic repository maintenance
-OnFailure=restic-failure@%n.service
+OnFailure=restic-failure@%N.service
 
 [Service]
 Type=oneshot
