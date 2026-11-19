@@ -1,0 +1,9 @@
+[Unit]
+Description=Monthly restic repository maintenance
+OnFailure=restic-failure@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/restic-maintenance
+Nice=10
+IOSchedulingClass=idle

@@ -1,0 +1,6 @@
+[Unit]
+Description=Notification about failed %i
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/notify-send -u critical "restic" "%i: ошибка, см. ~/.local/state/restic/"

@@ -1,0 +1,9 @@
+[Unit]
+Description=restic backup of user data
+OnFailure=restic-failure@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/restic-backup
+Nice=10
+IOSchedulingClass=idle

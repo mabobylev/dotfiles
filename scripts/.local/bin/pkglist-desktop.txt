@@ -314,3 +314,14 @@ zip
 zoxide
 zram-generator
 zynaddsubfx
+restic
+qpwgraph
+uv
+ccache
+bear
+direnv
+valgrind
+shfmt
+fwupd
+zathura
+zathura-pdf-poppler

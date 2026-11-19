@@ -298,9 +298,65 @@ sudo systemctl restart nftables
   определяется по типу корпуса (ноутбук/ПК). Скрипт не создаёт
   пользователя и не меняет locale/раскладку.
 
+## Аудио: задержка
+
+PipeWire на ПК настроен на 48 кГц и quantum 256
+(`host-pc/.config/pipewire/pipewire.conf.d/10-latency.conf`): около
+5.3 мс вместо дефолтных 1024 сэмплов (≈21 мс). Если появятся xrun'ы
+(треск, щелчки), поднять quantum до 512; если стабильно — можно
+попробовать 128.
+
+```sh
+pw-metadata -n settings | grep clock        # текущие значения
+systemctl --user restart pipewire wireplumber pipewire-pulse
+```
+
+REAPER ходит в ALSA напрямую (`hw:speed`), поэтому его буфер задаётся
+в самом REAPER: разумная отправная точка — 256×2 при 48 кГц, дальше
+смотреть счётчик xrun'ов. `qpwgraph` — граф-патчбей PipeWire для
+маршрутизации между REAPER, Bitwig и системным звуком.
+
 ## Резервное копирование
 
+### Конфиги и ключи (tar)
+
 `scripts/.local/bin/backup_dots.sh` создаёт tar.gz в `/mnt/data/Files/backup`,
-хранит 3 последних архива и пишет лог. Тяжёлые каталоги REAPER
-(`Effects`, `UserPlugins`, `Scripts`, `ColorThemes`, `ReaPack`, `Data`)
-исключены: они восстанавливаются через ReaPack/менеджеры плагинов.
+хранит 3 последних архива и пишет лог. Запускается из cron раз в два
+дня. Тяжёлые каталоги REAPER (`Effects`, `UserPlugins`, `Scripts`,
+`ColorThemes`, `ReaPack`, `Data`) исключены: они восстанавливаются
+через ReaPack/менеджеры плагинов.
+
+### Пользовательские данные (restic)
+
+`scripts/.local/bin/restic-backup` делает инкрементальный бэкап
+`~/Music`, `~/Workspace`, `~/Documents` и `~/.notes` в репозиторий
+`/mnt/data/Files/backup/restic` (шифрование и дедупликация). Кэши,
+`node_modules`, `.venv`, `build/` и `target/` исключены.
+
+- Пароль: `~/.config/restic/password` (0600); он же попадает в tar-архив
+  `backup_dots.sh`. **Без пароля репозиторий не восстановить.**
+- Ежедневно: `restic-backup.timer` (пропущенный запуск выполняется после
+  включения машины).
+- Ежемесячно: `restic-maintenance.timer` — `forget --prune` и
+  `check --read-data-subset=5%`.
+- При ошибке: `restic-failure@.service` показывает уведомление.
+- Логи: `~/.local/state/restic/`.
+
+```sh
+systemctl --user list-timers 'restic-*'
+systemctl --user start restic-backup.service     # бэкап сейчас
+tail -f ~/.local/state/restic/backup.log
+```
+
+Восстановление:
+
+```sh
+export RESTIC_REPOSITORY=/mnt/data/Files/backup/restic
+export RESTIC_PASSWORD_FILE=~/.config/restic/password
+restic snapshots
+restic restore latest --target /tmp/restore --include /home/bma/Music
+```
+
+Репозиторий лежит на том же внутреннем диске, поэтому от потери корпуса
+не спасает: копию каталога `/mnt/data/Files/backup/restic` нужно
+периодически уносить на внешний диск.
