@@ -33,4 +33,12 @@ set fzf_preview_dir_cmd lsd --all --color=always
 set fzf_preview_file_cmd bat -n --color=always
 set fzf_fd_opts --hidden --max-depth 5
 
+# Палитра fzf из Noctalia (генерирует шаблон fzf).
+# Не source-им сниппет: он пишет универсальную переменную и накапливает цвета
+# при каждом старте. Берём из файла только строки --color=*.
+if test -f "$HOME/.config/fzf/themes/noctalia.fish"
+    set -l fzf_colors (string match -r -- '^--color=[^"]+' (string split \n < "$HOME/.config/fzf/themes/noctalia.fish"))
+    set -gx FZF_DEFAULT_OPTS $FZF_DEFAULT_OPTS $fzf_colors
+end
+
 starship init fish | source

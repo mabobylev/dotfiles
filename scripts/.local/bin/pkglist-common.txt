@@ -33,26 +33,15 @@ wireplumber
 gst-plugin-pipewire
 alsa-utils
 pavucontrol
-playerctl
 brightnessctl
 
 # --- Wayland / Sway --------------------------------------------------------
-swayfx
-swaybg
-swayidle
-swaylock
-sway-contrib
-waybar
-fuzzel
-swaync
-cliphist
 wl-clipboard
 grim
 slurp
 xdg-desktop-portal
 xdg-desktop-portal-wlr
 xdg-desktop-portal-gtk
-polkit-gnome
 seatd
 dex
 xorg-xwayland
@@ -61,7 +50,6 @@ xorg-xwayland
 foot
 firefox
 firefox-i18n-ru
-pcmanfm
 file-roller
 gvfs
 gvfs-mtp
@@ -132,3 +120,17 @@ power-profiles-daemon
 # --- Python (sway-cheatsheet uses PyGObject) -------------------------------
 python
 python-gobject
+
+# --- Noctalia / Umbriel environment ---
+adw-gtk-theme
+codexbar-cli
+gpu-screen-recorder-git
+luciole-git
+ncdu
+noctalia
+python-wand
+umbriel-git
+upower
+win2xcur
+wtype
+xdg-desktop-portal-umbriel-git

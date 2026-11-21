@@ -43,7 +43,6 @@ cdrtools
 chatblade
 chatgpt-desktop
 chromium
-cliphist
 cmus
 colord
 cracklib
@@ -73,7 +72,6 @@ fluida.lv2
 fluidplug-git
 foot
 freepats-general-midi
-fuzzel
 fzf
 gamemode
 gamescope
@@ -163,7 +161,6 @@ papirus-icon-theme
 parted
 pass
 pavucontrol
-pcmanfm
 pipewire
 pipewire-alsa
 pipewire-jack
@@ -171,7 +168,6 @@ pipewire-pulse
 pkgfile
 plymouth
 pnpm
-polkit-gnome
 portproton
 pwgen
 pwndbg
@@ -223,13 +219,7 @@ stow
 sudo
 superfile
 surge-xt-vst3
-swaybg
-sway-contrib
-swayfx
-swayidle
 swayimg
-swaylock
-swaync
 sws
 system-config-printer
 tal-noisemaker-vst3-bin
@@ -260,7 +250,6 @@ virt-manager
 vital-synth-vst3-bin
 volumeicon
 vulkan-radeon
-waybar
 wget
 wine-staging
 winetricks
@@ -323,3 +312,17 @@ shfmt
 fwupd
 zathura
 zathura-pdf-poppler
+
+# --- Noctalia / Umbriel environment ---
+adw-gtk-theme
+codexbar-cli
+gpu-screen-recorder-git
+luciole-git
+ncdu
+noctalia
+python-wand
+umbriel-git
+upower
+win2xcur
+wtype
+xdg-desktop-portal-umbriel-git

@@ -1,7 +1,7 @@
 # dotfiles — Umbriel + Noctalia
 
 Новое окружение с чистого листа. Старый SwayFX-десктоп удалён; общие
-конфиги (fish, nvim, tmux, foot, REAPER, скрипты, обои) лежат в этом же
+конфиги (fish, nvim, tmux, foot, скрипты, обои) лежат в этом же
 репозитории обычными stow-пакетами.
 
 ## Состав
@@ -20,7 +20,9 @@
 | `host-laptop` | eDP-1, тачпад, без blur/теней, компактный бар |
 
 `~/.config/starship.toml` — не пакет: Noctalia перезаписывает в нём палитру,
-поэтому файл хранится локально.
+поэтому файл хранится локально. Конфиг REAPER в stow-набор не входит:
+он остаётся в `~/.dotfiles-legacy`; opencode настроен локально в
+`~/.config/opencode`.
 
 Машинно-зависимые файлы подключаются через
 `[include.optional] files = ["host.d/10-output.toml",
@@ -60,7 +62,7 @@
 | bat | `~/.config/bat/themes/noctalia.tmTheme` |
 | lsd | `~/.config/lsd/colors.yaml` |
 | fzf | `~/.config/fzf/themes/noctalia.{sh,fish}` |
-| starship | `~/.config/starship.toml` (палитра `noctalia`; state-путь — симлинк) |
+| starship | `~/.config/starship.toml` (локальный файл, палитра `noctalia`) |
 | tmux | `~/.config/tmux/themes/noctalia.conf` |
 | nvim | `~/.config/nvim/lua/matugen.lua` |
 | opencode | `~/.config/opencode/themes/matugen.json` |
@@ -177,6 +179,8 @@ luciole --version
 `polkit-gnome`. Вместе с ними удалены старые конфиги и `theme-apply`;
 откат на Sway больше не предусмотрен.
 
-`~/.dotfiles-legacy` больше нет: fish, nvim, tmux, foot, REAPER, скрипты и
-обои перенесены в этот же репозиторий обычными stow-пакетами.
+Основные общие конфиги перенесены в этот репозиторий. В
+`~/.dotfiles-legacy` остался только REAPER; его можно перенести позже или
+удалить, когда он перестанет быть нужен. Конфиг opencode лежит локально в
+`~/.config/opencode`.
 
