@@ -125,10 +125,6 @@ blur_optimized = false
 "Mod+Shift+Down" = "window-move-down"
 "Mod+Shift+Up" = "window-move-up"
 "Mod+Shift+Right" = "column-move-right"
-"Mod+Shift+H" = "column-move-left"
-"Mod+Shift+J" = "window-move-down"
-"Mod+Shift+K" = "window-move-up"
-"Mod+Shift+L" = "column-move-right"
 
 # Раскладка и размеры
 "Mod+R" = "window-cycle-primary-extent"
