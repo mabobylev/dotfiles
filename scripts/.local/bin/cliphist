@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# Тонкая обёртка: в Sway используется нативный cliphist из пакета.
-# Оставлена, чтобы вызовы `cliphist` из скриптов всегда попадали в /usr/bin.
-
-exec /usr/bin/cliphist "$@"
