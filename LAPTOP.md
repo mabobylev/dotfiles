@@ -81,6 +81,16 @@ git clone git@github.com:mabobylev/dotfiles.git ~/.dotfiles
 
 ## 3. Stow
 
+Если общие конфиги раньше были приstow-лены из `~/.dotfiles-legacy`,
+сначала снять старые ссылки, иначе stow нового репозитория сообщит
+конфликт:
+
+```sh
+[ -d ~/.dotfiles-legacy ] && cd ~/.dotfiles-legacy &&   stow -D -t "$HOME" --no-folding     fish foot mc nvim ranger scripts tmux wallp
+```
+
+Затем применить новый репозиторий:
+
 ```sh
 cd ~/.dotfiles
 ./apply.sh laptop
