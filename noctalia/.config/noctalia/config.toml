@@ -46,8 +46,8 @@ thickness = 34
 background_opacity = 0.92
 
 start = ["launcher", "keyboard_layout", "wallpaper", "workspaces", "taskbar", "umbriel_companion", "file_search", "notes"]
-center = ["active_window", "clock"]
-end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "arch_updater", "timer", "udiskie", "control-center", "session"]
+center = ["global_menu", "clock"]
+end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "codex_meter", "arch_updater", "timer", "udiskie", "control-center", "session"]
 
 [bar.main.dead_zone.actions]
 left = "panel-toggle launcher"
@@ -57,9 +57,6 @@ right = "panel-toggle control-center"
 # =============================================================================
 #  Виджеты: встроенные
 # =============================================================================
-
-[widget.active_window]
-max_length = 180
 
 [widget.taskbar]
 taskbar_max_width = 520
@@ -109,6 +106,14 @@ type = "noctalia/timer:bar"
 
 [widget.udiskie]
 type = "aristides/udiskie:status"
+
+[widget.global_menu]
+type = "amancode22/global-menu:menubar"
+max_menus = 0
+bar_max_width = 900
+
+[widget.codex_meter]
+type = "salemsayed/codexbar-meter:bar"
 
 
 # =============================================================================

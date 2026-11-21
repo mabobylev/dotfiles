@@ -70,6 +70,8 @@
 | `default-apps` | выбор приложений по умолчанию |
 | `cursor`, `icons` | курсоры и иконки |
 | `emoji-picker` | эмодзи по `Mod+.` |
+| `global-menu` | меню активного приложения в баре, macOS-style |
+| `codexbar-meter` | остаток лимитов Codex из CodexBar |
 
 Настройки плагинов лежат в GUI Noctalia и в
 `~/.local/state/noctalia/settings.toml`, который имеет приоритет над
@@ -77,6 +79,22 @@
 `gpu-screen-recorder-git` и `slurp`, для `cursor` — `win2xcur` и
 `python-wand`. Для GTK поставлен `adw-gtk-theme`: шаблон gtk3/gtk4
 переключает `gtk-theme` на `adw-gtk3-dark` и накладывает палитру Noctalia.
+
+### Global Menu
+
+Виджет `global_menu` стоит в центре бара вместо заголовка окна и показывает
+имя приложения и его меню. Нативные меню работают у Firefox, Chromium,
+Electron и Qt; для GTK и приложений без меню используются curated-меню и
+действия с окном. Клики по пунктам синтезируются через `wtype`, поэтому он
+поставлен как зависимость. Демон плагина запускается сам.
+
+### CodexBar
+
+Виджет `codex_meter` показывает 5-часовой и недельный лимиты Codex. Данные
+берёт `codexbar` (AUR `codexbar-cli`) из уже существующего
+`~/.codex/auth.json`; отдельная авторизация не нужна. Провайдеры
+настраиваются через `codexbar config` (по умолчанию включён `codex`),
+обновление — раз в 60 секунд, правый клик по виджету обновляет сразу.
 
 Официальные `umbriel-companion` и `screen_recorder` временно закреплены на
 предыдущих версиях: последние релизы требуют plugin API новее, чем даёт
@@ -114,8 +132,8 @@ luciole --version
 - Polkit: нативный агент Noctalia (`polkit_agent = true`), `polkit-gnome`
   больше не нужен.
 - Телеметрия выключена, community-шаблоны включены.
-- Виджеты бара: `sysmon`, `weather`, `taskbar`, `active_window`, часы,
-  раскладка, plus-виджеты плагинов (`umbriel-companion`, `notes`,
+- Виджеты бара: `sysmon`, `weather`, `taskbar`, глобальное меню, часы,
+  раскладка, Codex-метр, plus-виджеты плагинов (`umbriel-companion`, `notes`,
   `file-search`, `arch-updater`, `timer`, `udiskie`).
 - Раскладка US/RU переключается по CapsLock (`grp:caps_toggle,grp_led:caps`).
   Индикатор раскладки выведен в бар и переключает по левому клику.
