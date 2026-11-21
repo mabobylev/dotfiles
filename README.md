@@ -55,3 +55,17 @@ luciole --version
 - Polkit: нативный агент Noctalia (`polkit_agent = true`), `polkit-gnome`
   больше не нужен.
 - Телеметрия выключена, community-шаблоны выключены.
+
+## Откат на SwayFX
+
+Старое окружение целиком лежит в `~/.dotfiles-legacy`, пакеты SwayFX ещё
+установлены. Если Umbriel окажется непригодным:
+
+```sh
+cd ~/.dotfiles-legacy
+stow -t ~ --no-folding --ignore='pipewire' sway host-pc
+UMBRIEL_SKIP_AUTOSTART=1 exec sway
+```
+
+После этого `~/.bash_profile` можно вернуть на `exec sway` либо запускать
+Sway вручную из TTY.
