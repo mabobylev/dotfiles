@@ -1,0 +1,11 @@
+[Unit]
+Description=Monthly restic repository maintenance
+
+[Timer]
+# Не в полночь: в 00:03 запускается restic-backup.timer.
+OnCalendar=*-*-1 03:00
+Persistent=true
+RandomizedDelaySec=1h
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+#
+# restic-backup — инкрементальный бэкап пользовательских данных и ключей.
+#
+# В репозиторий попадают: ~/Music, ~/Workspace, ~/Documents, ~/.notes,
+# ~/.ssh, ~/.gnupg, ~/.config/{dconf,autostart} и ~/.local/share/fonts.
+#
+# Репозиторий: /mnt/data/Files/backup/restic (шифрование + дедупликация)
+# Пароль:      ~/.config/restic/password (0600)
+# Лог:         ~/.local/state/restic/backup.log
+# Запуск:      systemd-таймер restic-backup.timer
+#
+# Восстановление:
+#   export RESTIC_REPOSITORY=/mnt/data/Files/backup/restic
+#   export RESTIC_PASSWORD_FILE=~/.config/restic/password
+#   restic snapshots
+#   restic restore latest --target /tmp/restore --include /home/bma/Music
+#
+set -euo pipefail
+
+MNT=/mnt/data
+REPO=$MNT/Files/backup/restic
+PASS_FILE=$HOME/.config/restic/password
+STATE_DIR=$HOME/.local/state/restic
+LOG=$STATE_DIR/backup.log
+
+export RESTIC_REPOSITORY=$REPO
+export RESTIC_PASSWORD_FILE=$PASS_FILE
+export RESTIC_CACHE_DIR=$HOME/.cache/restic
+
+mkdir -p "$STATE_DIR"
+
+log() { printf '[%s] %s\n' "$(date '+%F %T')" "$*" | tee -a "$LOG"; }
+
+# Диск должен быть смонтирован: иначе restic создаст репозиторий на корне.
+if ! mountpoint -q "$MNT"; then
+    log "FAIL: $MNT не смонтирован — бэкап отменён"
+    exit 1
+fi
+if [ ! -r "$PASS_FILE" ]; then
+    log "FAIL: нет $PASS_FILE"
+    exit 1
+fi
+
+if ! restic cat config >/dev/null 2>&1; then
+    log "репозиторий не найден, создаю $REPO"
+    restic init >>"$LOG" 2>&1
+fi
+
+# Снять «висячие» блокировки от прерванного запуска (активные не трогает).
+restic unlock >>"$LOG" 2>&1 || true
+
+PATHS=()
+for p in \
+    "$HOME/Music" "$HOME/Workspace" "$HOME/Documents" "$HOME/.notes" \
+    "$HOME/.ssh" "$HOME/.gnupg" \
+    "$HOME/.config/dconf" "$HOME/.config/autostart" \
+    "$HOME/.local/share/fonts"; do
+    [ -e "$p" ] && PATHS+=("$p")
+done
+if [ ${#PATHS[@]} -eq 0 ]; then
+    log "FAIL: нет каталогов для бэкапа"
+    exit 1
+fi
+
+# Восстановимые и временные каталоги: кэши, окружения, артефакты сборки.
+EXCLUDES=(
+    --exclude='**/node_modules'
+    --exclude='**/.cache'
+    --exclude='**/__pycache__'
+    --exclude='**/*.pyc'
+    --exclude='**/.venv'
+    --exclude='**/venv'
+    --exclude='**/.direnv'
+    --exclude='**/target/debug'
+    --exclude='**/target/release'
+    --exclude='**/build'
+    # gpg-agent держит сокеты и временные lock-файлы — они не нужны.
+    --exclude='**/.gnupg/S.gpg-agent*'
+    --exclude='**/.gnupg/*.lock'
+)
+
+if ! restic backup --retry-lock 15m --tag auto "${EXCLUDES[@]}" "${PATHS[@]}" >>"$LOG" 2>&1; then
+    log "FAIL: restic backup завершился с ошибкой"
+    exit 1
+fi
+
+# Политика хранения; физическое удаление данных — в restic-maintenance.
+restic forget --retry-lock 15m --keep-daily 7 --keep-weekly 4 --keep-monthly 6 >>"$LOG" 2>&1
+
+SNAP=$(restic snapshots --json 2>/dev/null |
+    jq -r 'sort_by(.time) | last | "\(.short_id) \(.time)"')
+log "OK: snapshot ${SNAP:-?}"

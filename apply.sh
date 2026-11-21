@@ -25,8 +25,10 @@ case "$host" in
   *) printf 'apply.sh: неизвестная машина «%s» (pc|laptop)\n' "$host" >&2; exit 2 ;;
 esac
 
-printf 'apply.sh: stow umbriel noctalia luciole home pipewire + host-%s\n' "$host"
-stow -t "$HOME" --no-folding umbriel noctalia luciole home pipewire "host-$host"
+printf 'apply.sh: stow umbriel noctalia luciole home pipewire + общие + host-%s\n' "$host"
+stow -t "$HOME" --no-folding \
+  umbriel noctalia luciole home pipewire \
+  fish foot mc nvim ranger scripts tmux wallp "host-$host"
 
 printf 'apply.sh: проверка конфигов\n'
 if command -v umbriel >/dev/null; then

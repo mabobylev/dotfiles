@@ -1,0 +1,55 @@
+vim.g.netrw_banner = 0
+
+-- No Perl/Ruby on this machine and no plugin needs them: skip their providers
+-- so :checkhealth vim.provider stays quiet.
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+vim.opt.nu = true
+vim.opt.relativenumber = true
+
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+
+vim.opt.wrap = false
+vim.opt.smartindent = true
+vim.opt.inccommand = "split"
+
+vim.opt.splitbelow = true
+vim.opt.splitright = true
+
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.laststatus = 3
+
+vim.opt.swapfile = true
+vim.opt.backup = false
+
+local undodir = vim.fn.stdpath("data") .. "/undodir"
+vim.fn.mkdir(undodir, "p")
+vim.opt.undodir = undodir
+vim.opt.undofile = true
+
+vim.opt.completeopt = "menuone,noselect,fuzzy,nosort"
+vim.opt.shortmess:append("c")
+vim.opt.confirm = true
+vim.opt.clipboard:append("unnamedplus")
+vim.opt.isfname:append("@-@")
+vim.opt.guicursor = ""
+vim.opt.scrolloff = 8
+vim.opt.updatetime = 250
+
+vim.opt.colorcolumn = "80"
+vim.opt.signcolumn = "yes"
+vim.opt.winborder = "rounded"
+vim.opt.list = true
+vim.opt.listchars = "tab: ,trail:·,nbsp:␣,eol:󰌑"
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+    desc = "Highlight when yanking (copying) text",
+    callback = function()
+        vim.hl.on_yank()
+    end,
+})

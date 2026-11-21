@@ -1,0 +1,23 @@
+# Chezmoi abbreviations
+czin chezmoi init
+czcd chezmoi cd
+czad chezmoi add
+czdi chezmoi diff
+czap chezmoi apply
+czed chezmoi edit --apply
+czrm chezmoi remove
+czme chezmoi merge
+
+# Useful abbreviations
+pkgi paru --noconfirm --needed -S
+pkgu paru --noconfirm --needed -Syu
+pkgs paru -Ss
+pkgc paru --noconfirm -Scc
+pkgr paru --noconfirm -Rns
+
+gs git status
+ga git add
+gc git commit -a
+
+grep rg
+

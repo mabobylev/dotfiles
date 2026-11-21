@@ -77,35 +77,13 @@ git clone git@github.com:mabobylev/dotfiles.git ~/.dotfiles
 Если SSH-ключ на ноутбуке ещё не настроен — клонировать по HTTPS
 (`https://github.com/mabobylev/dotfiles.git`) после `gh auth login`.
 
-Репозиторий общих конфигов `~/.dotfiles-legacy` remote не имеет. Варианты:
-
-- На ПК запушить его на GitHub и клонировать на ноутбуке;
-- либо перенести по SSH/USB:
-
-```sh
-rsync -a --delete ~/.dotfiles-legacy/ laptop:~/.dotfiles-legacy/
-```
-
-Не копировать чужие SSH-ключи и токены. Если на ноутбуке уже есть старый
-`~/.dotfiles`, сначала переименовать его в `~/.dotfiles-legacy` и
-использовать как источник общих конфигов.
+Не копировать чужие SSH-ключи и токены.
 
 ## 3. Stow
-
-Сначала новое окружение:
 
 ```sh
 cd ~/.dotfiles
 ./apply.sh laptop
-```
-
-Затем общие конфиги из legacy (не stow-ить legacy-пакет `home` — он уже
-заменён новым):
-
-```sh
-cd ~/.dotfiles-legacy
-stow -t "$HOME" --no-folding \
-  fish foot mc nvim opencode ranger reaper scripts starship tmux wallp
 ```
 
 Проверить, что ссылки не свёрнуты в каталоги:

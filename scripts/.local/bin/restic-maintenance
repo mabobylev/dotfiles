@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# restic-maintenance — ежемесячное обслуживание репозитория restic:
+# удаление снапшотов по политике хранения (prune) и проверка целостности.
+#
+# Запуск: systemd-таймер restic-maintenance.timer
+# Лог:    ~/.local/state/restic/maintenance.log
+#
+set -euo pipefail
+
+MNT=/mnt/data
+REPO=$MNT/Files/backup/restic
+PASS_FILE=$HOME/.config/restic/password
+STATE_DIR=$HOME/.local/state/restic
+LOG=$STATE_DIR/maintenance.log
+
+export RESTIC_REPOSITORY=$REPO
+export RESTIC_PASSWORD_FILE=$PASS_FILE
+export RESTIC_CACHE_DIR=$HOME/.cache/restic
+
+mkdir -p "$STATE_DIR"
+
+log() { printf '[%s] %s\n' "$(date '+%F %T')" "$*" | tee -a "$LOG"; }
+
+if ! mountpoint -q "$MNT"; then
+    log "FAIL: $MNT не смонтирован — обслуживание отменено"
+    exit 1
+fi
+if [ ! -r "$PASS_FILE" ]; then
+    log "FAIL: нет $PASS_FILE"
+    exit 1
+fi
+
+# Снять «висячие» блокировки от прерванного запуска (активные не трогает).
+restic unlock >>"$LOG" 2>&1 || true
+
+if ! restic forget --retry-lock 15m --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune >>"$LOG" 2>&1; then
+    log "FAIL: restic forget --prune завершился с ошибкой"
+    exit 1
+fi
+
+# 5% данных за запуск: полная проверка на 14+ ГБ каждый месяц избыточна.
+if ! restic check --retry-lock 15m --read-data-subset=5% >>"$LOG" 2>&1; then
+    log "FAIL: restic check нашёл проблемы"
+    exit 1
+fi
+
+log "OK: prune + check завершены"

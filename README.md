@@ -1,8 +1,8 @@
 # dotfiles — Umbriel + Noctalia
 
-Новое окружение с чистого листа. Старый SwayFX-десктоп удалён; в
-`~/.dotfiles-legacy` остались только общие не десктопные конфиги (fish,
-nvim, tmux, REAPER, скрипты, обои).
+Новое окружение с чистого листа. Старый SwayFX-десктоп удалён; общие
+конфиги (fish, nvim, tmux, foot, REAPER, скрипты, обои) лежат в этом же
+репозитории обычными stow-пакетами.
 
 ## Состав
 
@@ -13,8 +13,14 @@ nvim, tmux, REAPER, скрипты, обои).
 | `luciole` | `~/.config/luciole/config.toml` — файловый менеджер |
 | `home` | login-shell файлы в `~/.bash.d`, `.bash_profile`, `.Xresources` |
 | `pipewire` | низкая задержка PipeWire (48 kHz, quantum 256) |
+| `fish`, `foot`, `mc`, `nvim`, `ranger`, `tmux` | конфиги соответствующих приложений |
+| `scripts` | скрипты в `~/.local/bin` и user-юниты systemd |
+| `wallp` | обои в `~/.local/backgrounds/wallpapers` |
 | `host-pc` | выход DP-2, виджет Codex-метра |
 | `host-laptop` | eDP-1, тачпад, без blur/теней, компактный бар |
+
+`~/.config/starship.toml` — не пакет: Noctalia перезаписывает в нём палитру,
+поэтому файл хранится локально.
 
 Машинно-зависимые файлы подключаются через
 `[include.optional] files = ["host.d/10-output.toml",
@@ -24,7 +30,7 @@ nvim, tmux, REAPER, скрипты, обои).
 ## Ноутбук
 
 Пошаговая инструкция для агента: **[LAPTOP.md](LAPTOP.md)**. Кратко:
-`./apply.sh laptop`, общие пакеты из legacy, затем `umbriel outputs` и
+`./apply.sh laptop`, затем `umbriel outputs` и
 `host-laptop/.../10-output.toml`.
 
 ## Применение
@@ -171,6 +177,6 @@ luciole --version
 `polkit-gnome`. Вместе с ними удалены старые конфиги и `theme-apply`;
 откат на Sway больше не предусмотрен.
 
-`~/.dotfiles-legacy` теперь хранит только общие конфиги (fish, nvim, tmux,
-REAPER, скрипты, обои), которые продолжают stow-иться.
+`~/.dotfiles-legacy` больше нет: fish, nvim, tmux, foot, REAPER, скрипты и
+обои перенесены в этот же репозиторий обычными stow-пакетами.
 
