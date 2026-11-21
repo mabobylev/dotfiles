@@ -1,0 +1,4 @@
+# host-pc: виджет Codex-метра только на ПК.
+
+[widget.codex_meter]
+type = "salemsayed/codexbar-meter:bar"

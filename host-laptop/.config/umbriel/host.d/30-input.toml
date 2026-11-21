@@ -1,0 +1,7 @@
+# host-laptop: тачпад Lenovo B50-45.
+
+[input.touchpad]
+enabled = true
+tap = true
+tap_and_drag = true
+disable_while_typing = true

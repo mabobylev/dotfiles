@@ -1,0 +1,8 @@
+# host-laptop: слабый APU (AMD A4-6210 / Radeon R3).
+# Как и в старом Sway, отключаем размытие и тени, оставляем скругления.
+
+[appearance.blur]
+enabled = false
+
+[appearance.shadow]
+enabled = false

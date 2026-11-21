@@ -1,7 +1,8 @@
 # dotfiles — Umbriel + Noctalia
 
-Новое окружение с чистого листа. Старые настройки SwayFX/Waybar/SwayNC
-остались в `~/.dotfiles-legacy` и в бэкапах.
+Новое окружение с чистого листа. Старый SwayFX-десктоп удалён; в
+`~/.dotfiles-legacy` остались только общие не десктопные конфиги (fish,
+nvim, tmux, REAPER, скрипты, обои).
 
 ## Состав
 
@@ -10,11 +11,21 @@
 | `umbriel` | `~/.config/umbriel/config.toml` — композитор, бинды, блюр |
 | `noctalia` | `~/.config/noctalia/config.toml` — бар, лаунчер, уведомления, lock/idle, polkit |
 | `luciole` | `~/.config/luciole/config.toml` — файловый менеджер |
-| `host-pc` | выходы DP-2 для домашнего ПК |
-| `host-laptop` | заготовка выходов для ноутбука |
+| `home` | login-shell файлы в `~/.bash.d`, `.bash_profile`, `.Xresources` |
+| `pipewire` | низкая задержка PipeWire (48 kHz, quantum 256) |
+| `host-pc` | выход DP-2, виджет Codex-метра |
+| `host-laptop` | eDP-1, тачпад, без blur/теней, компактный бар |
 
-Машинно-зависимые выходы подключаются через
-`[include.optional] files = ["host.d/10-output.toml"]` в конфиге Umbriel.
+Машинно-зависимые файлы подключаются через
+`[include.optional] files = ["host.d/10-output.toml",
+"host.d/20-performance.toml", "host.d/30-input.toml", "noctalia.toml"]`
+в конфиге Umbriel.
+
+## Ноутбук
+
+Пошаговая инструкция для агента: **[LAPTOP.md](LAPTOP.md)**. Кратко:
+`./apply.sh laptop`, общие пакеты из legacy, затем `umbriel outputs` и
+`host-laptop/.../10-output.toml`.
 
 ## Применение
 

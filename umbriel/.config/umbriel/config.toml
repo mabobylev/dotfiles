@@ -8,7 +8,7 @@
 
 # Машинно-зависимые выходы подключаются отдельным пакетом host-pc/host-laptop.
 [include.optional]
-files = ["host.d/10-output.toml", "noctalia.toml"]
+files = ["host.d/10-output.toml", "host.d/20-performance.toml", "host.d/30-input.toml", "noctalia.toml"]
 
 
 # =============================================================================

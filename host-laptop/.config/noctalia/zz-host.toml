@@ -1,0 +1,7 @@
+# host-laptop: компактный бар под 1366x768.
+# Codex-метра на ноутбуке нет, тяжёлые виджеты убраны.
+
+[bar.main]
+start = ["launcher", "keyboard_layout", "workspaces", "umbriel_companion", "notes"]
+center = ["global_menu", "clock"]
+end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "timer", "control-center", "session"]

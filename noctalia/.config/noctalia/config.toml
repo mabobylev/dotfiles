@@ -47,7 +47,7 @@ background_opacity = 0.92
 
 start = ["launcher", "keyboard_layout", "wallpaper", "workspaces", "taskbar", "umbriel_companion", "file_search", "notes"]
 center = ["global_menu", "clock"]
-end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "codex_meter", "arch_updater", "timer", "udiskie", "control-center", "session"]
+end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "arch_updater", "timer", "udiskie", "control-center", "session"]
 
 [bar.main.dead_zone.actions]
 left = "panel-toggle launcher"
@@ -111,9 +111,6 @@ type = "aristides/udiskie:status"
 type = "amancode22/global-menu:menubar"
 max_menus = 0
 bar_max_width = 900
-
-[widget.codex_meter]
-type = "salemsayed/codexbar-meter:bar"
 
 
 # =============================================================================
