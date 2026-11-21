@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+#
+# power-brightness — снижает яркость экрана при переходе на батарею и
+# возвращает прежнюю при подключении внешнего питания.
+#
+# Запускается из udev (root, без сессии и D-Bus), поэтому здесь только
+# абсолютные пути и никаких notify-send. Состояние хранится в /run и
+# очищается при загрузке: после ребута «восстановление» не срабатывает.
+#
+# Установка: см. README, раздел «Яркость при работе от батареи».
+#
+set -euo pipefail
+
+battery_percent=30
+state=/run/power-brightness.state
+lock=/run/power-brightness.lock
+
+log() { /usr/bin/logger -t power-brightness -- "$*"; }
+
+# udev присылает события и от ACAD, и от BAT1 — выполняемся по одному.
+exec 9>"$lock"
+/usr/bin/flock -n 9 || exit 0
+
+online=0
+found=0
+for supply in /sys/class/power_supply/*; do
+    [ -r "$supply/type" ] || continue
+    [ "$(<"$supply/type")" = Mains ] || continue
+    found=1
+    if [ "$(<"$supply/online")" = 1 ]; then
+        online=1
+    fi
+done
+[ "$found" = 1 ] || exit 0
+
+# Устройство подсветки: amdgpu_bl1; acpi_video* берём только если другого нет.
+backlight=""
+fallback=""
+for dev in /sys/class/backlight/*; do
+    [ -d "$dev" ] || continue
+    [ -n "$fallback" ] || fallback="$dev"
+    case "${dev##*/}" in
+        acpi_video*) ;;
+        *) backlight="$dev"; break ;;
+    esac
+done
+[ -n "$backlight" ] || backlight="$fallback"
+[ -n "$backlight" ] || exit 0
+
+cur="$(<"$backlight/brightness")"
+max="$(<"$backlight/max_brightness")"
+[ "$max" -gt 0 ] || exit 0
+
+if [ "$online" = 1 ]; then
+    # От сети: вернуть яркость, которая была до отключения питания.
+    [ -e "$state" ] || exit 0
+    saved="$(<"$state")"
+    case "$saved" in
+        '' | *[!0-9]*) saved="$max" ;;
+    esac
+    [ "$saved" -le "$max" ] || saved="$max"
+    printf '%s\n' "$saved" >"$backlight/brightness"
+    rm -f "$state"
+    log "питание от сети: яркость восстановлена ($saved/$max)"
+    exit 0
+fi
+
+# От батареи: уже обработано (state есть) или яркость и так ниже порога.
+if [ -e "$state" ]; then
+    exit 0
+fi
+low=$((max * battery_percent / 100))
+[ "$low" -ge 1 ] || low=1
+if [ "$cur" -le "$low" ]; then
+    log "батарея: яркость уже не выше ${battery_percent}% ($cur/$max)"
+    exit 0
+fi
+
+printf '%s\n' "$cur" >"$state"
+printf '%s\n' "$low" >"$backlight/brightness"
+log "батарея: яркость $cur → $low (${battery_percent}% от $max)"

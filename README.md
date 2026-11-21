@@ -105,7 +105,7 @@ Electron и Qt; для GTK и приложений без меню исполь�
 
 ## Запуск
 
-Из TTY (не из текущего Sway-сеанса):
+Из TTY:
 
 ```sh
 start-umbriel
@@ -140,16 +140,22 @@ luciole --version
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
   `umbriel msg workspace-set-layout scrolling|dwindle|master|stacking`.
 
-## Откат на SwayFX
+## Системные файлы
 
-Старое окружение целиком лежит в `~/.dotfiles-legacy`, пакеты SwayFX ещё
-установлены. Если Umbriel окажется непригодным:
+Эти файлы не попадают в `$HOME` через stow и устанавливаются вручную:
 
-```sh
-cd ~/.dotfiles-legacy
-stow -t ~ --no-folding --ignore='pipewire' sway host-pc
-UMBRIEL_SKIP_AUTOSTART=1 exec sway
-```
+- `host-pc/system/etc/nftables.conf` — копия в `/etc/nftables.conf`.
+- `host-laptop/system/bin/power-brightness` и
+  `host-laptop/system/udev/99-power-brightness.rules` — яркость ноутбука
+  при работе от батареи.
 
-После этого `~/.bash_profile` можно вернуть на `exec sway` либо запускать
-Sway вручную из TTY.
+## Что удалено
+
+Старый рабочий стол SwayFX удалён: `swayfx`, `waybar`, `swaync`, `fuzzel`,
+`cliphist`, `swaylock`, `swayidle`, `swaybg`, `sway-contrib`, `pcmanfm`,
+`polkit-gnome`. Вместе с ними удалены старые конфиги и `theme-apply`;
+откат на Sway больше не предусмотрен.
+
+`~/.dotfiles-legacy` теперь хранит только общие конфиги (fish, nvim, tmux,
+REAPER, скрипты, обои), которые продолжают stow-иться.
+
