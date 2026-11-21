@@ -14,6 +14,11 @@ telemetry_enabled = false
 polkit_agent = true
 
 
+[shell.launcher]
+default_view = "recent"
+track_usage = true
+
+
 # =============================================================================
 #  Тема
 # =============================================================================
@@ -25,9 +30,10 @@ builtin = "Catppuccin"
 
 [theme.templates]
 enable_builtin_templates = true
-builtin_ids = []
-enable_community_templates = false
-community_ids = []
+builtin_ids = ["umbriel", "gtk3", "gtk4", "qt", "foot"]
+
+enable_community_templates = true
+community_ids = ["opencode", "neovim", "fzf", "starship", "bat", "lsd", "tmux"]
 
 
 # =============================================================================
@@ -38,9 +44,74 @@ community_ids = []
 position = "top"
 thickness = 34
 background_opacity = 0.92
-start = ["launcher", "keyboard_layout", "wallpaper", "workspaces"]
-center = ["clock"]
-end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "control-center", "session"]
+
+start = ["launcher", "keyboard_layout", "wallpaper", "workspaces", "taskbar", "umbriel_companion", "file_search", "notes"]
+center = ["active_window", "clock"]
+end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "opencode", "arch_updater", "timer", "udiskie", "control-center", "session"]
+
+[bar.main.dead_zone.actions]
+left = "panel-toggle launcher"
+right = "panel-toggle control-center"
+
+
+# =============================================================================
+#  Виджеты: встроенные
+# =============================================================================
+
+[widget.active_window]
+max_length = 180
+
+[widget.taskbar]
+taskbar_max_width = 520
+prefer_symbolic_icons = true
+
+[widget.sysmon]
+stat = "cpu_usage"
+peek = true
+
+[widget.weather]
+peek = true
+
+[widget.volume]
+peek = true
+
+[widget.brightness]
+peek = true
+
+[widget.network]
+peek = true
+
+[widget.bluetooth]
+peek = true
+
+[widget.battery]
+peek = true
+
+
+# =============================================================================
+#  Виджеты: плагины
+# =============================================================================
+
+[widget.umbriel_companion]
+type = "noctalia/umbriel-companion:bar"
+
+[widget.file_search]
+type = "nightwatch75/file-search:file-search"
+
+[widget.notes]
+type = "noctalia/notes:notes"
+
+[widget.opencode]
+type = "weinguyen/opencode-companion:widget"
+
+[widget.arch_updater]
+type = "yuuto/arch-updater:widget"
+
+[widget.timer]
+type = "noctalia/timer:bar"
+
+[widget.udiskie]
+type = "aristides/udiskie:status"
 
 
 # =============================================================================
@@ -48,15 +119,46 @@ end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "v
 # =============================================================================
 
 [wallpaper]
-directory = "~/Pictures"
+directory = "~/.local/backgrounds/wallpapers"
 
 [wallpaper.default]
 path = "~/Pictures/wallpaper.jpg"
 
+[wallpaper.automation]
+enabled = true
+interval_seconds = 1800
+order = "random"
+recursive = true
+
 
 # =============================================================================
-#  Idle и блокировка
+#  Погода, геолокация и ночной свет
 # =============================================================================
+
+[location]
+auto_locate = true
+
+[weather]
+enabled = true
+refresh_minutes = 30
+unit = "celsius"
+effects = true
+
+[nightlight]
+enabled = true
+temperature_day = 6500
+temperature_night = 4000
+
+
+# =============================================================================
+#  Системный монитор, локскрин и idle
+# =============================================================================
+
+[system.monitor]
+enabled = true
+
+[lockscreen]
+blurred_desktop = true
 
 [idle.behavior.lock]
 timeout = 600

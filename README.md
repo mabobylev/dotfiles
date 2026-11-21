@@ -26,6 +26,59 @@
 
 Скрипт делает `stow` нужных пакетов и проверяет конфиги.
 
+## Темизация
+
+Палитру и оформление приложений ведёт Noctalia, а не старый `theme-apply`.
+Включены встроенные шаблоны `umbriel`, `gtk3`, `gtk4`, `qt`, `foot`, `btop`
+и community-шаблоны `opencode`, `neovim`, `fzf`, `starship`, `bat`, `lsd`,
+`tmux`.
+
+Сгенерированные файлы не хранятся в репозитории, их перезаписывает Noctalia:
+
+| Шаблон | Файл |
+|---|---|
+| foot | `~/.config/foot/themes/noctalia` |
+| GTK 3/4 | `~/.config/gtk-{3,4}.0/noctalia.css` + `@import` в `gtk.css` |
+| Qt | `~/.config/qt*ct/colors/noctalia.conf` |
+| bat | `~/.config/bat/themes/noctalia.tmTheme` |
+| lsd | `~/.config/lsd/colors.yaml` |
+| fzf | `~/.config/fzf/themes/noctalia.{sh,fish}` |
+| starship | `~/.local/state/theme/starship.toml` (палитра `noctalia`) |
+| tmux | `~/.config/tmux/themes/noctalia.conf` |
+| nvim | `~/.config/nvim/lua/matugen.lua` |
+| opencode | `~/.config/opencode/themes/matugen.json` |
+
+Палитра меняется в настройках Noctalia или командой
+`noctalia msg color-scheme-set builtin Nord`. Обои ротируются из
+`~/.local/backgrounds/wallpapers` каждые 30 минут.
+
+## Плагины Noctalia
+
+Включены официальные `umbriel-companion`, `notes`, `timer`, `wallhaven`,
+`translator`, `screen_recorder` и community-плагины:
+
+| Плагин | Назначение |
+|---|---|
+| `umbriel-companion` | состояние раскладки и действия с окнами в баре |
+| `opencode-companion` | чат и сессии opencode в баре |
+| `file-search` | поиск файлов через fzf |
+| `bookmarks` | закладки-команды в лаунчере |
+| `shell-command` | запуск команд из лаунчера |
+| `arch-updater` | обновления Arch/AUR, `.pacnew` |
+| `procmon`, `drive-health` | мониторы процессов и SMART |
+| `udiskie` | USB-накопители |
+| `default-apps` | выбор приложений по умолчанию |
+| `cursor`, `icons` | курсоры и иконки |
+| `emoji-picker` | эмодзи по `Mod+.` |
+
+Настройки плагинов лежат в GUI Noctalia и в
+`~/.local/state/noctalia/settings.toml`, который имеет приоритет над
+`config.toml`. Для `file-search` поставлен `ncdu`, для `screen_recorder` —
+`gpu-screen-recorder-git` и `slurp`, для `cursor` — `win2xcur`.
+
+Файловым менеджером по умолчанию для каталогов назначен Luciole:
+`xdg-mime default dev.noctalia.luciole.desktop inode/directory`.
+
 ## Запуск
 
 Из TTY (не из текущего Sway-сеанса):
@@ -54,7 +107,10 @@ luciole --version
   поэтому бинды `Mod+...` работают и в русской раскладке.
 - Polkit: нативный агент Noctalia (`polkit_agent = true`), `polkit-gnome`
   больше не нужен.
-- Телеметрия выключена, community-шаблоны выключены.
+- Телеметрия выключена, community-шаблоны включены.
+- Виджеты бара: `sysmon`, `weather`, `taskbar`, `active_window`, часы,
+  раскладка, plus-виджеты плагинов (`umbriel-companion`, `notes`,
+  `file-search`, `opencode`, `arch-updater`, `timer`, `udiskie`).
 - Раскладка US/RU переключается по CapsLock (`grp:caps_toggle,grp_led:caps`).
   Индикатор раскладки выведен в бар и переключает по левому клику.
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
