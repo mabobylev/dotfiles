@@ -74,7 +74,13 @@
 Настройки плагинов лежат в GUI Noctalia и в
 `~/.local/state/noctalia/settings.toml`, который имеет приоритет над
 `config.toml`. Для `file-search` поставлен `ncdu`, для `screen_recorder` —
-`gpu-screen-recorder-git` и `slurp`, для `cursor` — `win2xcur`.
+`gpu-screen-recorder-git` и `slurp`, для `cursor` — `win2xcur` и
+`python-wand`. Для GTK поставлен `adw-gtk-theme`: шаблон gtk3/gtk4
+переключает `gtk-theme` на `adw-gtk3-dark` и накладывает палитру Noctalia.
+
+Официальные `umbriel-companion` и `screen_recorder` временно закреплены на
+предыдущих версиях: последние релизы требуют plugin API новее, чем даёт
+установленная Noctalia 5.5.0. После обновления Noctalia они обновятся сами.
 
 Файловым менеджером по умолчанию для каталогов назначен Luciole:
 `xdg-mime default dev.noctalia.luciole.desktop inode/directory`.
