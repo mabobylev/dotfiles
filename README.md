@@ -55,6 +55,8 @@ luciole --version
 - Polkit: нативный агент Noctalia (`polkit_agent = true`), `polkit-gnome`
   больше не нужен.
 - Телеметрия выключена, community-шаблоны выключены.
+- Раскладка US/RU переключается по CapsLock (`grp:caps_toggle,grp_led:caps`).
+  Индикатор раскладки выведен в бар и переключает по левому клику.
 
 ## Откат на SwayFX
 
