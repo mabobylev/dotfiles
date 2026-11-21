@@ -57,6 +57,8 @@ luciole --version
 - Телеметрия выключена, community-шаблоны выключены.
 - Раскладка US/RU переключается по CapsLock (`grp:caps_toggle,grp_led:caps`).
   Индикатор раскладки выведен в бар и переключает по левому клику.
+- Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
+  `umbriel msg workspace-set-layout scrolling|dwindle|master|stacking`.
 
 ## Откат на SwayFX
 
