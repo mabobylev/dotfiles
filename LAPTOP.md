@@ -81,24 +81,22 @@ git clone git@github.com:mabobylev/dotfiles.git ~/.dotfiles
 
 ## 3. Stow
 
-Если общие конфиги раньше были приstow-лены из `~/.dotfiles-legacy`,
-сначала снять старые ссылки, иначе stow нового репозитория сообщит
-конфликт:
-
-```sh
-[ -d ~/.dotfiles-legacy ] && cd ~/.dotfiles-legacy &&   stow -D -t "$HOME" --no-folding     fish foot mc nvim ranger scripts tmux wallp
-```
-
-Затем применить новый репозиторий:
+Применить новый репозиторий:
 
 ```sh
 cd ~/.dotfiles
 ./apply.sh laptop
 ```
 
-Конфиг REAPER в репозиторий не входит. Если он нужен на ноутбуке,
-перенести его отдельно из `~/.dotfiles-legacy` или настроить заново;
-`apply.sh` его не stow-ит. Конфиг opencode лежит локально.
+Если на ноутбуке остались битые ссылки на старый `~/.dotfiles-legacy`
+(например, в `~/.config/REAPER`), их нужно убрать:
+
+```sh
+find ~/.config -xtype l -print
+```
+
+Конфиг REAPER в репозиторий не входит: он хранится локально в
+`~/.config/REAPER` и бэкапится restic. Конфиг opencode тоже локальный.
 
 Проверить, что ссылки не свёрнуты в каталоги:
 

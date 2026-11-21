@@ -21,8 +21,8 @@
 
 `~/.config/starship.toml` — не пакет: Noctalia перезаписывает в нём палитру,
 поэтому файл хранится локально. Конфиг REAPER в stow-набор не входит:
-он остаётся в `~/.dotfiles-legacy`; opencode настроен локально в
-`~/.config/opencode`.
+он лежит локально в `~/.config/REAPER` (около 1 ГБ ресурсов) и включён в
+restic. Конфиг opencode тоже локальный, в `~/.config/opencode`.
 
 Машинно-зависимые файлы подключаются через
 `[include.optional] files = ["host.d/10-output.toml",
@@ -179,8 +179,7 @@ luciole --version
 `polkit-gnome`. Вместе с ними удалены старые конфиги и `theme-apply`;
 откат на Sway больше не предусмотрен.
 
-Основные общие конфиги перенесены в этот репозиторий. В
-`~/.dotfiles-legacy` остался только REAPER; его можно перенести позже или
-удалить, когда он перестанет быть нужен. Конфиг opencode лежит локально в
-`~/.config/opencode`.
+Основные общие конфиги перенесены в этот репозиторий. Локальный
+`~/.dotfiles-legacy` удалён; REAPER живёт в `~/.config/REAPER` и
+бэкапится restic, opencode — в `~/.config/opencode`.
 

@@ -3,7 +3,7 @@
 # restic-backup — инкрементальный бэкап пользовательских данных и ключей.
 #
 # В репозиторий попадают: ~/Music, ~/Workspace, ~/Documents, ~/.notes,
-# ~/.ssh, ~/.gnupg, ~/.config/{dconf,autostart} и ~/.local/share/fonts.
+# ~/.ssh, ~/.gnupg, ~/.config/{dconf,autostart,REAPER} и ~/.local/share/fonts.
 #
 # Репозиторий: /mnt/data/Files/backup/restic (шифрование + дедупликация)
 # Пароль:      ~/.config/restic/password (0600)
@@ -54,7 +54,7 @@ PATHS=()
 for p in \
     "$HOME/Music" "$HOME/Workspace" "$HOME/Documents" "$HOME/.notes" \
     "$HOME/.ssh" "$HOME/.gnupg" \
-    "$HOME/.config/dconf" "$HOME/.config/autostart" \
+    "$HOME/.config/dconf" "$HOME/.config/autostart" "$HOME/.config/REAPER" \
     "$HOME/.local/share/fonts"; do
     [ -e "$p" ] && PATHS+=("$p")
 done
