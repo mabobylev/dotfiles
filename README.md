@@ -139,6 +139,10 @@ luciole --version
   Индикатор раскладки выведен в бар и переключает по левому клику.
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
   `umbriel msg workspace-set-layout scrolling|dwindle|master|stacking`.
+- Foot: палитра из Noctalia, прозрачность фона `alpha=0.8`.
+- У Umbriel нет селектора «все XWayland-окна», поэтому плавающими сделаны
+  явные app_id: `PortProton`, `steam_proton`, `REAPER`,
+  `com.bitwig.BitwigStudio`.
 
 ## Системные файлы
 
