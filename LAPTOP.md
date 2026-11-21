@@ -74,6 +74,9 @@ paru -S --needed --noconfirm codexbar-cli
 git clone git@github.com:mabobylev/dotfiles.git ~/.dotfiles
 ```
 
+Если SSH-ключ на ноутбуке ещё не настроен — клонировать по HTTPS
+(`https://github.com/mabobylev/dotfiles.git`) после `gh auth login`.
+
 Репозиторий общих конфигов `~/.dotfiles-legacy` remote не имеет. Варианты:
 
 - На ПК запушить его на GitHub и клонировать на ноутбуке;
