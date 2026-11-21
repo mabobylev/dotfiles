@@ -27,11 +27,6 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-# Активная палитра starship генерируется theme-apply в state-каталог.
-if [ -f "$XDG_STATE_HOME/theme/starship.toml" ]; then
-    export STARSHIP_CONFIG="$XDG_STATE_HOME/theme/starship.toml"
-fi
-
 #######################################################
 # Expand the history size
 #######################################################

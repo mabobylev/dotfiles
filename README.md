@@ -43,7 +43,7 @@
 | bat | `~/.config/bat/themes/noctalia.tmTheme` |
 | lsd | `~/.config/lsd/colors.yaml` |
 | fzf | `~/.config/fzf/themes/noctalia.{sh,fish}` |
-| starship | `~/.local/state/theme/starship.toml` (палитра `noctalia`) |
+| starship | `~/.config/starship.toml` (палитра `noctalia`; state-путь — симлинк) |
 | tmux | `~/.config/tmux/themes/noctalia.conf` |
 | nvim | `~/.config/nvim/lua/matugen.lua` |
 | opencode | `~/.config/opencode/themes/matugen.json` |
