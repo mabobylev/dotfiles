@@ -47,7 +47,7 @@ background_opacity = 0.92
 
 start = ["launcher", "keyboard_layout", "wallpaper", "workspaces", "taskbar", "umbriel_companion", "file_search", "notes"]
 center = ["active_window", "clock"]
-end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "opencode", "arch_updater", "timer", "udiskie", "control-center", "session"]
+end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "arch_updater", "timer", "udiskie", "control-center", "session"]
 
 [bar.main.dead_zone.actions]
 left = "panel-toggle launcher"
@@ -100,9 +100,6 @@ type = "nightwatch75/file-search:file-search"
 
 [widget.notes]
 type = "noctalia/notes:notes"
-
-[widget.opencode]
-type = "weinguyen/opencode-companion:widget"
 
 [widget.arch_updater]
 type = "yuuto/arch-updater:widget"

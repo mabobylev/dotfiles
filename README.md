@@ -60,7 +60,7 @@
 | Плагин | Назначение |
 |---|---|
 | `umbriel-companion` | состояние раскладки и действия с окнами в баре |
-| `opencode-companion` | чат и сессии opencode в баре |
+| `opencode-companion` | выключен: 0.2.1 работает с OpenCode API v1, установлен v2.3.0 |
 | `file-search` | поиск файлов через fzf |
 | `bookmarks` | закладки-команды в лаунчере |
 | `shell-command` | запуск команд из лаунчера |
@@ -116,7 +116,7 @@ luciole --version
 - Телеметрия выключена, community-шаблоны включены.
 - Виджеты бара: `sysmon`, `weather`, `taskbar`, `active_window`, часы,
   раскладка, plus-виджеты плагинов (`umbriel-companion`, `notes`,
-  `file-search`, `opencode`, `arch-updater`, `timer`, `udiskie`).
+  `file-search`, `arch-updater`, `timer`, `udiskie`).
 - Раскладка US/RU переключается по CapsLock (`grp:caps_toggle,grp_led:caps`).
   Индикатор раскладки выведен в бар и переключает по левому клику.
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
