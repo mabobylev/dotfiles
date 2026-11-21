@@ -1,0 +1,7 @@
+# host-pc: единственный выход DP-2, 1920x1080@144, adaptive sync
+
+[output.DP-2]
+mode = "1920x1080@144"
+position = [0, 0]
+scale = 1.0
+vrr = "fullscreen"

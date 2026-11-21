@@ -1,0 +1,69 @@
+# =============================================================================
+#  Noctalia — конфигурация оболочки
+# -----------------------------------------------------------------------------
+#  Проверка: noctalia config validate
+#  Схема:    noctalia config export
+#
+#  Файлы в этом каталоге читаются по алфавиту и сливаются.
+#  Настройки, изменённые через GUI, имеют приоритет и лежат в
+#  ~/.local/state/noctalia/settings.toml.
+# =============================================================================
+
+[shell]
+telemetry_enabled = false
+polkit_agent = true
+
+
+# =============================================================================
+#  Тема
+# =============================================================================
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Catppuccin"
+
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids = []
+enable_community_templates = false
+community_ids = []
+
+
+# =============================================================================
+#  Бар
+# =============================================================================
+
+[bar.main]
+position = "top"
+thickness = 34
+background_opacity = 0.92
+start = ["launcher", "wallpaper", "workspaces"]
+center = ["clock"]
+end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "control-center", "session"]
+
+
+# =============================================================================
+#  Обои
+# =============================================================================
+
+[wallpaper]
+directory = "~/Pictures"
+
+[wallpaper.default]
+path = "~/Pictures/wallpaper.jpg"
+
+
+# =============================================================================
+#  Idle и блокировка
+# =============================================================================
+
+[idle.behavior.lock]
+timeout = 600
+action = "lock"
+enabled = true
+
+[idle.behavior.screen-off]
+timeout = 660
+action = "screen_off"
+enabled = true

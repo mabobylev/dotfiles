@@ -1,0 +1,172 @@
+# =============================================================================
+#  Umbriel — конфигурация композитора
+# -----------------------------------------------------------------------------
+#  Проверка:  umbriel config validate
+#  Перезагрузка: umbriel msg config-reload
+#  Схема:     umbriel config schema --json
+# =============================================================================
+
+# Машинно-зависимые выходы подключаются отдельным пакетом host-pc/host-laptop.
+[include.optional]
+files = ["host.d/10-output.toml"]
+
+
+# =============================================================================
+#  Общие настройки
+# =============================================================================
+
+[general]
+autostart = ["noctalia"]
+mod_key = "Super"
+
+
+# =============================================================================
+#  Клавиатура
+# =============================================================================
+
+[input.keyboard]
+layout = "us,ru"
+options = "grp:alt_shift_toggle"
+numlock_toggle = true
+track_layout = "global"
+
+
+# =============================================================================
+#  Внешний вид
+# =============================================================================
+
+[appearance]
+prefer_no_csd = true
+border_width = 2
+corner_radius = 10
+
+[appearance.blur]
+enabled = true
+optimized = true
+passes = 2
+radius = 3
+noise = 0.02
+brightness = 0.9
+contrast = 0.9
+saturation = 1.1
+
+
+# =============================================================================
+#  Правила окон и слоёв
+# =============================================================================
+
+[[window_rule]]
+blur = true
+
+[[window_rule]]
+match.app_id = "^dev.noctalia.Noctalia$"
+default_floating = true
+default_floating_size_px = { width = 1020, height = 900 }
+
+[[window_rule]]
+match.app_id = "^dev.noctalia.UmbrielSharePicker$"
+default_floating = true
+default_floating_size_px = { width = 800, height = 600 }
+
+[[layer_rule]]
+match.namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"
+blur = true
+blur_ignore_alpha = 0.6
+blur_optimized = false
+
+
+# =============================================================================
+#  Горячие клавиши
+# -----------------------------------------------------------------------------
+#  Umbriel сам сопоставляет физическую клавишу с ASCII в других раскладках,
+#  поэтому привязки работают и в русской раскладке.
+# =============================================================================
+
+[keybinds]
+
+# Приложения и панели
+"Mod+Return" = { action = "spawn foot", repeat = false }
+"Mod+Space" = "spawn noctalia msg panel-toggle launcher"
+"Mod+S" = "spawn noctalia msg panel-toggle control-center"
+"Mod+Comma" = "spawn noctalia msg settings-toggle"
+"Alt+Tab" = "spawn noctalia msg window-switcher hold"
+"Alt+Shift+Tab" = "spawn noctalia msg window-switcher hold reverse"
+
+# Скриншоты
+"Print" = "spawn noctalia msg screenshot-region"
+"Shift+Print" = "spawn noctalia msg screenshot-fullscreen"
+
+# Сессия
+"Mod+Q" = { action = "window-close", repeat = false }
+"Mod+Escape" = "session-quit"
+"Mod+Shift+L" = "spawn noctalia msg session lock"
+"Mod+Shift+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
+
+# Состояние окна
+"Mod+F" = { action = "window-toggle-fullscreen", repeat = false }
+"Mod+T" = { action = "window-toggle-floating", repeat = false }
+"Mod+M" = { action = "window-toggle-maximize-to-edges", repeat = false }
+"Mod+P" = { action = "window-toggle-pinned", repeat = false }
+"Mod+O" = { action = "overview-toggle", repeat = false }
+
+# Фокус
+"Mod+Left" = "window-focus-left"
+"Mod+Down" = "window-focus-down"
+"Mod+Up" = "window-focus-up"
+"Mod+Right" = "window-focus-right"
+"Mod+H" = "window-focus-left"
+"Mod+J" = "window-focus-down"
+"Mod+K" = "window-focus-up"
+"Mod+L" = "window-focus-right"
+"Mod+F1" = "window-focus-next"
+
+# Перемещение
+"Mod+Shift+Left" = "column-move-left"
+"Mod+Shift+Down" = "window-move-down"
+"Mod+Shift+Up" = "window-move-up"
+"Mod+Shift+Right" = "column-move-right"
+"Mod+Shift+H" = "column-move-left"
+"Mod+Shift+J" = "window-move-down"
+"Mod+Shift+K" = "window-move-up"
+"Mod+Shift+L" = "column-move-right"
+
+# Раскладка и размеры
+"Mod+R" = "window-cycle-primary-extent"
+"Mod+Shift+R" = "window-cycle-primary-extent-back"
+"Mod+Minus" = "window-modify-primary-extent -0.02"
+"Mod+Equal" = "window-modify-primary-extent +0.02"
+"Mod+Ctrl+Minus" = "window-modify-secondary-extent -0.02"
+"Mod+Ctrl+Equal" = "window-modify-secondary-extent +0.02"
+"Mod+W" = { action = "column-toggle-tabbed", repeat = false }
+"Mod+Alt+Right" = "column-focus-tab-next"
+"Mod+Alt+Left" = "column-focus-tab-previous"
+
+# Рабочие пространства
+"Mod+1" = "workspace-switch 1"
+"Mod+2" = "workspace-switch 2"
+"Mod+3" = "workspace-switch 3"
+"Mod+4" = "workspace-switch 4"
+"Mod+5" = "workspace-switch 5"
+"Mod+6" = "workspace-switch 6"
+"Mod+7" = "workspace-switch 7"
+"Mod+8" = "workspace-switch 8"
+"Mod+9" = "workspace-switch 9"
+"Mod+Shift+1" = "window-move-to-workspace 1"
+"Mod+Shift+2" = "window-move-to-workspace 2"
+"Mod+Shift+3" = "window-move-to-workspace 3"
+"Mod+Shift+4" = "window-move-to-workspace 4"
+"Mod+Shift+5" = "window-move-to-workspace 5"
+"Mod+Shift+6" = "window-move-to-workspace 6"
+"Mod+Shift+7" = "window-move-to-workspace 7"
+"Mod+Shift+8" = "window-move-to-workspace 8"
+"Mod+Shift+9" = "window-move-to-workspace 9"
+
+# Медиа и яркость через OSD Noctalia
+"XF86AudioRaiseVolume" = { action = "spawn noctalia msg volume-up", allow_when_locked = true }
+"XF86AudioLowerVolume" = { action = "spawn noctalia msg volume-down", allow_when_locked = true }
+"XF86AudioMute" = { action = "spawn noctalia msg volume-mute", allow_when_locked = true, repeat = false }
+"XF86AudioPlay" = { action = "spawn noctalia msg media toggle", allow_when_locked = true, repeat = false }
+"XF86AudioNext" = { action = "spawn noctalia msg media next", allow_when_locked = true }
+"XF86AudioPrev" = { action = "spawn noctalia msg media previous", allow_when_locked = true }
+"XF86MonBrightnessUp" = { action = "spawn noctalia msg brightness-up", allow_when_locked = true }
+"XF86MonBrightnessDown" = { action = "spawn noctalia msg brightness-down", allow_when_locked = true }
