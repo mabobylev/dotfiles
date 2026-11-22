@@ -88,6 +88,21 @@ cd ~/.dotfiles
 ./apply.sh laptop
 ```
 
+`apply.sh` сам снимает предыдущий host-пакет и, если бинарник уже собран,
+включает `xembsni.service`. Для tray-иконок Lesta/Wine бинарник собирается
+отдельно по инструкции из `README.md` (раздел про `xembsni`).
+
+Если ноутбук уже настроен раньше, GUI-состояние может перекрывать новые
+значения из `config.toml`. Проверить и убрать только лишние блоки:
+
+```sh
+grep -n '^\[bar.main\]\|^\[theme\]\|^\[plugins\]\|^\[wallpaper.default\]' \
+  ~/.local/state/noctalia/settings.toml
+```
+
+Не удалять `[lockscreen_widgets]`, `[wallpaper.last]` и
+`[wallpaper.monitors.*]`. После правки — `noctalia msg config-reload`.
+
 Если на ноутбуке остались битые ссылки на старый `~/.dotfiles-legacy`
 (например, в `~/.config/REAPER`), их нужно убрать:
 
@@ -151,9 +166,9 @@ umbriel outputs | sed -n '1,20p'
 
 ## 5. Noctalia: плагины и шаблоны
 
-`config.toml` уже содержит бар, виджеты, обои, погоду, ночной свет и
-шаблоны. Состояние включённых плагинов на каждой машине своё, поэтому
-включить нужное явно:
+`config.toml` уже содержит бар, виджеты, обои, погоду, ночной свет,
+шаблоны и общий список плагинов. После первичной установки плагинов
+проверить/включить нужное можно явно:
 
 ```sh
 for p in \
@@ -162,8 +177,7 @@ for p in \
   nightwatch75/file-search dunarand/bookmarks weinguyen/shell-command \
   yuuto/arch-updater weinguyen/procmon gustav0ar/drive-health \
   aristides/udiskie thaer99ob/default-apps \
-  vn1k/cursor vn1k/icons liamwh/emoji-picker \
-  amancode22/global-menu
+  vn1k/cursor vn1k/icons liamwh/emoji-picker
 do
   noctalia msg plugins enable "$p"
 done
@@ -185,9 +199,9 @@ done
 плагин и добавить `[widget.codex_meter]` плюс `"codex_meter"` в `end`
 в `host-laptop/.config/noctalia/zz-host.toml`.
 
-Если Noctalia подсвечивает `held-back` у `umbriel-companion` или
-`screen_recorder` — это нормально: версия плагина требует более новый
-plugin API, обновится вместе с Noctalia.
+На Noctalia 5.6.0 `umbriel-companion` и `screen_recorder` не закреплены.
+Если появится `held-back`, сначала проверить совместимость plugin API, а не
+считать это нормальным для текущей версии.
 
 Применить шаблоны и проверить:
 

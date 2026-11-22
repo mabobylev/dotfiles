@@ -43,7 +43,8 @@ restic. Конфиг opencode тоже локальный, в `~/.config/opencod
 ./apply.sh laptop
 ```
 
-Скрипт делает `stow` нужных пакетов и проверяет конфиги.
+Скрипт снимает host-пакет другой машины, делает `stow` нужных пакетов,
+проверяет конфиги и, если бинарник уже собран, включает `xembsni.service`.
 
 ## Темизация
 
@@ -74,7 +75,7 @@ restic. Конфиг opencode тоже локальный, в `~/.config/opencod
 ## Плагины Noctalia
 
 Включены официальные `umbriel-companion`, `notes`, `timer`, `wallhaven`,
-`translator`, `screen_recorder` и community-плагины:
+`translator`, `screen_recorder` (только на ПК) и community-плагины:
 
 | Плагин | Назначение |
 |---|---|
@@ -89,23 +90,19 @@ restic. Конфиг opencode тоже локальный, в `~/.config/opencod
 | `default-apps` | выбор приложений по умолчанию |
 | `cursor`, `icons` | курсоры и иконки |
 | `emoji-picker` | эмодзи по `Mod+.` |
-| `global-menu` | меню активного приложения в баре, macOS-style |
-| `codexbar-meter` | остаток лимитов Codex из CodexBar |
+| `codexbar-meter` | остаток лимитов Codex из CodexBar (только на ПК) |
 
-Настройки плагинов лежат в GUI Noctalia и в
-`~/.local/state/noctalia/settings.toml`, который имеет приоритет над
-`config.toml`. Для `file-search` поставлен `ncdu`, для `screen_recorder` —
+Тема, состав бара, список плагинов и обои по умолчанию задаются в
+`config.toml` и host-файлах. GUI Noctalia пишет изменения в
+`~/.local/state/noctalia/settings.toml`, который имеет приоритет; после
+правок через GUI полезно сверять результат с
+`noctalia config export merged`. Машинное состояние (локскрин на `DP-2`,
+раскладка мониторов, последние обои) остаётся локальным.
+
+Для `file-search` поставлен `ncdu`, для `screen_recorder` —
 `gpu-screen-recorder-git` и `slurp`, для `cursor` — `win2xcur` и
 `python-wand`. Для GTK поставлен `adw-gtk-theme`: шаблон gtk3/gtk4
 переключает `gtk-theme` на `adw-gtk3-dark` и накладывает палитру Noctalia.
-
-### Global Menu
-
-Виджет `global_menu` стоит в центре бара вместо заголовка окна и показывает
-имя приложения и его меню. Нативные меню работают у Firefox, Chromium,
-Electron и Qt; для GTK и приложений без меню используются curated-меню и
-действия с окном. Клики по пунктам синтезируются через `wtype`, поэтому он
-поставлен как зависимость. Демон плагина запускается сам.
 
 ### CodexBar
 
@@ -115,9 +112,13 @@ Electron и Qt; для GTK и приложений без меню исполь�
 настраиваются через `codexbar config` (по умолчанию включён `codex`),
 обновление — раз в 60 секунд, правый клик по виджету обновляет сразу.
 
-Официальные `umbriel-companion` и `screen_recorder` временно закреплены на
-предыдущих версиях: последние релизы требуют plugin API новее, чем даёт
-установленная Noctalia 5.5.0. После обновления Noctalia они обновятся сами.
+Актуальная проверенная версия Noctalia — 5.6.0; `umbriel-companion` и
+`screen_recorder` больше не закреплены на старых версиях и обновляются
+штатно.
+
+Qt-приложения используют `QT_QPA_PLATFORMTHEME=gtk3`, потому что `qt6ct` в
+системе не установлен. Цветовые файлы `qt5ct/qt6ct` Noctalia генерирует,
+но без самих qtct они не применяются; GTK-мост к теме Noctalia работает.
 
 Файловым менеджером по умолчанию для каталогов назначен Luciole:
 `xdg-mime default dev.noctalia.luciole.desktop inode/directory`.

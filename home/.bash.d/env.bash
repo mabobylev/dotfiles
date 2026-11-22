@@ -80,6 +80,7 @@ export color_prompt=yes
 # [ -z "$QT_QPA_PLATFORMTHEME" ] && export QT_QPA_PLATFORMTHEME="qt5ct"
 # Don't force Qt through XWayland; let Qt auto-detect the platform.
 # [ -z "$QT_QPA_PLATFORM" ] && export QT_QPA_PLATFORM="xcb"
+# qt6ct не установлен: gtk3 — рабочий мост Qt к палитре/теме Noctalia.
 export QT_QPA_PLATFORMTHEME=gtk3
 
 # [ -z "$GTK_THEME" ] && export GTK_THEME="Nordic:dark"

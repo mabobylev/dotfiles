@@ -26,14 +26,42 @@ track_usage = true
 [theme]
 mode = "dark"
 source = "builtin"
-builtin = "Catppuccin"
+builtin = "Dracula"
+community_palette = "Oxocarbon"
+wallpaper_scheme = "m3-content"
 
 [theme.templates]
 enable_builtin_templates = true
-builtin_ids = ["umbriel", "gtk3", "gtk4", "qt", "foot"]
+builtin_ids = ["umbriel", "gtk3", "gtk4", "qt", "foot", "btop"]
 
 enable_community_templates = true
 community_ids = ["opencode", "neovim", "fzf", "starship", "bat", "lsd", "tmux"]
+
+
+# =============================================================================
+#  Плагины
+# =============================================================================
+# Общий список для ПК и ноутбука. Машинные дополнения — в host-файлах.
+
+[plugins]
+enabled = [
+  "noctalia/umbriel-companion",
+  "nightwatch75/file-search",
+  "noctalia/notes",
+  "dunarand/bookmarks",
+  "aristides/udiskie",
+  "yuuto/arch-updater",
+  "weinguyen/procmon",
+  "gustav0ar/drive-health",
+  "noctalia/translator",
+  "weinguyen/shell-command",
+  "thaer99ob/default-apps",
+  "vn1k/cursor",
+  "vn1k/icons",
+  "liamwh/emoji-picker",
+  "noctalia/wallhaven",
+  "noctalia/timer",
+]
 
 
 # =============================================================================
@@ -46,8 +74,8 @@ thickness = 34
 background_opacity = 0.92
 
 start = ["launcher", "keyboard_layout", "wallpaper", "workspaces", "taskbar", "umbriel_companion", "file_search", "notes"]
-center = ["global_menu", "clock"]
-end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "arch_updater", "timer", "udiskie", "control-center", "session"]
+center = ["weather", "spacer_2", "clock", "spacer_2"]
+end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "arch_updater", "timer", "udiskie", "control-center", "session"]
 
 [bar.main.dead_zone.actions]
 left = "panel-toggle launcher"
@@ -107,10 +135,9 @@ type = "noctalia/timer:bar"
 [widget.udiskie]
 type = "aristides/udiskie:status"
 
-[widget.global_menu]
-type = "amancode22/global-menu:menubar"
-max_menus = 0
-bar_max_width = 900
+[widget.spacer_2]
+type = "spacer"
+expand = true
 
 
 # =============================================================================
@@ -119,9 +146,10 @@ bar_max_width = 900
 
 [wallpaper]
 directory = "~/.local/backgrounds/wallpapers"
+fill_mode = "stretch"
 
 [wallpaper.default]
-path = "~/Pictures/wallpaper.jpg"
+path = "~/.local/backgrounds/wallpapers/nord-004.jpg"
 
 [wallpaper.automation]
 enabled = true

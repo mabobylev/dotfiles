@@ -1,4 +1,31 @@
-# host-pc: виджет Codex-метра только на ПК.
+# host-pc: Codex-метр и полный набор плагинов рабочего ПК.
+
+[bar.main]
+start = ["launcher", "wallpaper", "workspaces", "taskbar", "umbriel_companion", "file_search", "notes"]
+center = ["weather", "spacer_2", "clock", "spacer_2", "codex_meter"]
+end = ["media", "control-center", "arch_updater", "udiskie", "keyboard_layout", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "sysmon", "tray", "session"]
 
 [widget.codex_meter]
 type = "salemsayed/codexbar-meter:bar"
+
+[plugins]
+enabled = [
+  "noctalia/umbriel-companion",
+  "nightwatch75/file-search",
+  "noctalia/notes",
+  "dunarand/bookmarks",
+  "aristides/udiskie",
+  "yuuto/arch-updater",
+  "weinguyen/procmon",
+  "noctalia/screen_recorder",
+  "gustav0ar/drive-health",
+  "noctalia/translator",
+  "weinguyen/shell-command",
+  "thaer99ob/default-apps",
+  "vn1k/cursor",
+  "vn1k/icons",
+  "liamwh/emoji-picker",
+  "salemsayed/codexbar-meter",
+  "noctalia/wallhaven",
+  "noctalia/timer",
+]

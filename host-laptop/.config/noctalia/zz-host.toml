@@ -3,5 +3,5 @@
 
 [bar.main]
 start = ["launcher", "keyboard_layout", "workspaces", "umbriel_companion", "notes"]
-center = ["global_menu", "clock"]
+center = ["clock"]
 end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "timer", "control-center", "session"]
