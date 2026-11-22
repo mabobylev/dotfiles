@@ -169,6 +169,9 @@ luciole --version
 - У Umbriel нет селектора «все XWayland-окна», поэтому плавающими сделаны
   явные app_id: `PortProton`, `steam_proton`, `REAPER`,
   `com.bitwig.BitwigStudio`.
+- Ошибки `xcb error ... code Window` в журнале Umbriel наблюдались при
+  работе X11-окна ChatGPT (Codex). После его закрытия новые ошибки не
+  появлялись; это не ошибка конфигурации Umbriel.
 
 ## Системные файлы
 
