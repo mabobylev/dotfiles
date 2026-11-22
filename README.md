@@ -158,6 +158,12 @@ luciole --version
   Индикатор раскладки выведен в бар и переключает по левому клику.
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
   `umbriel msg workspace-set-layout scrolling|dwindle|master|stacking`.
+- Lesta Games / Wine: иконки XEmbed в трее публикует `xembsni`.
+  Юнит лежит в `scripts/.config/systemd/user/xembsni.service`, бинарник —
+  локальный `~/.local/bin/xembsni`. Пересборка:
+  `git clone https://github.com/jmylchreest/xembsni && cd xembsni && cargo build --release`,
+  затем `install -Dm755 target/release/xembsni ~/.local/bin/xembsni` и
+  `systemctl --user restart xembsni.service`.
 - Foot: палитра из Noctalia, прозрачность фона `alpha=0.8`.
 - У Umbriel нет селектора «все XWayland-окна», поэтому плавающими сделаны
   явные app_id: `PortProton`, `steam_proton`, `REAPER`,
