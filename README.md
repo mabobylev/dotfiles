@@ -65,6 +65,11 @@ restic. Конфиг opencode тоже локальный, в `~/.config/opencod
 | fzf | `~/.config/fzf/themes/noctalia.{sh,fish}` |
 | starship | `~/.config/starship.toml` (локальный файл, палитра `noctalia`) |
 | tmux | `~/.config/tmux/themes/noctalia.conf` |
+
+Раскладка tmux-бара и иконки лежат отдельно в
+`~/.config/tmux/themes/bar.conf`; цвета в нём берутся из переменных
+`@noctalia_*`, поэтому статическая палитра не нужна. Noctalia обновляет
+только `noctalia.conf`, `bar.conf` остаётся твоим.
 | nvim | `~/.config/nvim/lua/matugen.lua` |
 | opencode | `~/.config/opencode/themes/matugen.json` |
 
