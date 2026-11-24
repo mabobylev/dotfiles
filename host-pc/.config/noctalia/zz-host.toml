@@ -1,9 +1,15 @@
 # host-pc: Codex-метр и полный набор плагинов рабочего ПК.
 
 [bar.main]
-start = ["launcher", "wallpaper", "workspaces", "taskbar", "umbriel_companion", "file_search", "notes"]
+start = ["workspaces", "umbriel_companion", "file_search", "notes", "taskbar"]
 center = ["weather", "spacer_2", "clock", "spacer_2", "codex_meter"]
 end = ["media", "control-center", "arch_updater", "udiskie", "keyboard_layout", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "sysmon", "tray", "session"]
+
+[widget.launcher]
+enabled = false
+
+[widget.wallpaper]
+enabled = false
 
 [widget.codex_meter]
 type = "salemsayed/codexbar-meter:bar"

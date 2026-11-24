@@ -19,10 +19,12 @@
 | `host-pc` | выход DP-2, виджет Codex-метра |
 | `host-laptop` | eDP-1, тачпад, без blur/теней, компактный бар |
 
-`~/.config/starship.toml` — не пакет: Noctalia перезаписывает в нём палитру,
-поэтому файл хранится локально. Конфиг REAPER в stow-набор не входит:
-он лежит локально в `~/.config/REAPER` (около 1 ГБ ресурсов) и включён в
-restic. Конфиг opencode тоже локальный, в `~/.config/opencode`.
+`~/.config/starship.toml` stow-ится из `home/.config/starship.toml`.
+Noctalia переписывает в нём только блок палитры между маркерами
+`NOCTALIA STARSHIP PALETTE`; структурные настройки prompt хранятся в git.
+Конфиг REAPER в stow-набор не входит: он лежит локально в
+`~/.config/REAPER` (около 1 ГБ ресурсов) и включён в restic. Конфиг
+opencode тоже локальный, в `~/.config/opencode`.
 
 Машинно-зависимые файлы подключаются через
 `[include.optional] files = ["host.d/10-output.toml",
@@ -49,8 +51,10 @@ restic. Конфиг opencode тоже локальный, в `~/.config/opencod
 ## Темизация
 
 Палитру и оформление приложений ведёт Noctalia, а не старый `theme-apply`.
-Включены встроенные шаблоны `umbriel`, `gtk3`, `gtk4`, `qt`, `foot`, `btop`
-и community-шаблоны `opencode`, `neovim`, `fzf`, `starship`, `bat`, `lsd`,
+По умолчанию — Nord (тему можно менять по настроению; текущее желаемое
+состояние фиксируется в `noctalia/config.toml`/host-файлах). Включены
+встроенные шаблоны `umbriel`, `gtk3`, `gtk4`, `qt`, `foot`, `btop` и
+community-шаблоны `opencode`, `neovim`, `fzf`, `starship`, `bat`, `lsd`,
 `tmux`.
 
 Сгенерированные файлы не хранятся в репозитории, их перезаписывает Noctalia:
@@ -69,7 +73,9 @@ restic. Конфиг opencode тоже локальный, в `~/.config/opencod
 Раскладка tmux-бара и иконки лежат отдельно в
 `~/.config/tmux/themes/bar.conf`; цвета в нём берутся из переменных
 `@noctalia_*`, поэтому статическая палитра не нужна. Noctalia обновляет
-только `noctalia.conf`, `bar.conf` остаётся твоим.
+только `noctalia.conf`, `bar.conf` остаётся твоим. При обновлении
+community tmux template стоит проверить `apply.sh`: он не должен затирать
+source `bar.conf` и порядок source-строк.
 | nvim | `~/.config/nvim/lua/matugen.lua` |
 | opencode | `~/.config/opencode/themes/matugen.json` |
 
@@ -157,9 +163,12 @@ luciole --version
 - Polkit: нативный агент Noctalia (`polkit_agent = true`), `polkit-gnome`
   больше не нужен.
 - Телеметрия выключена, community-шаблоны включены.
-- Виджеты бара: `sysmon`, `weather`, `taskbar`, глобальное меню, часы,
-  раскладка, Codex-метр, plus-виджеты плагинов (`umbriel-companion`, `notes`,
-  `file-search`, `arch-updater`, `timer`, `udiskie`).
+- Виджеты бара: `sysmon`, `weather`, `taskbar`, часы, раскладка, Codex-метр
+  (на ПК), plus-виджеты плагинов (`umbriel-companion`, `notes`,
+  `file-search`, `arch-updater`, `timer`, `udiskie`). Состав и отступы бара
+  могут отличаться по вкусу; актуальное состояние смотри в
+  `noctalia/config.toml`, `host-*/.config/noctalia/zz-host.toml` и
+  `noctalia config export merged`.
 - Раскладка US/RU переключается по CapsLock (`grp:caps_toggle,grp_led:caps`).
   Индикатор раскладки выведен в бар и переключает по левому клику.
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:

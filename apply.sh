@@ -66,4 +66,8 @@ else
   printf '  systemd --user недоступен — пропускаю сервисы\n' >&2
 fi
 
+if [ -x "$HOME/.local/bin/dotfiles-check" ]; then
+  "$HOME/.local/bin/dotfiles-check" || printf '  dotfiles-check: есть предупреждения/ошибки\n' >&2
+fi
+
 printf 'apply.sh: готово (%s)\n' "$host"

@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ok=1
+warn() { printf 'check: WARN: %s\n' "$*" >&2; }
+fail() { printf 'check: FAIL: %s\n' "$*" >&2; ok=0; }
+
+# Starship: palette keys used by style must exist
+starship_cfg="${STARSHIP_CONFIG:-$HOME/.config/starship.toml}"
+if [ -f "$starship_cfg" ]; then
+  missing=$(python3 - "$starship_cfg" <<'PY'
+import re,sys
+p=sys.argv[1]
+txt=open(p).read()
+m=re.search(r'\[palettes\.noctalia\](.*?)(?:\n\[|# <<<)',txt,re.S)
+pal=set(re.findall(r'^([a-z0-9_]+)\s*=',m.group(1),re.M)) if m else set()
+used=set(re.findall(r'(?:fg|bg):([a-z0-9_]+)',txt))
+builtin={'black','red','green','yellow','blue','purple','cyan','white','bold','dimmed','italic','underline','inverted','blink'}
+for u in sorted(used-pal-builtin):
+    print(u)
+PY
+)
+  if [ -n "$missing" ]; then
+    fail "starship uses undefined palette keys: $missing"
+  fi
+  if command -v starship >/dev/null; then
+    os_out=$(STARSHIP_CONFIG="$starship_cfg" starship module os 2>/dev/null || true)
+    if [ -z "$os_out" ]; then
+      warn "starship module os returned empty output (may be normal outside prompt)"
+    elif ! printf '%s' "$os_out" | LC_ALL=C grep -q $'\033\['; then
+      fail "starship module os has no ANSI style; palette/style may be broken"
+    fi
+  fi
+else
+  warn "starship config not found: $starship_cfg"
+fi
+
+# Tmux
+tmux_cfg="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
+bar_cfg="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/themes/bar.conf"
+if [ -f "$tmux_cfg" ]; then
+  grep -q 'themes/bar.conf' "$tmux_cfg" || fail "tmux.conf missing source for themes/bar.conf"
+  grep -q 'themes/noctalia.conf' "$tmux_cfg" || fail "tmux.conf missing source for themes/noctalia.conf"
+  [ -f "$bar_cfg" ] || fail "missing $bar_cfg"
+  if command -v tmux >/dev/null; then
+    if ! tmux -L dotcheck -f "$tmux_cfg" new-session -d 'sleep 1' >/dev/null 2>&1; then
+      fail "tmux failed to load $tmux_cfg"
+    else
+      right=$(tmux -L dotcheck show -gv status-right 2>/dev/null || true)
+      printf '%s' "$right" | grep -q 'cpu_percentage.sh' || fail "tmux-cpu interpolation missing from status-right"
+      printf '%s' "$right" | grep -q '@noctalia_' || fail "tmux status-right missing Noctalia color refs"
+      tmux -L dotcheck kill-server >/dev/null 2>&1 || true
+      rm -f "${TMUX_TMPDIR:-/tmp}/tmux-$(id -u)/dotcheck" 2>/dev/null || true
+    fi
+  fi
+fi
+
+# Noctalia/Umbriel validation
+if command -v umbriel >/dev/null; then umbriel config validate >/dev/null || fail "umbriel config validate failed"; fi
+if command -v noctalia >/dev/null; then
+  out=$(noctalia config validate 2>&1 || true)
+  printf '%s\n' "$out" | tail -1
+  printf '%s\n' "$out" | grep -q 'Config is valid' || fail "noctalia config validate failed"
+fi
+
+if [ "$ok" -eq 1 ]; then
+  printf 'check: ok\n'
+else
+  exit 1
+fi
