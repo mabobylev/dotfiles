@@ -185,8 +185,8 @@ luciole --version
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
   `umbriel msg workspace-set-layout scrolling|dwindle|master|stacking`.
 - Lesta Games / Wine (только ПК): иконки XEmbed в трее публикует `xembsni`.
-  На ноутбуке он не нужен. Юнит лежит в
-  `scripts/.config/systemd/user/xembsni.service`, бинарник —
+  На ноутбуке юнит не устанавливается. Юнит лежит в
+  `host-pc/.config/systemd/user/xembsni.service`, бинарник —
   локальный `~/.local/bin/xembsni`. Пересборка:
   `git clone https://github.com/jmylchreest/xembsni && cd xembsni && cargo build --release`,
   затем `install -Dm755 target/release/xembsni ~/.local/bin/xembsni` и

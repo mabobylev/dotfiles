@@ -65,8 +65,8 @@ fi
 printf 'apply.sh: пользовательские сервисы\n'
 if command -v systemctl >/dev/null && systemctl --user show-environment >/dev/null 2>&1; then
   systemctl --user daemon-reload
-  # xembsni нужен только на ПК (Lesta/Wine); на ноутбуке молча пропускаем.
-  if [ "$host" = pc ]; then
+  # xembsni живёт только в host-pc (Lesta/Wine); на ноутбуке юнита нет.
+  if [ -f "$HOME/.config/systemd/user/xembsni.service" ]; then
     if [ -x "$HOME/.local/bin/xembsni" ]; then
       systemctl --user enable xembsni.service >/dev/null 2>&1 || true
       if systemctl --user is-active --quiet graphical-session.target; then
