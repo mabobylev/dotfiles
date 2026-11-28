@@ -177,7 +177,7 @@ temperature_night = 4000
 
 
 # =============================================================================
-#  Системный монитор, локскрин и idle
+#  Системный монитор и локскрин
 # =============================================================================
 
 [system.monitor]
@@ -185,13 +185,3 @@ enabled = true
 
 [lockscreen]
 blurred_desktop = true
-
-[idle.behavior.lock]
-timeout = 600
-action = "lock"
-enabled = true
-
-[idle.behavior.screen-off]
-timeout = 660
-action = "screen_off"
-enabled = true

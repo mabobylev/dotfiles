@@ -9,7 +9,7 @@
 | Пакет stow | Что даёт |
 |---|---|
 | `umbriel` | `~/.config/umbriel/config.toml` — композитор, бинды, блюр |
-| `noctalia` | `~/.config/noctalia/config.toml` — бар, лаунчер, уведомления, lock/idle, polkit |
+| `noctalia` | `~/.config/noctalia/config.toml` — бар, лаунчер, уведомления, локскрин, polkit |
 | `luciole` | `~/.config/luciole/config.toml` — файловый менеджер |
 | `home` | login-shell файлы в `~/.bash.d`, `.bash_profile`, `.Xresources` |
 | `pipewire` | низкая задержка PipeWire (48 kHz, quantum 256) |
@@ -18,6 +18,10 @@
 | `wallp` | обои в `~/.local/backgrounds/wallpapers` |
 | `host-pc` | выход DP-2, виджет Codex-метра |
 | `host-laptop` | eDP-1, тачпад, без blur/теней, компактный бар |
+
+Таймеры бездействия задаются отдельно в `host-pc/.config/noctalia/zz-host.toml`
+и `host-laptop/.config/noctalia/zz-host.toml`. В обоих профилях блокировка —
+через 30 минут, отключение экрана — через час бездействия.
 
 `~/.config/starship.toml` stow-ится из `home/.config/starship.toml`.
 Noctalia переписывает в нём только блок палитры между маркерами
@@ -206,4 +210,3 @@ luciole --version
 Основные общие конфиги перенесены в этот репозиторий. Локальный
 `~/.dotfiles-legacy` удалён; REAPER живёт в `~/.config/REAPER` и
 бэкапится restic, opencode — в `~/.config/opencode`.
-

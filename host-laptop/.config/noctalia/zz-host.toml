@@ -5,3 +5,13 @@
 start = ["launcher", "keyboard_layout", "workspaces", "umbriel_companion", "notes"]
 center = ["clock"]
 end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "timer", "control-center", "session"]
+
+[idle.behavior.lock]
+timeout = 1800
+action = "lock"
+enabled = true
+
+[idle.behavior.screen-off]
+timeout = 3600
+action = "screen_off"
+enabled = true
