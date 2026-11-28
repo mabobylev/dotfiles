@@ -81,6 +81,8 @@ libnotify
 
 # --- Editors, file managers, multiplexer ----------------------------------
 neovim
+tree-sitter-cli
+tree-sitter-bash
 mc
 ranger
 tmux

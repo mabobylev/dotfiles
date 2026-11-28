@@ -41,7 +41,7 @@ sudo pacman -S --needed --noconfirm \
   noctalia adw-gtk-theme wtype upower brightnessctl \
   fzf jq ncdu smartmontools udiskie udisks2 slurp \
   pacman-contrib zenity imagemagick \
-  tmux bat lsd starship \
+  tmux bat lsd starship tree-sitter-cli \
   gvfs glycin ffmpeg poppler 7zip xdg-terminal-exec just
 ```
 
@@ -257,10 +257,13 @@ umbriel config validate
 noctalia config validate
 foot -C
 tmux -L test -f ~/.config/tmux/tmux.conf new-session -d 'sleep 1' && \
+  tmux -L test show -gv status-right | grep -q 'cpu_percentage.sh' && \
   tmux -L test kill-server
 nvim --headless -c 'lua print(pcall(require,"matugen"))' -c 'qa!'
+command -v tree-sitter
 luciole --version
 xdg-mime query default inode/directory
+dotfiles-check
 ```
 
 Ожидается `dev.noctalia.luciole.desktop`.

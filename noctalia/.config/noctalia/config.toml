@@ -39,7 +39,8 @@ community_ids = ["opencode", "neovim", "fzf", "starship", "bat", "lsd", "tmux"]
 # =============================================================================
 #  Плагины
 # =============================================================================
-# Общий список для ПК и ноутбука. Машинные дополнения — в host-файлах.
+# Базовый список. В host-файлах массив `enabled` задаётся целиком (TOML не
+# сливает массивы): если host-файл его переопределяет, там нужен полный список.
 
 [plugins]
 enabled = [
@@ -57,6 +58,7 @@ enabled = [
   "vn1k/cursor",
   "vn1k/icons",
   "liamwh/emoji-picker",
+  "amancode22/global-menu",
   "noctalia/wallhaven",
   "noctalia/timer",
 ]
@@ -130,6 +132,9 @@ type = "yuuto/arch-updater:widget"
 
 [widget.timer]
 type = "noctalia/timer:bar"
+
+[widget.global_menu]
+type = "amancode22/global-menu:menubar"
 
 [widget.udiskie]
 type = "aristides/udiskie:status"

@@ -84,8 +84,21 @@ if command -v fish >/dev/null 2>&1 && fish -c 'type -q fisher' >/dev/null 2>&1; 
     fi
 fi
 
+# Плагины tmux: tpm находит их в $XDG_CONFIG_HOME/tmux/plugins и сам подключает
+# *.tmux; пути должны совпадать с tmux.conf (plugins/<repo>, без владельца).
+if command -v git >/dev/null 2>&1; then
+    tmux_plugins="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins"
+    mkdir -p "$tmux_plugins"
+    if [[ ! -d "$tmux_plugins/tpm" ]]; then
+        git clone --depth 1 https://github.com/tmux-plugins/tpm "$tmux_plugins/tpm"
+    fi
+    if [[ ! -d "$tmux_plugins/tmux-cpu" ]]; then
+        git clone --depth 1 https://github.com/tmux-plugins/tmux-cpu "$tmux_plugins/tmux-cpu"
+    fi
+fi
+
 # Символы Nerd Font для fontconfig.
 sudo ln -sf /usr/share/fontconfig/conf.avail/10-nerd-font-symbols.conf \
     /etc/fonts/conf.d/10-nerd-font-symbols.conf
 
-echo "Готово. Проверь Sway: sway -C"
+echo "Готово. Дальше: ./apply.sh (stow) и umbriel config validate."

@@ -33,10 +33,22 @@ for other in pc laptop; do
   fi
 done
 
-printf 'apply.sh: stow umbriel noctalia luciole home pipewire + общие + host-%s\n' "$host"
-stow -t "$HOME" --no-folding \
-  umbriel noctalia luciole home pipewire \
+packages=(
+  umbriel noctalia luciole home pipewire
   fish foot mc nvim ranger scripts tmux wallp "host-$host"
+)
+
+# Заранее проверяем конфликты: иначе stow отменяет все операции, а скрипт
+# молча выходит по set -e, оставляя $HOME в старом состоянии.
+printf 'apply.sh: проверка конфликтов stow\n'
+if ! stow_out=$(stow -n -t "$HOME" --no-folding "${packages[@]}" 2>&1); then
+  printf '%s\n' "$stow_out" >&2
+  printf 'apply.sh: stow нашёл конфликты — убери/переименуй цели и повтори\n' >&2
+  exit 1
+fi
+
+printf 'apply.sh: stow umbriel noctalia luciole home pipewire + общие + host-%s\n' "$host"
+stow -t "$HOME" --no-folding "${packages[@]}"
 
 printf 'apply.sh: проверка конфигов\n'
 if command -v umbriel >/dev/null; then
@@ -62,12 +74,26 @@ if command -v systemctl >/dev/null && systemctl --user show-environment >/dev/nu
   else
     printf '  xembsni: нет ~/.local/bin/xembsni — служба не включена\n' >&2
   fi
+  for unit in restic-backup.timer restic-maintenance.timer; do
+    if [ -f "$HOME/.config/systemd/user/$unit" ]; then
+      systemctl --user enable --now "$unit" >/dev/null 2>&1 \
+        || printf '  %s: не удалось включить\n' "$unit" >&2
+    fi
+  done
 else
   printf '  systemd --user недоступен — пропускаю сервисы\n' >&2
 fi
 
+tmux_plugins="${XDG_CONFIG_HOME:-$HOME/.config}/tmux/plugins"
+for plugin in tpm tmux-cpu; do
+  [ -d "$tmux_plugins/$plugin" ] \
+    || printf '  tmux: нет плагина %s — бар останется без cpu/ram (arch_setup.sh)\n' "$plugin" >&2
+done
+
 if [ -x "$HOME/.local/bin/dotfiles-check" ]; then
   "$HOME/.local/bin/dotfiles-check" || printf '  dotfiles-check: есть предупреждения/ошибки\n' >&2
+else
+  printf '  dotfiles-check: не установлен — пропускаю\n' >&2
 fi
 
 printf 'apply.sh: готово (%s)\n' "$host"

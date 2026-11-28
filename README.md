@@ -32,7 +32,7 @@ opencode тоже локальный, в `~/.config/opencode`.
 
 Машинно-зависимые файлы подключаются через
 `[include.optional] files = ["host.d/10-output.toml",
-"host.d/20-performance.toml", "host.d/30-input.toml", "noctalia.toml"]`
+"host.d/20-performance.toml", "host.d/30-input.toml"]`
 в конфиге Umbriel.
 
 ## Ноутбук
@@ -49,8 +49,9 @@ opencode тоже локальный, в `~/.config/opencode`.
 ./apply.sh laptop
 ```
 
-Скрипт снимает host-пакет другой машины, делает `stow` нужных пакетов,
-проверяет конфиги и, если бинарник уже собран, включает `xembsni.service`.
+Скрипт проверяет конфликты `stow`, снимает host-пакет другой машины, делает
+`stow` нужных пакетов, проверяет конфиги, включает таймеры restic и, если
+бинарник уже собран, `xembsni.service`, затем запускает `dotfiles-check`.
 
 ## Темизация
 
@@ -71,17 +72,20 @@ community-шаблоны `opencode`, `neovim`, `fzf`, `starship`, `bat`, `lsd`,
 | bat | `~/.config/bat/themes/noctalia.tmTheme` |
 | lsd | `~/.config/lsd/colors.yaml` |
 | fzf | `~/.config/fzf/themes/noctalia.{sh,fish}` |
-| starship | `~/.config/starship.toml` (локальный файл, палитра `noctalia`) |
+| nvim | `~/.config/nvim/lua/matugen.lua` |
+| opencode | `~/.config/opencode/themes/matugen.json` |
 | tmux | `~/.config/tmux/themes/noctalia.conf` |
+
+Исключение — starship: `~/.config/starship.toml` stow-ится из `home`, а
+Noctalia переписывает в нём только палитровый блок между маркерами
+`NOCTALIA STARSHIP PALETTE` (через симлинк, структура prompt остаётся в git).
 
 Раскладка tmux-бара и иконки лежат отдельно в
 `~/.config/tmux/themes/bar.conf`; цвета в нём берутся из переменных
 `@noctalia_*`, поэтому статическая палитра не нужна. Noctalia обновляет
-только `noctalia.conf`, `bar.conf` остаётся твоим. При обновлении
-community tmux template стоит проверить `apply.sh`: он не должен затирать
-source `bar.conf` и порядок source-строк.
-| nvim | `~/.config/nvim/lua/matugen.lua` |
-| opencode | `~/.config/opencode/themes/matugen.json` |
+только `noctalia.conf`, `bar.conf` остаётся твоим. Плагины tmux ставит tpm
+(`prefix+I`) в `~/.config/tmux/plugins`; `bar.conf` должен подключаться
+раньше `run tpm`, иначе tmux-cpu не подставит cpu/ram в `status-right`.
 
 Палитра меняется в настройках Noctalia или командой
 `noctalia msg color-scheme-set builtin Nord`. Обои ротируются из
@@ -105,6 +109,7 @@ source `bar.conf` и порядок source-строк.
 | `default-apps` | выбор приложений по умолчанию |
 | `cursor`, `icons` | курсоры и иконки |
 | `emoji-picker` | эмодзи по `Mod+.` |
+| `global-menu` | меню активного приложения в баре (`menubar`) |
 | `codexbar-meter` | остаток лимитов Codex из CodexBar (только на ПК) |
 
 Тема, состав бара, список плагинов и обои по умолчанию задаются в
@@ -112,7 +117,9 @@ source `bar.conf` и порядок source-строк.
 `~/.local/state/noctalia/settings.toml`, который имеет приоритет; после
 правок через GUI полезно сверять результат с
 `noctalia config export merged`. Машинное состояние (локскрин на `DP-2`,
-раскладка мониторов, последние обои) остаётся локальным.
+раскладка мониторов, последние обои) остаётся локальным. Массив
+`plugins.enabled` в host-файле заменяет общий список целиком — TOML не
+сливает массивы, поэтому там должен быть полный набор.
 
 Для `file-search` поставлен `ncdu`, для `screen_recorder` —
 `gpu-screen-recorder-git` и `slurp`, для `cursor` — `win2xcur` и
@@ -167,12 +174,12 @@ luciole --version
 - Polkit: нативный агент Noctalia (`polkit_agent = true`), `polkit-gnome`
   больше не нужен.
 - Телеметрия выключена, community-шаблоны включены.
-- Виджеты бара: `sysmon`, `weather`, `taskbar`, часы, раскладка, Codex-метр
-  (на ПК), plus-виджеты плагинов (`umbriel-companion`, `notes`,
-  `file-search`, `arch-updater`, `timer`, `udiskie`). Состав и отступы бара
-  могут отличаться по вкусу; актуальное состояние смотри в
-  `noctalia/config.toml`, `host-*/.config/noctalia/zz-host.toml` и
-  `noctalia config export merged`.
+- Виджеты бара: `sysmon`, `weather`, `taskbar` (на ПК), часы, раскладка,
+  `control-center`, `global_menu`, Codex-метр (на ПК), плюс-виджеты плагинов
+  (`umbriel-companion`, `notes`, `file-search`, `arch-updater`, `timer`,
+  `udiskie`). Состав и отступы бара могут отличаться по вкусу; актуальное
+  состояние смотри в `noctalia/config.toml`,
+  `host-*/.config/noctalia/zz-host.toml` и `noctalia config export merged`.
 - Раскладка US/RU переключается по CapsLock (`grp:caps_toggle,grp_led:caps`).
   Индикатор раскладки выведен в бар и переключает по левому клику.
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:

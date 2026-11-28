@@ -14,6 +14,8 @@ enabled = false
 [widget.codex_meter]
 type = "salemsayed/codexbar-meter:bar"
 
+# Массив enabled задаётся целиком: TOML не сливает списки, поэтому это полный
+# набор плагинов ПК, а не дополнение к общему config.toml.
 [plugins]
 enabled = [
   "noctalia/umbriel-companion",
@@ -31,6 +33,7 @@ enabled = [
   "vn1k/cursor",
   "vn1k/icons",
   "liamwh/emoji-picker",
+  "amancode22/global-menu",
   "salemsayed/codexbar-meter",
   "noctalia/wallhaven",
   "noctalia/timer",

@@ -1,10 +1,11 @@
 # host-laptop: компактный бар под 1366x768.
 # Codex-метра на ноутбуке нет, тяжёлые виджеты убраны.
+# Состав синхронизирован с текущим состоянием (noctalia config export).
 
 [bar.main]
-start = ["launcher", "keyboard_layout", "workspaces", "umbriel_companion", "notes"]
+start = ["launcher", "keyboard_layout", "workspaces", "control-center", "umbriel_companion", "notes", "global_menu"]
 center = ["clock"]
-end = ["media", "tray", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "sysmon", "weather", "timer", "control-center", "session"]
+end = ["media", "notifications", "clipboard", "volume", "brightness", "battery", "sysmon", "weather", "bluetooth", "network", "tray", "session"]
 
 [idle.behavior.lock]
 timeout = 1800

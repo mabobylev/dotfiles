@@ -63,6 +63,21 @@ if command -v noctalia >/dev/null; then
   printf '%s\n' "$out" | grep -q 'Config is valid' || fail "noctalia config validate failed"
 fi
 
+# nvim-treesitter (ветка main) собирает парсеры через tree-sitter CLI.
+if command -v nvim >/dev/null && ! command -v tree-sitter >/dev/null; then
+  warn "tree-sitter CLI не найден: nvim не соберёт парсеры (пакет tree-sitter-cli)"
+fi
+
+# Бэкапы: таймеры должны быть не только включены, но и запущены.
+if command -v systemctl >/dev/null && systemctl --user show-environment >/dev/null 2>&1; then
+  for unit in restic-backup.timer restic-maintenance.timer; do
+    if [ -f "$HOME/.config/systemd/user/$unit" ] \
+      && ! systemctl --user is-active --quiet "$unit"; then
+      warn "$unit не запущен — бэкапы не выполняются"
+    fi
+  done
+fi
+
 if [ "$ok" -eq 1 ]; then
   printf 'check: ok\n'
 else
