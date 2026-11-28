@@ -50,8 +50,8 @@ opencode тоже локальный, в `~/.config/opencode`.
 ```
 
 Скрипт проверяет конфликты `stow`, снимает host-пакет другой машины, делает
-`stow` нужных пакетов, проверяет конфиги, включает таймеры restic и, если
-бинарник уже собран, `xembsni.service`, затем запускает `dotfiles-check`.
+`stow` нужных пакетов, проверяет конфиги, включает таймеры restic, на ПК при
+наличии бинарника — `xembsni.service`, затем запускает `dotfiles-check`.
 
 ## Темизация
 
@@ -184,8 +184,9 @@ luciole --version
   Индикатор раскладки выведен в бар и переключает по левому клику.
 - Раскладка окон — `dwindle`, как в Sway/i3. Переключить текущий воркспейс:
   `umbriel msg workspace-set-layout scrolling|dwindle|master|stacking`.
-- Lesta Games / Wine: иконки XEmbed в трее публикует `xembsni`.
-  Юнит лежит в `scripts/.config/systemd/user/xembsni.service`, бинарник —
+- Lesta Games / Wine (только ПК): иконки XEmbed в трее публикует `xembsni`.
+  На ноутбуке он не нужен. Юнит лежит в
+  `scripts/.config/systemd/user/xembsni.service`, бинарник —
   локальный `~/.local/bin/xembsni`. Пересборка:
   `git clone https://github.com/jmylchreest/xembsni && cd xembsni && cargo build --release`,
   затем `install -Dm755 target/release/xembsni ~/.local/bin/xembsni` и

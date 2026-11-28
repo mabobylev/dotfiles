@@ -65,14 +65,17 @@ fi
 printf 'apply.sh: пользовательские сервисы\n'
 if command -v systemctl >/dev/null && systemctl --user show-environment >/dev/null 2>&1; then
   systemctl --user daemon-reload
-  if [ -x "$HOME/.local/bin/xembsni" ]; then
-    systemctl --user enable xembsni.service >/dev/null 2>&1 || true
-    if systemctl --user is-active --quiet graphical-session.target; then
-      systemctl --user restart xembsni.service >/dev/null 2>&1 \
-        || printf '  xembsni: не удалось перезапустить службу\n' >&2
+  # xembsni нужен только на ПК (Lesta/Wine); на ноутбуке молча пропускаем.
+  if [ "$host" = pc ]; then
+    if [ -x "$HOME/.local/bin/xembsni" ]; then
+      systemctl --user enable xembsni.service >/dev/null 2>&1 || true
+      if systemctl --user is-active --quiet graphical-session.target; then
+        systemctl --user restart xembsni.service >/dev/null 2>&1 \
+          || printf '  xembsni: не удалось перезапустить службу\n' >&2
+      fi
+    else
+      printf '  xembsni: нет ~/.local/bin/xembsni — служба не включена\n' >&2
     fi
-  else
-    printf '  xembsni: нет ~/.local/bin/xembsni — служба не включена\n' >&2
   fi
   for unit in restic-backup.timer restic-maintenance.timer; do
     if [ -f "$HOME/.config/systemd/user/$unit" ]; then
